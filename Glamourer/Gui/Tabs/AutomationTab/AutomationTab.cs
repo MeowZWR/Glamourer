@@ -12,9 +12,6 @@ public class AutomationTab(SetSelector selector, SetPanel panel, Configuration c
     public bool IsVisible
         => config.EnableAutoDesigns;
 
-    public bool IsVisible
-        => config.EnableAutoDesigns;
-
     public void DrawContent()
     {
         selector.Draw(GetSetSelectorSize());
