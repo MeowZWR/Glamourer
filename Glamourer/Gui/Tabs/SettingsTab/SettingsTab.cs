@@ -372,7 +372,7 @@ public class SettingsTab(
             "选择在打开设计选择器中设计右键上下文菜单时可见的两个重命名输入字段中的哪一个。";
         ImGuiComponents.HelpMarker(tt);
         ImGui.SameLine();
-        ImGui.TextUnformatted("设计中上下文菜单的重命名字段");
+        ImGui.TextUnformatted("设计上下文菜单中的重命名字段");
         ImGuiUtil.HoverTooltip(tt);
     }
 
@@ -393,21 +393,21 @@ public class SettingsTab(
         }
 
         ImGui.SameLine();
-        const string tt = "Select how to display the height of characters in real-world units, if at all.";
+        const string tt = "选择如何以真实世界单位显示角色的身高。";
         ImGuiComponents.HelpMarker(tt);
         ImGui.SameLine();
-        ImGui.TextUnformatted("Character Height Display Type");
+        ImGui.TextUnformatted("人物身高显示单位");
         ImGuiUtil.HoverTooltip(tt);
     }
 
     private string HeightDisplayTypeName(HeightDisplayType type)
         => type switch
         {
-            HeightDisplayType.None       => "Do Not Display",
-            HeightDisplayType.Centimetre => "Centimetres (000.0 cm)",
-            HeightDisplayType.Metre      => "Metres (0.00 m)",
-            HeightDisplayType.Wrong      => "Inches (00.0 in)",
-            HeightDisplayType.WrongFoot  => "Feet (0'00'')",
+            HeightDisplayType.None       => "不显示",
+            HeightDisplayType.Centimetre => "厘米 (000.0 cm)",
+            HeightDisplayType.Metre      => "米 (0.00 m)",
+            HeightDisplayType.Wrong      => "英寸 (00.0 in)",
+            HeightDisplayType.WrongFoot  => "英尺 (0'00'')",
             _                            => string.Empty,
         };
 }

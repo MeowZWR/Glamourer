@@ -100,7 +100,7 @@ public unsafe class ScalingService : IDisposable
 
     /// <summary> We do not change the Customize gender because the functions use the GetGender() vfunc, which uses the game objects gender value. </summary>
     private static (byte Race, byte Clan, byte Gender) GetScaleRelevantCustomize(Character* character)
-        => (character->DrawData.CustomizeData.Race, character->DrawData.CustomizeData.Clan, character->GameObject.Gender);//国际服6.58hotfix后，Clan改Tribe，Gender改Sex
+        => (character->DrawData.CustomizeData.Race, character->DrawData.CustomizeData.Tribe, character->GameObject.Sex);//国际服6.58hotfix后，Clan改Tribe，Gender改Sex
 
     private static (byte Gender, byte BodyType, byte Clan, byte Height) GetHeightRelevantCustomize(Character* character)
         => (character->DrawData.CustomizeData.Sex, character->DrawData.CustomizeData.BodyType,

@@ -133,7 +133,7 @@ public class CollectionOverrideDrawer(
     {
         var (currentId, currentName) = penumbra.CurrentCollection;
         ImGui.TableNextColumn();
-        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.PersonCirclePlus.ToIconString(), buttonSize, "Add override for current player.",
+        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.PersonCirclePlus.ToIconString(), buttonSize, "添加对当前玩家的覆盖。",
                 !objects.Player.Valid && currentId != Guid.Empty, true))
             collectionOverrides.AddOverride([objects.PlayerData.Identifier], currentId, currentName);
 

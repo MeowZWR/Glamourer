@@ -13,8 +13,8 @@ namespace Glamourer.Gui.Tabs.SettingsTab;
 public class CodeDrawer(Configuration config, CodeService codeService, FunModule funModule) : IUiService
 {
     private static ReadOnlySpan<byte> Tooltip
-        => "Cheat Codes are not actually for cheating in the game, but for 'cheating' in Glamourer. "u8
-          + "They allow for some fun easter-egg modes that usually manipulate the appearance of all players you see (including yourself) in some way."u8;
+        => "作弊代码实际上不是为了在游戏中作弊，而是为了在 Glamourer 中“作弊”。 "u8
+          + "它们允许插件执行一些有趣的彩蛋模式，这些模式通常会以某种方式改变您看到的所有玩家（包括您自己）的外观。"u8;
 
     private static ReadOnlySpan<byte> DragDropLabel
         => "##CheatDrag"u8;
@@ -26,7 +26,7 @@ public class CodeDrawer(Configuration config, CodeService codeService, FunModule
 
     public void Draw()
     {
-        var show = ImGui.CollapsingHeader("Cheat Codes");
+        var show = ImGui.CollapsingHeader("作弊代码");
         DrawTooltip();
 
         if (!show)
@@ -43,7 +43,7 @@ public class CodeDrawer(Configuration config, CodeService codeService, FunModule
         var       color  = codeService.CheckCode(_currentCode).Item2 is not 0 ? ColorId.ActorAvailable : ColorId.ActorUnavailable;
         using var border = ImRaii.PushFrameBorder(ImUtf8.GlobalScale, color.Value(), _currentCode.Length > 0);
         ImGui.SetNextItemWidth(500 * ImUtf8.GlobalScale + ImUtf8.ItemSpacing.X);
-        if (ImUtf8.InputText("##Code"u8, ref _currentCode, "Enter Cheat Code..."u8, ImGuiInputTextFlags.EnterReturnsTrue))
+        if (ImUtf8.InputText("##Code"u8, ref _currentCode, "输入作弊代码..."u8, ImGuiInputTextFlags.EnterReturnsTrue))
         {
             codeService.AddCode(_currentCode);
             _currentCode = string.Empty;
@@ -60,14 +60,14 @@ public class CodeDrawer(Configuration config, CodeService codeService, FunModule
         if (ImUtf8.Button("Who am I?!?"u8, buttonSize))
             funModule.WhoAmI();
         ImUtf8.HoverTooltip(
-            "Copy your characters actual current appearance including cheat codes or holiday events to the clipboard as a design."u8);
+            "将你的角色当前的实际外观（包括作弊代码或节日活动）复制到剪贴板作为一个设计。"u8);
 
         ImGui.SameLine();
 
         if (ImUtf8.Button("Who is that!?!"u8, buttonSize))
             funModule.WhoIsThat();
         ImUtf8.HoverTooltip(
-            "Copy your targets actual current appearance including cheat codes or holiday events to the clipboard as a design."u8);
+            "将你的目标当前的实际外观（包括作弊代码或节日活动）复制到剪贴板作为一个设计。"u8);
     }
 
     private CodeService.CodeFlag DrawCodes()
@@ -85,7 +85,7 @@ public class CodeDrawer(Configuration config, CodeService codeService, FunModule
             var data = CodeService.GetData(flag);
 
             if (ImUtf8.IconButton(FontAwesomeIcon.Trash,
-                    $"Delete this cheat code.{(canDelete ? string.Empty : $"\nHold {config.DeleteDesignModifier} while clicking to delete.")}",
+                    $"删除此作弊代码。{(canDelete ? string.Empty : $"\n按住 {config.DeleteDesignModifier} 键并单击以删除。")}",
                     !canDelete))
             {
                 action!(false);
@@ -125,7 +125,7 @@ public class CodeDrawer(Configuration config, CodeService codeService, FunModule
 
         if (!DragDropSource.SetPayload(DragDropLabel))
             _dragCodeIdx = idx;
-        ImUtf8.Text($"Dragging {code}...");
+        ImUtf8.Text($"拖拽 {code}...");
     }
 
     private void DrawTarget(int idx)
@@ -144,7 +144,7 @@ public class CodeDrawer(Configuration config, CodeService codeService, FunModule
         if (knownFlags.HasFlag(CodeService.AllHintCodes))
             return;
 
-        if (ImUtf8.Button(_showCodeHints ? "Hide Hints"u8 : "Show Hints"u8))
+        if (ImUtf8.Button(_showCodeHints ? "隐藏提示"u8 : "显示提示"u8))
             _showCodeHints = !_showCodeHints;
 
         if (!_showCodeHints)
@@ -166,8 +166,8 @@ public class CodeDrawer(Configuration config, CodeService codeService, FunModule
             using var indent = ImRaii.PushIndent(2);
             using (ImUtf8.Group())
             {
-                ImUtf8.Text("Capitalized letters: "u8);
-                ImUtf8.Text("Punctuation: "u8);
+                ImUtf8.Text("大写字母："u8);
+                ImUtf8.Text("标点符号："u8);
             }
 
             ImUtf8.SameLineInner();
