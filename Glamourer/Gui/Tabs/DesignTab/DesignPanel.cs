@@ -15,7 +15,6 @@ using OtterGui;
 using OtterGui.Classes;
 using OtterGui.Raii;
 using Penumbra.GameData.Enums;
-using System;
 using static Glamourer.Gui.Tabs.HeaderDrawer;
 
 namespace Glamourer.Gui.Tabs.DesignTab;
@@ -38,8 +37,8 @@ public class DesignPanel
     private readonly CustomizeParameterDrawer _parameterDrawer;
     private readonly DesignLinkDrawer         _designLinkDrawer;
     private readonly MaterialDrawer           _materials;
-    private readonly Button[]                _leftButtons;
-    private readonly Button[]                _rightButtons;
+    private readonly Button[]                 _leftButtons;
+    private readonly Button[]                 _rightButtons;
 
 
     public DesignPanel(DesignFileSystemSelector selector,
@@ -78,6 +77,7 @@ public class DesignPanel
             new SetFromClipboardButton(this),
             new UndoButton(this),
             new ExportToClipboardButton(this),
+            new ApplyCharacterButton(this),
         ];
         _rightButtons =
         [
@@ -501,8 +501,8 @@ public class DesignPanel
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"无法将剪贴板数据应用于 {panel._selector.Selected!.Name}.",
-                    $"无法将剪贴板数据应用于设计 {panel._selector.Selected!.Identifier}", NotificationType.Error, false);
+                Glamourer.Messager.NotificationMessage(ex, $"无法将剪贴板数据应用于{panel._selector.Selected!.Name}。",
+                    $"无法将剪贴板数据应用于设计{panel._selector.Selected!.Identifier}", NotificationType.Error, false);
             }
         }
     }
@@ -529,7 +529,7 @@ public class DesignPanel
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"无法为 {panel._selector.Selected!.Name} 撤消上次更改。",
+                Glamourer.Messager.NotificationMessage(ex, $"无法为{panel._selector.Selected!.Name}撤消上次更改。",
                     NotificationType.Error,
                     false);
             }
@@ -556,8 +556,39 @@ public class DesignPanel
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"无法复制 {panel._selector.Selected!.Name} 的数据到剪贴板。",
-                    $"无法复制设计 {panel._selector.Selected!.Identifier} 的数据到剪贴板。", NotificationType.Error, false);
+                Glamourer.Messager.NotificationMessage(ex, $"无法复制{panel._selector.Selected!.Name}的数据到剪贴板。",
+                    $"无法复制来自设计{panel._selector.Selected!.Identifier}的数据到剪贴板。", NotificationType.Error, false);
+            }
+        }
+    }
+
+    private sealed class ApplyCharacterButton(DesignPanel panel) : Button
+    {
+        public override bool Visible
+            => panel._selector.Selected != null && panel._objects.Player.Valid;
+
+        protected override string Description
+            => "用你的角色的当前状态覆盖此设计。";
+
+        protected override FontAwesomeIcon Icon
+            => FontAwesomeIcon.UserEdit;
+
+        protected override void OnClick()
+        {
+            try
+            {
+                var (player, actor) = panel._objects.PlayerData;
+                if (!player.IsValid || !actor.Valid || !panel._state.GetOrCreate(player, actor.Objects[0], out var state))
+                    throw new Exception("没有可用的玩家状态。");
+
+                var design = panel._converter.Convert(state, ApplicationRules.FromModifiers(state))
+                 ?? throw new Exception("剪贴板中没有有效数据。");
+                panel._manager.ApplyDesign(panel._selector.Selected!, design);
+            }
+            catch (Exception ex)
+            {
+                Glamourer.Messager.NotificationMessage(ex, $"无法应用玩家状态到{panel._selector.Selected!.Name}。",
+                    $"无法应用玩家状态到设计：{panel._selector.Selected!.Identifier}", NotificationType.Error, false);
             }
         }
     }

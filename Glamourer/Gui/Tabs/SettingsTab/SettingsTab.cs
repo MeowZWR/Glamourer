@@ -7,8 +7,6 @@ using Glamourer.Designs;
 using Glamourer.Gui.Tabs.DesignTab;
 using Glamourer.Interop;
 using Glamourer.Interop.PalettePlus;
-using Glamourer.Services;
-using Glamourer.State;
 using ImGuiNET;
 using OtterGui;
 using OtterGui.Raii;
@@ -19,24 +17,21 @@ namespace Glamourer.Gui.Tabs.SettingsTab;
 public class SettingsTab(
     Configuration config,
     DesignFileSystemSelector selector,
-    CodeService codeService,
     ContextMenuService contextMenuService,
     UiBuilder uiBuilder,
     GlamourerChangelog changelog,
-    FunModule funModule,
     IKeyState keys,
     DesignColorUi designColorUi,
     PaletteImport paletteImport,
     PalettePlusChecker paletteChecker,
-    CollectionOverrideDrawer overrides)
+    CollectionOverrideDrawer overrides,
+    CodeDrawer codeDrawer)
     : ITab
 {
     private readonly VirtualKey[] _validKeys = keys.GetValidVirtualKeys().Prepend(VirtualKey.NO_KEY).ToArray();
 
     public ReadOnlySpan<byte> Label
         => "插件设置"u8;
-
-    private string _currentCode = string.Empty;
 
     public void DrawContent()
     {
@@ -58,7 +53,7 @@ public class SettingsTab(
             DrawInterfaceSettings();
             DrawColorSettings();
             overrides.Draw();
-            DrawCodes();
+            codeDrawer.Draw();
         }
 
         MainWindow.DrawSupportButtons(changelog.Changelog);
@@ -162,6 +157,7 @@ public class SettingsTab(
 
         Checkbox("装备面板紧凑显示", "使用不显示装备图标、有小染色按钮的单行视图，取代两行视图。",
             config.SmallEquip,            v => config.SmallEquip = v);
+        DrawHeightUnitSettings();
         Checkbox("显示应用复选框",
             "显示“角色设计”选项卡下外貌和装备面板中的应用生效复选框，而不是仅在“应用规则”面板中显示。",
             !config.HideApplyCheckmarks, v => config.HideApplyCheckmarks = !v);
@@ -169,8 +165,9 @@ public class SettingsTab(
                 "在所有的删除按钮上生效所需要的组合键。", 100 * ImGuiHelpers.GlobalScale,
                 config.DeleteDesignModifier, v => config.DeleteDesignModifier = v))
             config.Save();
+        DrawRenameSettings();
         Checkbox("自动展开角色设计折叠组",
-            "登录游戏后，角色设计折叠组默认状态打开还是关闭。", config.OpenFoldersByDefault,
+            "登录游戏后，角色设计折叠组默认状态是打开还是关闭。", config.OpenFoldersByDefault,
             v => config.OpenFoldersByDefault = v);
         DrawFolderSortType();
 
@@ -296,69 +293,6 @@ public class SettingsTab(
         ImGui.NewLine();
     }
 
-    private void DrawCodes()
-    {
-        const string tooltip =
-            "作弊代码实际上不是针对游戏内容的作弊，而是对Glamourer的“作弊”。它们会实现一些有趣的彩蛋，比如以某种方式改变你看到的所有玩家（包括你自己）的外观。\n\n"
-          + "作弊代码一般是一些参考自流行文化的词语，但你不太可能猜出来。有些代码已经发布到了Discord服务器上，其它的代码我们还没有决定在何时以什么方法发布和添加。也许有些代码会隐藏在更新日志或帮助页面中。或者我稍后在这里添加提示。\n\n"
-          + "无论如何，如果你没注意到这里，或者没有探秘的兴趣，你不会失去任何重要的东西。添加这些内容，仅仅因为对我来说很有趣。";
-
-        var show = ImGui.CollapsingHeader("作弊代码");
-        if (ImGui.IsItemHovered())
-        {
-            ImGui.SetNextWindowSize(new Vector2(400, 0));
-            using var tt = ImRaii.Tooltip();
-            ImGuiUtil.TextWrapped(tooltip);
-        }
-
-        if (!show)
-            return;
-
-        using (var style = ImRaii.PushStyle(ImGuiStyleVar.FrameBorderSize, ImGuiHelpers.GlobalScale, _currentCode.Length > 0))
-        {
-            var       color = codeService.CheckCode(_currentCode) != null ? ColorId.ActorAvailable : ColorId.ActorUnavailable;
-            using var c     = ImRaii.PushColor(ImGuiCol.Border, color.Value(), _currentCode.Length > 0);
-            if (ImGui.InputTextWithHint("##Code", "输入作弊代码...", ref _currentCode, 512, ImGuiInputTextFlags.EnterReturnsTrue))
-                if (codeService.AddCode(_currentCode))
-                    _currentCode = string.Empty;
-        }
-
-        ImGui.SameLine();
-        ImGuiComponents.HelpMarker(tooltip);
-
-        DrawCodeHints();
-
-        if (config.Codes.Count <= 0)
-            return;
-
-        for (var i = 0; i < config.Codes.Count; ++i)
-        {
-            var (code, state) = config.Codes[i];
-            var action = codeService.CheckCode(code);
-            if (action == null)
-                continue;
-
-            if (ImGui.Checkbox(code, ref state))
-            {
-                action(state);
-                codeService.SaveState();
-            }
-        }
-
-        if (ImGui.Button("Who am I?!?"))
-            funModule.WhoAmI();
-
-        ImGui.SameLine();
-
-        if (ImGui.Button("Who is that!?!"))
-            funModule.WhoIsThat();
-    }
-
-    private void DrawCodeHints()
-    {
-        // TODO
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private void Checkbox(string label, string tooltip, bool current, Action<bool> setter)
     {
@@ -412,4 +346,68 @@ public class SettingsTab(
 
         ImGuiUtil.LabeledHelpMarker("排序模式", "为角色设计选项卡下的设计选择器选择一个排序方式。");
     }
+
+    private void DrawRenameSettings()
+    {
+        ImGui.SetNextItemWidth(300 * ImGuiHelpers.GlobalScale);
+        using (var combo = ImRaii.Combo("##renameSettings", config.ShowRename.GetData().Name))
+        {
+            if (combo)
+                foreach (var value in Enum.GetValues<RenameField>())
+                {
+                    var (name, desc) = value.GetData();
+                    if (ImGui.Selectable(name, config.ShowRename == value))
+                    {
+                        config.ShowRename = value;
+                        selector.SetRenameSearchPath(value);
+                        config.Save();
+                    }
+
+                    ImGuiUtil.HoverTooltip(desc);
+                }
+        }
+
+        ImGui.SameLine();
+        const string tt =
+            "选择在打开设计选择器中设计右键上下文菜单时可见的两个重命名输入字段中的哪一个。";
+        ImGuiComponents.HelpMarker(tt);
+        ImGui.SameLine();
+        ImGui.TextUnformatted("设计中上下文菜单的重命名字段");
+        ImGuiUtil.HoverTooltip(tt);
+    }
+
+    private void DrawHeightUnitSettings()
+    {
+        ImGui.SetNextItemWidth(300 * ImGuiHelpers.GlobalScale);
+        using (var combo = ImRaii.Combo("##heightUnit", HeightDisplayTypeName(config.HeightDisplayType)))
+        {
+            if (combo)
+                foreach (var type in Enum.GetValues<HeightDisplayType>())
+                {
+                    if (ImGui.Selectable(HeightDisplayTypeName(type), type == config.HeightDisplayType) && type != config.HeightDisplayType)
+                    {
+                        config.HeightDisplayType = type;
+                        config.Save();
+                    }
+                }
+        }
+
+        ImGui.SameLine();
+        const string tt = "Select how to display the height of characters in real-world units, if at all.";
+        ImGuiComponents.HelpMarker(tt);
+        ImGui.SameLine();
+        ImGui.TextUnformatted("Character Height Display Type");
+        ImGuiUtil.HoverTooltip(tt);
+    }
+
+    private string HeightDisplayTypeName(HeightDisplayType type)
+        => type switch
+        {
+            HeightDisplayType.None       => "Do Not Display",
+            HeightDisplayType.Centimetre => "Centimetres (000.0 cm)",
+            HeightDisplayType.Metre      => "Metres (0.00 m)",
+            HeightDisplayType.Wrong      => "Inches (00.0 in)",
+            HeightDisplayType.WrongFoot  => "Feet (0'00'')",
+            _                            => string.Empty,
+        };
 }

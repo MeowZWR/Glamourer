@@ -83,7 +83,7 @@ public class NpcPanel
     {
         protected override string Description
             => panel._favorites.IsFavorite(panel._selector.Selection)
-                ? "从你的收藏中删除此NPC外观。"
+                ? "从你的收藏中移除此NPC外观。"
                 : "将此NPC外观添加到你的收藏中。";
 
         protected override uint TextColor
@@ -308,8 +308,8 @@ public class NpcPanel
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"无法复制 {panel._selector.Selection.Name} 的数据到剪贴板。",
-                    $"无法从NPC外观 {panel._selector.Selection.Kind} {panel._selector.Selection.Id.Id} 复制数据到剪贴板。",
+                Glamourer.Messager.NotificationMessage(ex, $"无法复制{panel._selector.Selection.Name}的数据到剪贴板。",
+                    $"无法从NPC外观{panel._selector.Selection.Kind} {panel._selector.Selection.Id.Id}复制数据到剪贴板。",
                     NotificationType.Error);
             }
         }

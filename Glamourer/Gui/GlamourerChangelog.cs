@@ -32,6 +32,8 @@ public class GlamourerChangelog
         AddDummy(Changelog);
         Add1_2_0_0(Changelog);
         Add1_2_1_0(Changelog);
+        AddDummy(Changelog);
+        Add1_2_3_0(Changelog);
     }
 
     private (int, ChangeLogDisplayType) ConfigData()
@@ -52,13 +54,41 @@ public class GlamourerChangelog
         }
     }
 
+    private static void Add1_2_3_0(Changelog log)
+        => log.NextVersion("Version 1.2.3.0")
+            .RegisterHighlight(
+                "新增了一个字段，允许直接从模组选择器上下文菜单中重命名设计，而不是在文件系统中移动它们。")
+            .RegisterEntry("你可以选择在设置中显示哪个重命名字段（无、一个或两个）。", 1)
+            .RegisterEntry("通过主手设置，自动应用副手武器现在也适用于主手染色。")
+            .RegisterHighlight("在高度选择器旁边添加了一个以真实世界单位显示的高度显示。")
+            .RegisterEntry("这可以配置为使用您喜欢的计量单位，即使是错误的单位，或者根本不显示。", 1)
+            .RegisterHighlight(
+                "新增了一个聊天命令 '/glamour applycustomization'，可以将单个外貌值应用于角色。不带参数使用以获取帮助。")
+            .RegisterHighlight(
+                "为设计添加了一个选项，无论是否必要，都始终在应用于角色时强制重新绘制。")
+            .RegisterHighlight("添加了一个按钮，用于用当前玩家状态覆盖所选的设计。")
+            .RegisterEntry("为模组关联添加了一些复制/粘贴功能。")
+            .RegisterEntry("彻底重做了 API 和 IPC 结构。")
+            .RegisterEntry("如果 Glamourer 无法成功附加到 Penumbra 或 Penumbras IPC 版本不正确，为其添加警告。")
+            .RegisterEntry("为所有可用的作弊代码添加了提示，并稍微改进了作弊代码的显示。")
+            .RegisterEntry("修复了武器选择器没有可用的收藏星标的问题。")
+            .RegisterEntry("修复了具有自定义名称的物品的问题。")
+            .RegisterEntry("修复了眼睛颜色标签的问题。")
+            .RegisterEntry("修复了应用染料复选框的提示问题。")
+            .RegisterEntry("修复了在悬停在分配的模组设置上时出现的问题。")
+            .RegisterEntry("通过添加一个按钮打开主 UI，使之符合 Dalamud 指南。")
+            .RegisterEntry("修复了调整头部装备状态的问题。 （1.2.1.3）")
+            .RegisterEntry("修复了相同武器类型和多个受限设计的问题。 （1.2.1.3）");
+
     private static void Add1_2_1_0(Changelog log)
         => log.NextVersion("Version 1.2.1.0")
             .RegisterEntry("Updated for .net 8 and FFXIV 6.58, using some new framework options to improve performance and stability.")
             .RegisterEntry("Previewing changed items in Penumbra now works with all weapons in GPose. (1.2.0.8)")
-            .RegisterEntry("Added a design type selectable for automation that applies the design currently selected in the quick design bar. (1.2.0.4)")
+            .RegisterEntry(
+                "Added a design type selectable for automation that applies the design currently selected in the quick design bar. (1.2.0.4)")
             .RegisterEntry("Added an option to respect manual changes when changing automation settings. (1.2.0.3)")
-            .RegisterEntry("You can now apply designs to the player character with a double click on them (can be turned off in settings). (1.2.0.1)")
+            .RegisterEntry(
+                "You can now apply designs to the player character with a double click on them (can be turned off in settings). (1.2.0.1)")
             .RegisterEntry("The last selected design and tab are now stored and applied on startup. (1.2.0.1)")
             .RegisterEntry("Fixed behavior of revert to automation to actually revert and not just reapply. (1.2.0.8)")
             .RegisterEntry("Added Reapply Automation buttons and chat commands with prior behaviour.", 1)

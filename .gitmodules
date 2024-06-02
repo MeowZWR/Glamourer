@@ -14,3 +14,7 @@
 	path = Penumbra.Api
 	url = https://github.com/MeowZWR/Penumbra.Api.git
 	branch = CN
+[submodule "Glamourer.Api"]
+	path = Glamourer.Api
+	url = https://github.com/MeowZWR/Glamourer.Api.git
+	branch = CN

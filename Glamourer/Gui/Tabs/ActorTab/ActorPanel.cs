@@ -167,7 +167,7 @@ public class ActorPanel
             DrawHumanPanel();
         else
             DrawMonsterPanel();
-        _advancedDyes.Draw(_actor, _state);
+        _advancedDyes.Draw(_data.Objects.Last(), _state);
     }
 
     private void DrawHumanPanel()
@@ -338,27 +338,27 @@ public class ActorPanel
         ImGui.SameLine();
 
         if (ImGuiUtil.DrawDisabledButton("重新应用自动执行", Vector2.Zero,
-                "在角色的当前状态基础上重新应用角色的当前自动执行状态。",
+                "Reapply the current automation state for the character on top of its current state..",
                 !_config.EnableAutoDesigns || _state!.IsLocked))
         {
-            _autoDesignApplier.ReapplyAutomation(_actor, _identifier, _state!, false);
-            _stateManager.ReapplyState(_actor, StateSource.Manual);
+            _autoDesignApplier.ReapplyAutomation(_actor, _identifier, _state!, false, out var forcedRedraw);
+            _stateManager.ReapplyState(_actor, forcedRedraw, StateSource.Manual);
         }
 
         ImGui.SameLine();
         if (ImGuiUtil.DrawDisabledButton("恢复到自动执行", Vector2.Zero,
-                "尝试将角色恢复到自动执行中设计的状态。",
+                "Try to revert the character to the state it would have using automated designs.",
                 !_config.EnableAutoDesigns || _state!.IsLocked))
         {
-            _autoDesignApplier.ReapplyAutomation(_actor, _identifier, _state!, true);
-            _stateManager.ReapplyState(_actor, StateSource.Manual);
+            _autoDesignApplier.ReapplyAutomation(_actor, _identifier, _state!, true, out var forcedRedraw);
+            _stateManager.ReapplyState(_actor, forcedRedraw, StateSource.Manual);
         }
 
         ImGui.SameLine();
         if (ImGuiUtil.DrawDisabledButton("重新应用", Vector2.Zero,
-                "如果感觉有什么出现了问题，那就尝试重新应用已配置的状态。一般情况下应该不需要这样做。",
+                "Try to reapply the configured state if something went wrong. Should generally not be necessary.",
                 _state!.IsLocked))
-            _stateManager.ReapplyState(_actor, StateSource.Manual);
+            _stateManager.ReapplyState(_actor, false, StateSource.Manual);
     }
 
     private void DrawApplyToSelf()
@@ -419,8 +419,8 @@ public class ActorPanel
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"无法将剪贴板应用于 {panel._identifier}.",
-                    $"无法将剪贴板应用于设计 {panel._identifier.Incognito(null)}", NotificationType.Error, false);
+                Glamourer.Messager.NotificationMessage(ex, $"无法将剪贴板应用于{panel._identifier}.",
+                    $"无法将剪贴板应用于设计{panel._identifier.Incognito(null)}", NotificationType.Error, false);
             }
         }
     }
@@ -445,8 +445,8 @@ public class ActorPanel
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"无法复制 {panel._identifier} 的数据到剪贴板。",
-                    $"无法复制设计 {panel._identifier.Incognito(null)} 的数据到剪贴板。", NotificationType.Error);
+                Glamourer.Messager.NotificationMessage(ex, $"无法复制{panel._identifier}的数据到剪贴板。",
+                    $"无法复制来自设计{panel._identifier.Incognito(null)}的数据到剪贴板。", NotificationType.Error);
             }
         }
     }

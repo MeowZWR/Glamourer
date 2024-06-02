@@ -136,6 +136,13 @@ public class DesignDetailTab
         if (hovered || ImGui.IsItemHovered())
             ImGui.SetTooltip("在快速设计栏中显示或隐藏此设计。");
 
+        var forceRedraw = _selector.Selected!.ForcedRedraw;
+        ImGuiUtil.DrawFrameColumn("强制重绘");
+        ImGui.TableNextColumn();
+        if (ImGui.Checkbox("##ForceRedraw", ref forceRedraw))
+            _manager.ChangeForcedRedraw(_selector.Selected!, forceRedraw);
+        ImGuiUtil.HoverTooltip("设置使此设计在任何方式应用时始终强制重新绘制。");
+
         ImGuiUtil.DrawFrameColumn("配色");
         var colorName = _selector.Selected!.Color.Length == 0 ? DesignColors.AutomaticName : _selector.Selected!.Color;
         ImGui.TableNextColumn();

@@ -1,4 +1,4 @@
-﻿using FFXIVClientStructs.FFXIV.Shader;
+using FFXIVClientStructs.FFXIV.Shader;
 using Glamourer.GameData;
 using Penumbra.GameData.Interop;
 

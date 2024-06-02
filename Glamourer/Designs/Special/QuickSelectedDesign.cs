@@ -1,4 +1,4 @@
-﻿using Glamourer.Automation;
+using Glamourer.Automation;
 using Glamourer.Gui;
 using Glamourer.Interop.Material;
 using Glamourer.State;
@@ -11,7 +11,7 @@ namespace Glamourer.Designs.Special;
 public class QuickSelectedDesign(QuickDesignCombo combo) : IDesignStandIn, IService
 {
     public const string SerializedName = "//QuickSelection";
-    public const string ResolvedName   = "快速设计栏选择";
+    public const string ResolvedName   = "Quick Design Bar Selection";
 
     public bool Equals(IDesignStandIn? other)
         => other is QuickSelectedDesign;
@@ -50,4 +50,7 @@ public class QuickSelectedDesign(QuickDesignCombo combo) : IDesignStandIn, IServ
 
     public bool ChangeData(object data)
         => false;
+
+    public bool ForcedRedraw
+        => combo.Design?.ForcedRedraw ?? false;
 }

@@ -100,7 +100,6 @@ public sealed class DesignQuickBar : Window, IDisposable
 
     private void Draw(float width)
     {
-        _objects.Update();
         using var group      = ImRaii.Group();
         var       spacing    = ImGui.GetStyle().ItemInnerSpacing;
         using var style      = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, spacing);
@@ -113,7 +112,7 @@ public sealed class DesignQuickBar : Window, IDisposable
             ImGui.SameLine();
             DrawApplyButton(buttonSize);
         }
-
+        
         DrawRevertButton(buttonSize);
         DrawRevertEquipButton(buttonSize);
         DrawRevertCustomizeButton(buttonSize);
@@ -132,7 +131,6 @@ public sealed class DesignQuickBar : Window, IDisposable
 
     private void PrepareButtons()
     {
-        _objects.Update();
         (_playerIdentifier, _playerData) = _objects.PlayerData;
         (_targetIdentifier, _targetData) = _objects.TargetData;
         _playerState                     = _stateManager.GetValueOrDefault(_playerIdentifier);
@@ -251,8 +249,8 @@ public sealed class DesignQuickBar : Window, IDisposable
 
         foreach (var actor in data.Objects)
         {
-            _autoDesignApplier.ReapplyAutomation(actor, id, state!, true);
-            _stateManager.ReapplyState(actor, StateSource.Manual);
+            _autoDesignApplier.ReapplyAutomation(actor, id, state!, true, out var forcedRedraw);
+            _stateManager.ReapplyState(actor, forcedRedraw, StateSource.Manual);
         }
     }
 
@@ -282,7 +280,7 @@ public sealed class DesignQuickBar : Window, IDisposable
         }
 
         if (available == 0)
-            tooltip = "玩家和目标都不可用，已被Glamourer修改了状态，或者他们的状态被锁定。";
+            tooltip = "玩家角色和目标均不可用，由 Glamourer 修改了状态，或者它们的状态已被锁定。";
 
         var (clicked, id, data, state) = ResolveTarget(FontAwesomeIcon.Repeat, buttonSize, tooltip, available);
         ImGui.SameLine();
@@ -291,8 +289,8 @@ public sealed class DesignQuickBar : Window, IDisposable
 
         foreach (var actor in data.Objects)
         {
-            _autoDesignApplier.ReapplyAutomation(actor, id, state!, false);
-            _stateManager.ReapplyState(actor, StateSource.Manual);
+            _autoDesignApplier.ReapplyAutomation(actor, id, state!, false, out var forcedRedraw);
+            _stateManager.ReapplyState(actor, forcedRedraw, StateSource.Manual);
         }
     }
 

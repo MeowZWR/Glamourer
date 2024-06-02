@@ -104,7 +104,7 @@ public unsafe class ScalingService : IDisposable
 
     private static (byte Gender, byte BodyType, byte Clan, byte Height) GetHeightRelevantCustomize(Character* character)
         => (character->DrawData.CustomizeData.Sex, character->DrawData.CustomizeData.BodyType,
-            character->DrawData.CustomizeData.Clan, character->DrawData.CustomizeData[(int)CustomizeIndex.Height]);
+            character->DrawData.CustomizeData.Tribe, character->DrawData.CustomizeData[(int)CustomizeIndex.Height]);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void SetScaleCustomize(Character* character, Model model)
@@ -112,15 +112,15 @@ public unsafe class ScalingService : IDisposable
         if (!model.IsHuman)
             return;
 
-        SetScaleCustomize(character, model.AsHuman->Customize.Race, model.AsHuman->Customize.Clan, model.AsHuman->Customize.Sex);
+        SetScaleCustomize(character, model.AsHuman->Customize.Race, model.AsHuman->Customize.Tribe, model.AsHuman->Customize.Sex);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void SetScaleCustomize(Character* character, byte race, byte clan, byte gender)
     {
-        character->DrawData.CustomizeData.Race = race;
-        character->DrawData.CustomizeData.Clan = clan;
-        character->GameObject.Gender           = gender;
+        character->DrawData.CustomizeData.Race  = race;
+        character->DrawData.CustomizeData.Tribe = clan;
+        character->GameObject.Sex               = gender;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
@@ -129,16 +129,16 @@ public unsafe class ScalingService : IDisposable
         if (!model.IsHuman)
             return;
 
-        SetHeightCustomize(character, model.AsHuman->Customize.Sex, model.AsHuman->Customize.BodyType, model.AsHuman->Customize.Clan,
+        SetHeightCustomize(character, model.AsHuman->Customize.Sex, model.AsHuman->Customize.BodyType, model.AsHuman->Customize.Tribe,
             model.AsHuman->Customize[(int)CustomizeIndex.Height]);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void SetHeightCustomize(Character* character, byte gender, byte bodyType, byte clan, byte height)
     {
-        character->DrawData.CustomizeData.Sex                              = gender;
-        character->DrawData.CustomizeData.BodyType                         = bodyType;
-        character->DrawData.CustomizeData.Clan                            = clan;
-        character->DrawData.CustomizeData.Data[(int)CustomizeIndex.Height] = height;
+        character->DrawData.CustomizeData.Sex      = gender;
+        character->DrawData.CustomizeData.BodyType = bodyType;
+        character->DrawData.CustomizeData.Tribe    = clan;
+        character->DrawData.CustomizeData.Height   = height;
     }
 }
