@@ -10,8 +10,8 @@ namespace Glamourer.Services;
 
 public class ItemManager
 {
-    public const string Nothing              = "Nothing";
-    public const string SmallClothesNpc      = "Smallclothes (NPC)";
+    public const string Nothing              = "无";
+    public const string SmallClothesNpc      = "内衣（NPC）";
     public const ushort SmallClothesNpcModel = 9903;
 
     private readonly Configuration _config;

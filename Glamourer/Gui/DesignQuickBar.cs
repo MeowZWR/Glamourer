@@ -147,14 +147,14 @@ public sealed class DesignQuickBar : Window, IDisposable
         var tooltip   = string.Empty;
         if (design == null)
         {
-            tooltip = "No design selected.";
+            tooltip = "未选择任何设计。";
         }
         else
         {
             if (_playerIdentifier.IsValid && _playerData.Valid)
             {
                 available |= 1;
-                tooltip   =  $"Left-Click: Apply {design.ResolveName(_config.Ephemeral.IncognitoMode)} to yourself.";
+                tooltip   =  $"左键单击：应用{design.ResolveName(_config.Ephemeral.IncognitoMode)}到你自己。";
             }
 
             if (_targetIdentifier.IsValid && _targetData.Valid)
@@ -162,11 +162,11 @@ public sealed class DesignQuickBar : Window, IDisposable
                 if (available != 0)
                     tooltip += '\n';
                 available |= 2;
-                tooltip   += $"Right-Click: Apply {design.ResolveName(_config.Ephemeral.IncognitoMode)} to {_targetIdentifier}.";
+                tooltip   += $"右键单击：应用{design.ResolveName(_config.Ephemeral.IncognitoMode)}到{_targetIdentifier}。";
             }
 
             if (available == 0)
-                tooltip = "Neither player character nor target available.";
+                tooltip = "玩家和目标都不可用。";
         }
 
 
@@ -178,7 +178,7 @@ public sealed class DesignQuickBar : Window, IDisposable
         if (state == null && !_stateManager.GetOrCreate(id, data.Objects[0], out state))
         {
             Glamourer.Messager.NotificationMessage(
-                $"Could not apply {design!.ResolveName(true)} to {id.Incognito(null)}: Failed to create state.");
+                $"C无法应用{design!.ResolveName(true)}到{id.Incognito(null)}：无法创建状态。");
             return;
         }
 
@@ -196,7 +196,7 @@ public sealed class DesignQuickBar : Window, IDisposable
         if (_playerIdentifier.IsValid && _playerState is { IsLocked: false })
         {
             available |= 1;
-            tooltip   =  "Left-Click: Revert the player character to their game state.";
+            tooltip   = "左键单击：将玩家角色恢复到游戏状态。";
         }
 
         if (_targetIdentifier.IsValid && _targetState is { IsLocked: false })
@@ -204,11 +204,11 @@ public sealed class DesignQuickBar : Window, IDisposable
             if (available != 0)
                 tooltip += '\n';
             available |= 2;
-            tooltip   += $"Right-Click: Revert {_targetIdentifier} to their game state.";
+            tooltip   += $"右键单击：将{_targetIdentifier}恢复到游戏状态。";
         }
 
         if (available == 0)
-            tooltip = "Neither player character nor target are available, have state modified by Glamourer, or their state is locked.";
+            tooltip = "玩家角色和目标都不可用，被Glamourer修改了状态，或者他们的状态被锁定。";
 
         var (clicked, _, _, state) = ResolveTarget(FontAwesomeIcon.UndoAlt, buttonSize, tooltip, available);
         ImGui.SameLine();
@@ -230,7 +230,7 @@ public sealed class DesignQuickBar : Window, IDisposable
         if (_playerIdentifier.IsValid && _playerState is { IsLocked: false } && _playerData.Valid)
         {
             available |= 1;
-            tooltip   =  "Left-Click: Revert the player character to their automation state.";
+            tooltip   = "左键单击：将玩家角色恢复到自动执行状态。";
         }
 
         if (_targetIdentifier.IsValid && _targetState is { IsLocked: false } && _targetData.Valid)
@@ -238,11 +238,11 @@ public sealed class DesignQuickBar : Window, IDisposable
             if (available != 0)
                 tooltip += '\n';
             available |= 2;
-            tooltip   += $"Right-Click: Revert {_targetIdentifier} to their automation state.";
+            tooltip   += $"右键单击：将{_targetIdentifier}恢复到自动执行状态。";
         }
 
         if (available == 0)
-            tooltip = "Neither player character nor target are available, have state modified by Glamourer, or their state is locked.";
+            tooltip = "玩家角色和目标都不可用，被Glamourer修改了状态，或者他们的状态被锁定。";
 
         var (clicked, id, data, state) = ResolveTarget(FontAwesomeIcon.SyncAlt, buttonSize, tooltip, available);
         ImGui.SameLine();
@@ -270,7 +270,7 @@ public sealed class DesignQuickBar : Window, IDisposable
         if (_playerIdentifier.IsValid && _playerState is { IsLocked: false } && _playerData.Valid)
         {
             available |= 1;
-            tooltip   =  "Left-Click: Reapply the player character's current automation on top of their current state.";
+            tooltip   =  "左键单击：在玩家角色当前状态的基础上重新应用其当前的自动执行。";
         }
 
         if (_targetIdentifier.IsValid && _targetState is { IsLocked: false } && _targetData.Valid)
@@ -278,11 +278,11 @@ public sealed class DesignQuickBar : Window, IDisposable
             if (available != 0)
                 tooltip += '\n';
             available |= 2;
-            tooltip   += $"Right-Click: Reapply {_targetIdentifier}'s current automation on top of their current state.";
+            tooltip   += $"右键单击：在{_targetIdentifier}当前状态的基础上重新应用其当前的自动执行。";
         }
 
         if (available == 0)
-            tooltip = "Neither player character nor target are available, have state modified by Glamourer, or their state is locked.";
+            tooltip = "玩家角色和目标均不可用，由 Glamourer 修改了状态，或者它们的状态已被锁定。";
 
         var (clicked, id, data, state) = ResolveTarget(FontAwesomeIcon.Repeat, buttonSize, tooltip, available);
         ImGui.SameLine();
@@ -310,7 +310,7 @@ public sealed class DesignQuickBar : Window, IDisposable
         if (_playerIdentifier.IsValid && _playerState is { IsLocked: false } && _playerData.Valid)
         {
             available |= 1;
-            tooltip   =  "Left-Click: Revert the advanced customizations and dyes of the player character to their game state.";
+            tooltip   = "左键单击：将玩家角色的高级外貌、高级染料设置还原为游戏状态。";
         }
 
         if (_targetIdentifier.IsValid && _targetState is { IsLocked: false } && _targetData.Valid)
@@ -318,11 +318,11 @@ public sealed class DesignQuickBar : Window, IDisposable
             if (available != 0)
                 tooltip += '\n';
             available |= 2;
-            tooltip   += $"Right-Click: Revert the advanced customizations and dyes of {_targetIdentifier} to their game state.";
+            tooltip   += $"右键单击：将{_targetIdentifier}高级外貌、高级染料设置还原为游戏状态。";
         }
 
         if (available == 0)
-            tooltip = "Neither player character nor target are available or their state is locked.";
+            tooltip = "玩家角色和目标都不可用，或者他们的状态被锁定。";
 
         var (clicked, _, _, state) = ResolveTarget(FontAwesomeIcon.Palette, buttonSize, tooltip, available);
         ImGui.SameLine();
@@ -341,7 +341,7 @@ public sealed class DesignQuickBar : Window, IDisposable
         if (_playerIdentifier.IsValid && _playerState is { IsLocked: false } && _playerData.Valid)
         {
             available |= 1;
-            tooltip   =  "Left-Click: Revert the customizations of the player character to their game state.";
+            tooltip   = "左键单击：将玩家角色的外貌设置恢复到游戏状态。";
         }
 
         if (_targetIdentifier.IsValid && _targetState is { IsLocked: false } && _targetData.Valid)
@@ -349,11 +349,11 @@ public sealed class DesignQuickBar : Window, IDisposable
             if (available != 0)
                 tooltip += '\n';
             available |= 2;
-            tooltip   += $"Right-Click: Revert the customizations of {_targetIdentifier} to their game state.";
+            tooltip   += $"右键单击：恢复{_targetIdentifier}的外貌设置恢复到游戏状态。";
         }
 
         if (available == 0)
-            tooltip = "Neither player character nor target are available or their state is locked.";
+            tooltip = "玩家角色和目标都不可用，或者他们的状态被锁定。";
 
         var (clicked, _, _, state) = ResolveTarget(FontAwesomeIcon.User, buttonSize, tooltip, available);
         ImGui.SameLine();
@@ -372,7 +372,7 @@ public sealed class DesignQuickBar : Window, IDisposable
         if (_playerIdentifier.IsValid && _playerState is { IsLocked: false } && _playerData.Valid)
         {
             available |= 1;
-            tooltip   =  "Left-Click: Revert the equipment of the player character to its game state.";
+            tooltip   = "左键单击：将玩家的装备恢复到游戏状态。";
         }
 
         if (_targetIdentifier.IsValid && _targetState is { IsLocked: false } && _targetData.Valid)
@@ -380,11 +380,11 @@ public sealed class DesignQuickBar : Window, IDisposable
             if (available != 0)
                 tooltip += '\n';
             available |= 2;
-            tooltip   += $"Right-Click: Revert the equipment of {_targetIdentifier} to its game state.";
+            tooltip   += $"右键单击：将{_targetIdentifier}的装备恢复到游戏状态。";
         }
 
         if (available == 0)
-            tooltip = "Neither player character nor target are available or their state is locked.";
+            tooltip = "玩家角色和目标都不可用，或者他们的状态被锁定。";
 
         var (clicked, _, _, state) = ResolveTarget(FontAwesomeIcon.Vest, buttonSize, tooltip, available);
         ImGui.SameLine();

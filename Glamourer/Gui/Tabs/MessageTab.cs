@@ -11,7 +11,7 @@ public class MessagesTab : ITab
         => _messages = messages;
 
     public ReadOnlySpan<byte> Label
-        => "Messages"u8;
+        => "消息"u8;
 
     public bool IsVisible
         => _messages.Count > 0;

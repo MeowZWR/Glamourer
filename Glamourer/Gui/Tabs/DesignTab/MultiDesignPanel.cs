@@ -27,7 +27,7 @@ public class MultiDesignPanel(DesignFileSystemSelector _selector, DesignManager 
 
     private void DrawDesignList()
     {
-        using var tree = ImRaii.TreeNode("Currently Selected Objects", ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.NoTreePushOnOpen);
+        using var tree = ImRaii.TreeNode("当前选中的对象", ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.NoTreePushOnOpen);
         ImGui.Separator();
         if (!tree)
             return;
@@ -87,34 +87,34 @@ public class MultiDesignPanel(DesignFileSystemSelector _selector, DesignManager 
     private float DrawMultiTagger(Vector2 width)
     {
         ImGui.AlignTextToFramePadding();
-        ImGui.TextUnformatted("Multi Tagger:");
+        ImGui.TextUnformatted("批量标签：");
         ImGui.SameLine();
         var offset = ImGui.GetItemRectSize().X;
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - 2 * (width.X + ImGui.GetStyle().ItemSpacing.X));
-        ImGui.InputTextWithHint("##tag", "Tag Name...", ref _tag, 128);
+        ImGui.InputTextWithHint("##tag", "标签名称...", ref _tag, 128);
 
         UpdateTagCache();
         var label = _addDesigns.Count > 0
-            ? $"Add to {_addDesigns.Count} Designs"
-            : "Add";
+            ? $"添加到{_addDesigns.Count}个设计"
+            : "添加";
         var tooltip = _addDesigns.Count == 0
             ? _tag.Length == 0
-                ? "No tag specified."
-                : $"All designs selected already contain the tag \"{_tag}\"."
-            : $"Add the tag \"{_tag}\" to {_addDesigns.Count} designs as a local tag:\n\n\t{string.Join("\n\t", _addDesigns.Select(m => m.Name.Text))}";
+                ? "未指定标签。"
+                : $"所选的所有设计都已包含该标记：\"{_tag}\"."
+            : $"添加本地标签“{_tag}”到{_addDesigns.Count}个设计：\n\n\t{string.Join("\n\t", _addDesigns.Select(m => m.Name.Text))}";
         ImGui.SameLine();
         if (ImGuiUtil.DrawDisabledButton(label, width, tooltip, _addDesigns.Count == 0))
             foreach (var design in _addDesigns)
                 _editor.AddTag(design, _tag);
 
         label = _removeDesigns.Count > 0
-            ? $"Remove from {_removeDesigns.Count} Designs"
-            : "Remove";
+            ? $"从{_removeDesigns.Count}个设计移除"
+            : "移除";
         tooltip = _removeDesigns.Count == 0
             ? _tag.Length == 0
-                ? "No tag specified."
-                : $"No selected design contains the tag \"{_tag}\" locally."
-            : $"Remove the local tag \"{_tag}\" from {_removeDesigns.Count} designs:\n\n\t{string.Join("\n\t", _removeDesigns.Select(m => m.Item1.Name.Text))}";
+                ? "未指定标签。"
+                : $"选中的设计不包含这个本地标签：“{_tag}”。"
+            : $"从{_removeDesigns.Count}个设计移除本地标签“{_tag}”：\n\n\t{string.Join("\n\t", _removeDesigns.Select(m => m.Item1.Name.Text))}";
         ImGui.SameLine();
         if (ImGuiUtil.DrawDisabledButton(label, width, tooltip, _removeDesigns.Count == 0))
             foreach (var (design, index) in _removeDesigns)
@@ -126,22 +126,22 @@ public class MultiDesignPanel(DesignFileSystemSelector _selector, DesignManager 
     private void DrawMultiQuickDesignBar(float offset)
     {
         ImGui.AlignTextToFramePadding();
-        ImGui.TextUnformatted("Multi QDB:");
+        ImGui.TextUnformatted("批量快速设计栏");
         ImGui.SameLine(offset, ImGui.GetStyle().ItemSpacing.X);
         var buttonWidth = new Vector2((ImGui.GetContentRegionAvail().X - ImGui.GetStyle().ItemSpacing.X) / 2, 0);
         var diff        = _numDesigns - _numQuickDesignEnabled;
         var tt = diff == 0
-            ? $"All {_numDesigns} selected designs are already displayed in the quick design bar."
-            : $"Display all {_numDesigns} selected designs in the quick design bar. Changes {diff} designs.";
-        if (ImGuiUtil.DrawDisabledButton("Display Selected Designs in QDB", buttonWidth, tt, diff == 0))
+            ? $"选中的{_numDesigns}个设计已经在快速设计栏中显示。"
+            : $"选中的{_numDesigns}个设计将在快速设计栏中显示，{diff}个设计被修改。";
+        if (ImGuiUtil.DrawDisabledButton("在快速设计栏中显示选中的设计", buttonWidth, tt, diff == 0))
             foreach(var design in _selector.SelectedPaths.OfType<DesignFileSystem.Leaf>())
                 _editor.SetQuickDesign(design.Value, true);
 
         ImGui.SameLine();
         tt = _numQuickDesignEnabled == 0
-            ? $"All {_numDesigns} selected designs are already hidden in the quick design bar."
-            : $"Hide all {_numDesigns} selected designs in the quick design bar. Changes {_numQuickDesignEnabled} designs.";
-        if (ImGuiUtil.DrawDisabledButton("Hide Selected Designs in QDB", buttonWidth, tt, _numQuickDesignEnabled == 0))
+            ? $"选中的{_numDesigns}个设计已经在快速设计栏中隐藏。"
+            : $"选中的{_numDesigns}个设计将在快速设计栏中隐藏，{_numQuickDesignEnabled}个设计被修改。";
+        if (ImGuiUtil.DrawDisabledButton("在快速设计栏中隐藏选中的设计", buttonWidth, tt, _numQuickDesignEnabled == 0))
             foreach (var design in _selector.SelectedPaths.OfType<DesignFileSystem.Leaf>())
                 _editor.SetQuickDesign(design.Value, false);
         ImGui.Separator();
@@ -150,34 +150,34 @@ public class MultiDesignPanel(DesignFileSystemSelector _selector, DesignManager 
     private void DrawMultiColor(Vector2 width, float offset)
     {
         ImGui.AlignTextToFramePadding();
-        ImGui.TextUnformatted("Multi Colors:");
+        ImGui.TextUnformatted("批量配色：");
         ImGui.SameLine(offset, ImGui.GetStyle().ItemSpacing.X);
         _colorCombo.Draw("##color", _colorCombo.CurrentSelection ?? string.Empty, "Select a design color.",
             ImGui.GetContentRegionAvail().X - 2 * (width.X + ImGui.GetStyle().ItemSpacing.X), ImGui.GetTextLineHeight());
 
         UpdateColorCache();
         var label = _addDesigns.Count > 0
-            ? $"Set for {_addDesigns.Count} Designs"
-            : "Set";
+            ? $"设置{_addDesigns.Count}个设计"
+            : "设置";
         var tooltip = _addDesigns.Count == 0
             ? _colorCombo.CurrentSelection switch
             {
-                null                       => "No color specified.",
-                DesignColors.AutomaticName => "Use the other button to set to automatic.",
-                _                          => $"All designs selected are already set to the color \"{_colorCombo.CurrentSelection}\".",
+                null                       => "未指定颜色。",
+                DesignColors.AutomaticName => "使用另一个按钮设置为自动配色。",
+                _                          => $"所选的所有设计都已设置为该颜色“{_colorCombo.CurrentSelection}”。",
             }
-            : $"Set the color of {_addDesigns.Count} designs to \"{_colorCombo.CurrentSelection}\"\n\n\t{string.Join("\n\t", _addDesigns.Select(m => m.Name.Text))}";
+            : $"将{_addDesigns.Count}个的颜色设置为“{_colorCombo.CurrentSelection}”\n\n\t{string.Join("\n\t", _addDesigns.Select(m => m.Name.Text))}";
         ImGui.SameLine();
         if (ImGuiUtil.DrawDisabledButton(label, width, tooltip, _addDesigns.Count == 0))
             foreach (var design in _addDesigns)
                 _editor.ChangeColor(design, _colorCombo.CurrentSelection!);
 
         label = _removeDesigns.Count > 0
-            ? $"Unset {_removeDesigns.Count} Designs"
-            : "Unset";
+            ? $"取消设置{_removeDesigns.Count}个设计"
+            : "取消设置";
         tooltip = _removeDesigns.Count == 0
-            ? "No selected design is set to a non-automatic color."
-            : $"Set {_removeDesigns.Count} designs to use automatic color again:\n\n\t{string.Join("\n\t", _removeDesigns.Select(m => m.Item1.Name.Text))}";
+            ? "没有选中设计设置为非自动配色。"
+            : $"设置{_removeDesigns.Count}个设计为重新使用自动配色：\n\n\t{string.Join("\n\t", _removeDesigns.Select(m => m.Item1.Name.Text))}";
         ImGui.SameLine();
         if (ImGuiUtil.DrawDisabledButton(label, width, tooltip, _removeDesigns.Count == 0))
             foreach (var (design, _) in _removeDesigns)

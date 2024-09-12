@@ -41,7 +41,7 @@ public class ActorSelector(ObjectManager objects, ActorManager actors, Ephemeral
         using var style = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, Vector2.Zero)
             .Push(ImGuiStyleVar.FrameRounding, 0);
         ImGui.SetNextItemWidth(_width);
-        LowerString.InputWithHint("##actorFilter", "Filter...", ref _actorFilter, 64);
+        LowerString.InputWithHint("##actorFilter", "筛选...", ref _actorFilter, 64);
 
         DrawSelector();
         DrawSelectionButtons();
@@ -77,13 +77,13 @@ public class ActorSelector(ObjectManager objects, ActorManager actors, Ephemeral
         var buttonWidth = new Vector2(_width / 2, 0);
 
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.UserCircle.ToIconString(), buttonWidth
-                , "Select the local player character.", !objects.Player, true))
+                , "选择本地玩家角色。", !objects.Player, true))
             _identifier = objects.Player.GetIdentifier(actors);
 
         ImGui.SameLine();
         var (id, data) = objects.TargetData;
-        var tt = data.Valid ? $"Select the current target {id} in the list." :
-            id.IsValid      ? $"The target {id} is not in the list." : "No target selected.";
+        var tt = data.Valid ? $"选中的目标[{id}]在列表中。" :
+            id.IsValid      ? $"目标[{id}]不在列表中。" : "没有目标被选中。";
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.HandPointer.ToIconString(), buttonWidth, tt, objects.IsInGPose || !data.Valid, true))
             _identifier = id;
     }

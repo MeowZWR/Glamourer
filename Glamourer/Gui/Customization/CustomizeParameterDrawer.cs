@@ -64,7 +64,7 @@ public class CustomizeParameterDrawer(Configuration config, PaletteImport import
     private void DrawPaletteCombo()
     {
         using var id    = ImRaii.PushId("Palettes");
-        using var combo = ImRaii.Combo("##import", _paletteName.Length > 0 ? _paletteName : "Select Palette...");
+        using var combo = ImRaii.Combo("##import", _paletteName.Length > 0 ? _paletteName : "选择Palette设置...");
         if (!combo)
             return;
 
@@ -90,19 +90,19 @@ public class CustomizeParameterDrawer(Configuration config, PaletteImport import
 
         ImGui.SameLine(0, spacing);
         var value = true;
-        if (ImGui.Checkbox("Show Import", ref value))
+        if (ImGui.Checkbox("显示导入选项", ref value))
         {
             config.ShowPalettePlusImport = false;
             config.Save();
         }
 
-        ImGuiUtil.HoverTooltip("Hide the Palette+ Import bar from all designs. You can re-enable it in Glamourers interface settings.");
+        ImGuiUtil.HoverTooltip("在所有设计中隐藏Palette+导入栏。关闭后可以在Glamourer界面设置中重新启用。");
 
         var buttonWidth = new Vector2((_width - spacing) / 2, 0);
         var tt = _paletteName.Length > 0
-            ? $"Apply the imported data from the Palette+ palette [{_paletteName}] to this design."
-            : "Please select a palette first.";
-        if (ImGuiUtil.DrawDisabledButton("Apply Import", buttonWidth, tt, _paletteName.Length == 0 || design.WriteProtected()))
+            ? $"将从Palette+插件中的数据[{_paletteName}]导入到此设计。"
+            : "请先选择一个Palette+数据。";
+        if (ImGuiUtil.DrawDisabledButton("应用导入", buttonWidth, tt, _paletteName.Length == 0 || design.WriteProtected()))
         {
             _lastData[design] = design.DesignData.Parameters;
             foreach (var parameter in _flags.Iterate())
@@ -112,9 +112,9 @@ public class CustomizeParameterDrawer(Configuration config, PaletteImport import
         ImGui.SameLine(0, spacing);
         var enabled = _lastData.TryGetValue(design, out var oldData);
         tt = enabled
-            ? $"Revert to the last set of advanced customization parameters of [{design.Name}] before importing."
-            : $"You have not imported any data that could be reverted for [{design.Name}].";
-        if (ImGuiUtil.DrawDisabledButton("Revert Import", buttonWidth, tt, !enabled || design.WriteProtected()))
+            ? $"还原[{design.Name}]到导入前的最后一组高级（外貌）参数。"
+            : $"你尚未导入任何可以供[{design.Name}]还原的数据。";
+        if (ImGuiUtil.DrawDisabledButton("还原导入", buttonWidth, tt, !enabled || design.WriteProtected()))
         {
             _lastData.Remove(design);
             foreach (var parameter in CustomizeParameterExtensions.AllFlags)
@@ -132,14 +132,14 @@ public class CustomizeParameterDrawer(Configuration config, PaletteImport import
         DrawColorFormatOptions(withApply);
         var value = config.ShowColorConfig;
         ImGui.SameLine();
-        if (ImGui.Checkbox("Show Config", ref value))
+        if (ImGui.Checkbox("显示设置", ref value))
         {
             config.ShowColorConfig = value;
             config.Save();
         }
 
         ImGuiUtil.HoverTooltip(
-            "Hide the color configuration options from the Advanced Customization panel. You can re-enable it in Glamourers interface settings.");
+            "隐藏“外貌（高级）”面板中的颜色配置选项。可以在Glamourer界面设置中重新启用。");
     }
 
     private void DrawColorDisplayOptions()
@@ -162,8 +162,8 @@ public class CustomizeParameterDrawer(Configuration config, PaletteImport import
     private void DrawColorFormatOptions(bool withApply)
     {
         var width = _width
-          - (ImGui.CalcTextSize("Float").X
-              + ImGui.CalcTextSize("Integer").X
+          - (ImGui.CalcTextSize("浮点数").X
+              + ImGui.CalcTextSize("整数").X
               + 2 * (ImGui.GetFrameHeight() + ImGui.GetStyle().ItemSpacing.X)
               + ImGui.GetStyle().ItemInnerSpacing.X
               + ImGui.GetItemRectSize().X);
@@ -171,14 +171,14 @@ public class CustomizeParameterDrawer(Configuration config, PaletteImport import
             width -= ImGui.GetFrameHeight() + ImGui.GetStyle().ItemInnerSpacing.X;
 
         ImGui.SameLine(0, width);
-        if (ImGui.RadioButton("Float", config.UseFloatForColors) && !config.UseFloatForColors)
+        if (ImGui.RadioButton("浮点数", config.UseFloatForColors) && !config.UseFloatForColors)
         {
             config.UseFloatForColors = true;
             config.Save();
         }
 
         ImGui.SameLine();
-        if (ImGui.RadioButton("Integer", !config.UseFloatForColors) && config.UseFloatForColors)
+        if (ImGui.RadioButton("整数", !config.UseFloatForColors) && config.UseFloatForColors)
         {
             config.UseFloatForColors = false;
             config.Save();
@@ -199,7 +199,7 @@ public class CustomizeParameterDrawer(Configuration config, PaletteImport import
         }
 
         if (noHighlights)
-            ImGuiUtil.HoverTooltip("Highlights are disabled in your regular customizations.", ImGuiHoveredFlags.AllowWhenDisabled);
+            ImGuiUtil.HoverTooltip("挑染在“外貌”选项中被禁用，需要使用请去“外貌”中启用。", ImGuiHoveredFlags.AllowWhenDisabled);
 
         DrawRevert(data);
 
@@ -248,7 +248,7 @@ public class CustomizeParameterDrawer(Configuration config, PaletteImport import
         {
             if (ImGui.SliderFloat("##value", ref value, -100f, 300, "%.2f"))
                 data.ChangeParameter(new CustomizeParameterValue(value / 100f));
-            ImGuiUtil.HoverTooltip("You can control-click this to enter arbitrary values by hand instead of dragging.");
+            ImGuiUtil.HoverTooltip("除了拖动滑块调整数值，还可以按住Ctrl单击此项手动输入任意值。");
         }
 
         DrawRevert(data);
@@ -264,12 +264,12 @@ public class CustomizeParameterDrawer(Configuration config, PaletteImport import
         if (ImGui.IsItemClicked(ImGuiMouseButton.Right) && ImGui.GetIO().KeyCtrl)
             data.ChangeParameter(data.GameValue);
 
-        ImGuiUtil.HoverTooltip("Hold Control and Right-click to revert to game values.");
+        ImGuiUtil.HoverTooltip("按住Ctrl并单击右键可恢复到游戏值。");
     }
 
     private static void DrawApply(in CustomizeParameterDrawData data)
     {
-        if (UiHelpers.DrawCheckbox("##apply", "Apply this custom parameter when applying the Design.", data.CurrentApply, out var enabled,
+        if (UiHelpers.DrawCheckbox("##apply", "当应用此设计时也应用此参数。", data.CurrentApply, out var enabled,
                 data.Locked))
             data.ChangeApplyParameter(enabled);
     }
@@ -305,11 +305,11 @@ public class CustomizeParameterDrawer(Configuration config, PaletteImport import
     private void DrawCopyPasteButtons(in CustomizeParameterDrawData data, bool locked)
     {
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Copy.ToIconString(), new Vector2(ImGui.GetFrameHeight()),
-                "Copy this color for later use.", false, true))
+                "复制此颜色以备稍后使用。", false, true))
             _copy = data.CurrentValue;
         ImGui.SameLine(0, ImGui.GetStyle().ItemInnerSpacing.X);
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Paste.ToIconString(), new Vector2(ImGui.GetFrameHeight()),
-                _copy.HasValue ? "Paste the currently copied value." : "No value copied yet.", locked || !_copy.HasValue, true))
+                _copy.HasValue ? "粘贴当前复制的值。" : "尚未复制任何值。", locked || !_copy.HasValue, true))
             data.ChangeParameter(_copy!.Value);
     }
 }

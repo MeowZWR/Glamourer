@@ -142,7 +142,7 @@ public class ActorPanel
     private (string, Actor) GetHeaderName()
     {
         if (!_identifier.IsValid)
-            return ("No Selection", Actor.Null);
+            return ("未选择", Actor.Null);
 
         if (_data.Valid)
             return (_selector.IncognitoMode ? _identifier.Incognito(_data.Label) : _data.Label, _data.Objects[0]);
@@ -186,7 +186,7 @@ public class ActorPanel
     private void DrawCustomizationsHeader()
     {
         var header = _state!.ModelData.ModelId == 0
-            ? "Customization"
+            ? "外貌"
             : $"Customization (Model Id #{_state.ModelData.ModelId})###Customization";
         using var h = ImRaii.CollapsingHeader(header);
         if (!h)
@@ -201,7 +201,7 @@ public class ActorPanel
 
     private void DrawEquipmentHeader()
     {
-        using var h = ImRaii.CollapsingHeader("Equipment");
+        using var h = ImRaii.CollapsingHeader("装备");
         if (!h)
             return;
 
@@ -236,7 +236,7 @@ public class ActorPanel
         if (!_config.UseAdvancedParameters)
             return;
 
-        using var h = ImRaii.CollapsingHeader("Advanced Customizations");
+        using var h = ImRaii.CollapsingHeader("外貌（高级）- 调色盘");
         if (!h)
             return;
 
@@ -269,20 +269,20 @@ public class ActorPanel
     private void DrawMonsterPanel()
     {
         var names     = _modelChara[_state!.ModelData.ModelId];
-        var turnHuman = ImGui.Button("Turn Human");
+        var turnHuman = ImGui.Button("变为人类");
         ImGui.Separator();
         using (_ = ImRaii.ListBox("##MonsterList",
                    new Vector2(ImGui.GetContentRegionAvail().X, 10 * ImGui.GetTextLineHeightWithSpacing())))
         {
             if (names.Count == 0)
-                ImGui.TextUnformatted("Unknown Monster");
+                ImGui.TextUnformatted("未知怪物");
             else
                 ImGuiClip.ClippedDraw(names, p => ImGui.TextUnformatted($"{p.Name} ({p.Kind.ToName()} #{p.Id})"),
                     ImGui.GetTextLineHeightWithSpacing());
         }
 
         ImGui.Separator();
-        ImGui.TextUnformatted("Customization Data");
+        ImGui.TextUnformatted("外貌数据");
         using (_ = ImRaii.PushFont(UiBuilder.MonoFont))
         {
             foreach (var b in _state.ModelData.Customize)
@@ -303,7 +303,7 @@ public class ActorPanel
         }
 
         ImGui.Separator();
-        ImGui.TextUnformatted("Equipment Data");
+        ImGui.TextUnformatted("装备数据");
         using (_ = ImRaii.PushFont(UiBuilder.MonoFont))
         {
             foreach (var b in _state.ModelData.GetEquipmentBytes())
@@ -332,7 +332,7 @@ public class ActorPanel
 
     private void SaveDesignDrawPopup()
     {
-        if (!ImGuiUtil.OpenNameField("Save as Design", ref _newName))
+        if (!ImGuiUtil.OpenNameField("保存为设计", ref _newName))
             return;
 
         if (_newDesign != null && _newName.Length > 0)
@@ -343,13 +343,13 @@ public class ActorPanel
 
     private void RevertButtons()
     {
-        if (ImGuiUtil.DrawDisabledButton("Revert to Game", Vector2.Zero, "Revert the character to its actual state in the game.",
+        if (ImGuiUtil.DrawDisabledButton("恢复游戏状态", Vector2.Zero, "恢复角色到游戏中的真实状态。",
                 _state!.IsLocked))
             _stateManager.ResetState(_state!, StateSource.Manual);
 
         ImGui.SameLine();
 
-        if (ImGuiUtil.DrawDisabledButton("Reapply Automation", Vector2.Zero,
+        if (ImGuiUtil.DrawDisabledButton("重新应用自动执行", Vector2.Zero,
                 "Reapply the current automation state for the character on top of its current state..",
                 !_config.EnableAutoDesigns || _state!.IsLocked))
         {
@@ -358,7 +358,7 @@ public class ActorPanel
         }
 
         ImGui.SameLine();
-        if (ImGuiUtil.DrawDisabledButton("Revert to Automation", Vector2.Zero,
+        if (ImGuiUtil.DrawDisabledButton("恢复到自动执行", Vector2.Zero,
                 "Try to revert the character to the state it would have using automated designs.",
                 !_config.EnableAutoDesigns || _state!.IsLocked))
         {
@@ -367,7 +367,7 @@ public class ActorPanel
         }
 
         ImGui.SameLine();
-        if (ImGuiUtil.DrawDisabledButton("Reapply", Vector2.Zero,
+        if (ImGuiUtil.DrawDisabledButton("重新应用", Vector2.Zero,
                 "Try to reapply the configured state if something went wrong. Should generally not be necessary.",
                 _state!.IsLocked))
             _stateManager.ReapplyState(_actor, false, StateSource.Manual);
@@ -376,8 +376,8 @@ public class ActorPanel
     private void DrawApplyToSelf()
     {
         var (id, data) = _objects.PlayerData;
-        if (!ImGuiUtil.DrawDisabledButton("Apply to Yourself", Vector2.Zero,
-                "Apply the current state to your own character.\nHold Control to only apply gear.\nHold Shift to only apply customizations.",
+        if (!ImGuiUtil.DrawDisabledButton("应用到自己", Vector2.Zero,
+                "应用当前状态到你自己的角色。\n按住CTRL仅应用装备。\n按住Shift仅应用外貌。",
                 !data.Valid || id == _identifier || _state!.ModelData.ModelId != 0))
             return;
 
@@ -391,10 +391,10 @@ public class ActorPanel
         var (id, data) = _objects.TargetData;
         var tt = id.IsValid
             ? data.Valid
-                ? "Apply the current state to your current target.\nHold Control to only apply gear.\nHold Shift to only apply customizations."
-                : "The current target can not be manipulated."
-            : "No valid target selected.";
-        if (!ImGuiUtil.DrawDisabledButton("Apply to Target", Vector2.Zero, tt,
+                ? "应用当前状态到你选中的目标。"
+                : "无法应用到当前目标。"
+            : "没有选中有效的目标。";
+        if (!ImGuiUtil.DrawDisabledButton("应用到目标", Vector2.Zero, tt,
                 !data.Valid || id == _identifier || _state!.ModelData.ModelId != 0))
             return;
 
@@ -408,7 +408,7 @@ public class ActorPanel
         : HeaderDrawer.Button
     {
         protected override string Description
-            => "Try to apply a design from your clipboard.\nHold Control to only apply gear.\nHold Shift to only apply customizations.";
+            => "尝试应用剪贴板中的设计。\n按住CTRL仅应用装备。\n按住Shift仅应用外貌。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.Clipboard;
@@ -426,13 +426,13 @@ public class ActorPanel
                 var (applyGear, applyCustomize) = UiHelpers.ConvertKeysToBool();
                 var text = ImGui.GetClipboardText();
                 var design = panel._converter.FromBase64(text, applyCustomize, applyGear, out _)
-                 ?? throw new Exception("The clipboard did not contain valid data.");
+                 ?? throw new Exception("剪贴板未包含有效数据。");
                 panel._stateManager.ApplyDesign(panel._state!, design, ApplySettings.ManualWithLinks);
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"Could not apply clipboard to {panel._identifier}.",
-                    $"Could not apply clipboard to design {panel._identifier.Incognito(null)}", NotificationType.Error, false);
+                Glamourer.Messager.NotificationMessage(ex, $"无法将剪贴板应用于{panel._identifier}.",
+                    $"无法将剪贴板应用于设计{panel._identifier.Incognito(null)}", NotificationType.Error, false);
             }
         }
     }
@@ -440,7 +440,7 @@ public class ActorPanel
     private sealed class ExportToClipboardButton(ActorPanel panel) : HeaderDrawer.Button
     {
         protected override string Description
-            => "Copy the current design to your clipboard.\nHold Control to disable applying of customizations for the copied design.\nHold Shift to disable applying of gear for the copied design.";
+            => "复制当前设计到剪贴板。\n按住CTRL不复制外貌。\n按住Shift不复制装备。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.Copy;
@@ -457,8 +457,8 @@ public class ActorPanel
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"Could not copy {panel._identifier} data to clipboard.",
-                    $"Could not copy data from design {panel._identifier.Incognito(null)} to clipboard", NotificationType.Error);
+                Glamourer.Messager.NotificationMessage(ex, $"无法复制{panel._identifier}的数据到剪贴板。",
+                    $"无法复制来自设计{panel._identifier.Incognito(null)}的数据到剪贴板。", NotificationType.Error);
             }
         }
     }
@@ -466,7 +466,7 @@ public class ActorPanel
     private sealed class SaveAsDesignButton(ActorPanel panel) : HeaderDrawer.Button
     {
         protected override string Description
-            => "Save the current state as a design.\nHold Control to disable applying of customizations for the saved design.\nHold Shift to disable applying of gear for the saved design.";
+            => "将当前状态保存到“角色设计”。\n按住CTRL不保存外貌。\n按住Shift不保存装备。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.Save;
@@ -476,7 +476,7 @@ public class ActorPanel
 
         protected override void OnClick()
         {
-            ImGui.OpenPopup("Save as Design");
+            ImGui.OpenPopup("保存为设计");
             panel._newName   = panel._state!.Identifier.ToName();
             panel._newDesign = panel._converter.Convert(panel._state, ApplicationRules.FromModifiers(panel._state));
         }
@@ -485,7 +485,7 @@ public class ActorPanel
     private sealed class UndoButton(ActorPanel panel) : HeaderDrawer.Button
     {
         protected override string Description
-            => "Undo the last change.";
+            => "撤消上次更改。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.Undo;
@@ -503,7 +503,7 @@ public class ActorPanel
     private sealed class LockedButton(ActorPanel panel) : HeaderDrawer.Button
     {
         protected override string Description
-            => "The current state of this actor is locked by external tools.";
+            => "此角色的当前状态已被外部工具锁定。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.Lock;

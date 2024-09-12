@@ -30,7 +30,7 @@ public class NpcAppearancePanel(NpcCombo _npcCombo, StateManager _state, ObjectM
     {
         ImGui.Checkbox("Compare Customize (or Gear)", ref _customizeOrGear);
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-        var resetScroll = ImGui.InputTextWithHint("##npcFilter", "Filter...", ref _npcFilter, 64);
+        var resetScroll = ImGui.InputTextWithHint("##npcFilter", "筛选...", ref _npcFilter, 64);
 
         using var table = ImRaii.Table("npcs", 7, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.SizingFixedFit,
             new Vector2(-1, 400 * ImGuiHelpers.GlobalScale));

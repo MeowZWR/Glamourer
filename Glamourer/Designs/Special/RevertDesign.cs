@@ -9,7 +9,7 @@ namespace Glamourer.Designs.Special;
 public class RevertDesign : IDesignStandIn
 {
     public const string SerializedName = "//Revert";
-    public const string ResolvedName   = "Revert";
+    public const string ResolvedName   = "还原";
 
     public string ResolveName(bool _)
         => ResolvedName;

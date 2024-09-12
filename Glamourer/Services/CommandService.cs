@@ -65,9 +65,9 @@ public class CommandService : IDisposable, IApiService
         _randomDesign      = randomDesign;
         _customizeService  = customizeService;
 
-        _commands.AddHandler(MainCommandString, new CommandInfo(OnGlamourer) { HelpMessage = "Open or close the Glamourer window." });
+        _commands.AddHandler(MainCommandString, new CommandInfo(OnGlamourer) { HelpMessage = "打开或关闭Glamourer窗口。" });
         _commands.AddHandler(ApplyCommandString,
-            new CommandInfo(OnGlamour) { HelpMessage = "Use Glamourer Functions. Use with 'help' or '?' for extended help." });
+            new CommandInfo(OnGlamour) { HelpMessage = "使用Glamourer的命令函数。与“help”或“?”一起使用以获得更多帮助。" });
     }
 
     public void Dispose()

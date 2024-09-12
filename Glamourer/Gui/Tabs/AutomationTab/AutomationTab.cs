@@ -7,7 +7,7 @@ namespace Glamourer.Gui.Tabs.AutomationTab;
 public class AutomationTab(SetSelector selector, SetPanel panel, Configuration config) : ITab
 {
     public ReadOnlySpan<byte> Label
-        => "Automation"u8;
+        => "自动执行"u8;
 
     public bool IsVisible
         => config.EnableAutoDesigns;

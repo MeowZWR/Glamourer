@@ -74,7 +74,7 @@ public class NpcPanel
 
     private void DrawHeader()
     {
-        HeaderDrawer.Draw(_selector.HasSelection ? _selector.Selection.Name : "No Selection", ColorId.NormalDesign.Value(),
+        HeaderDrawer.Draw(_selector.HasSelection ? _selector.Selection.Name : "未选择", ColorId.NormalDesign.Value(),
             ImGui.GetColorU32(ImGuiCol.FrameBg), _leftButtons, _rightButtons);
         SaveDesignDrawPopup();
     }
@@ -83,8 +83,8 @@ public class NpcPanel
     {
         protected override string Description
             => panel._favorites.IsFavorite(panel._selector.Selection)
-                ? "Remove this NPC appearance from your favorites."
-                : "Add this NPC Appearance to your favorites.";
+                ? "从你的收藏中移除此NPC外观。"
+                : "将此NPC外观添加到你的收藏中。";
 
         protected override uint TextColor
             => panel._favorites.IsFavorite(panel._selector.Selection)
@@ -103,7 +103,7 @@ public class NpcPanel
 
     private void SaveDesignDrawPopup()
     {
-        if (!ImGuiUtil.OpenNameField("Save as Design", ref _newName))
+        if (!ImGuiUtil.OpenNameField("保存为设计", ref _newName))
             return;
 
         if (_newDesign != null && _newName.Length > 0)
@@ -134,8 +134,8 @@ public class NpcPanel
     private void DrawCustomization()
     {
         var header = _selector.Selection.ModelId == 0
-            ? "Customization"
-            : $"Customization (Model Id #{_selector.Selection.ModelId})###Customization";
+            ? "外貌"
+            : $"外貌（模型Id #{_selector.Selection.ModelId}）###Customization";
         using var h = ImRaii.CollapsingHeader(header);
         if (!h)
             return;
@@ -146,7 +146,7 @@ public class NpcPanel
 
     private void DrawEquipment()
     {
-        using var h = ImRaii.CollapsingHeader("Equipment");
+        using var h = ImRaii.CollapsingHeader("装备");
         if (!h)
             return;
 
@@ -185,8 +185,8 @@ public class NpcPanel
     private void DrawApplyToSelf()
     {
         var (id, data) = _objects.PlayerData;
-        if (!ImGuiUtil.DrawDisabledButton("Apply to Yourself", Vector2.Zero,
-                "Apply the current NPC appearance to your character.\nHold Control to only apply gear.\nHold Shift to only apply customizations.",
+        if (!ImGuiUtil.DrawDisabledButton("应用到自己", Vector2.Zero,
+                "将当前NPC外观应用于你的角色。\n按住Ctrl仅应用装备。\n按住Shift仅应用外貌。",
                 !data.Valid))
             return;
 
@@ -202,10 +202,10 @@ public class NpcPanel
         var (id, data) = _objects.TargetData;
         var tt = id.IsValid
             ? data.Valid
-                ? "Apply the current NPC appearance to your current target.\nHold Control to only apply gear.\nHold Shift to only apply customizations."
-                : "The current target can not be manipulated."
-            : "No valid target selected.";
-        if (!ImGuiUtil.DrawDisabledButton("Apply to Target", Vector2.Zero, tt, !data.Valid))
+                ? "将当前NPC外观应用于你的目标。\n按住Ctrl仅应用装备。\n按住Shift仅应用外貌。"
+                : "当前目标无法操作。"
+            : "未选择有效的目标。";
+        if (!ImGuiUtil.DrawDisabledButton("应用到目标", Vector2.Zero, tt, !data.Valid))
             return;
 
         if (_state.GetOrCreate(id, data.Objects[0], out var state))
@@ -218,7 +218,7 @@ public class NpcPanel
 
     private void DrawAppearanceInfo()
     {
-        using var h = ImRaii.CollapsingHeader("Appearance Details");
+        using var h = ImRaii.CollapsingHeader("外观详情");
         if (!h)
             return;
 
@@ -231,22 +231,22 @@ public class NpcPanel
         ImGui.TableSetupColumn("Data", ImGuiTableColumnFlags.WidthStretch);
 
         var selection = _selector.Selection;
-        CopyButton("NPC Name", selection.Name);
+        CopyButton("NPC名称", selection.Name);
         CopyButton("NPC ID",   selection.Id.Id.ToString());
-        ImGuiUtil.DrawFrameColumn("NPC Type");
+        ImGuiUtil.DrawFrameColumn("NPC类型");
         ImGui.TableNextColumn();
         var width = ImGui.GetContentRegionAvail().X;
-        ImGuiUtil.DrawTextButton(selection.Kind is ObjectKind.BattleNpc ? "Battle NPC" : "Event NPC", new Vector2(width, 0),
+        ImGuiUtil.DrawTextButton(selection.Kind is ObjectKind.BattleNpc ? "战斗NPC" : "事件NPC", new Vector2(width, 0),
             ImGui.GetColorU32(ImGuiCol.FrameBg));
 
-        ImGuiUtil.DrawFrameColumn("Color");
+        ImGuiUtil.DrawFrameColumn("配色");
         var color     = _favorites.GetColor(selection);
         var colorName = color.Length == 0 ? DesignColors.AutomaticName : color;
         ImGui.TableNextColumn();
         if (_colorCombo.Draw("##colorCombo", colorName,
-                "Associate a color with this NPC appearance.\n"
-              + "Right-Click to revert to automatic coloring.\n"
-              + "Hold Control and scroll the mousewheel to scroll.",
+                "将颜色与此NPC外观相关联。\n"
+              + "右键单击可恢复为自动配色。\n"
+              + "按住Ctrl并滚动鼠标滚轮进行滚动选择。",
                 width - ImGui.GetStyle().ItemSpacing.X - ImGui.GetFrameHeight(), ImGui.GetTextLineHeight())
          && _colorCombo.CurrentSelection != null)
         {
@@ -272,7 +272,7 @@ public class NpcPanel
             var       size = new Vector2(ImGui.GetFrameHeight());
             using var font = ImRaii.PushFont(UiBuilder.IconFont);
             ImGuiUtil.DrawTextButton(FontAwesomeIcon.ExclamationCircle.ToIconString(), size, 0, _colors.MissingColor);
-            ImGuiUtil.HoverTooltip("The color associated with this design does not exist.");
+            ImGuiUtil.HoverTooltip("与此设计相关联的颜色不存在。");
         }
 
         return;
@@ -290,7 +290,7 @@ public class NpcPanel
     private sealed class ExportToClipboardButton(NpcPanel panel) : Button
     {
         protected override string Description
-            => "Copy the current NPCs appearance to your clipboard.\nHold Control to disable applying of customizations for the copied design.\nHold Shift to disable applying of gear for the copied design.";
+            => "将当前NPC外观复制到剪贴板。\n按住Ctrl禁止复制外貌。\n按住Shift可禁止复制装备。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.Copy;
@@ -308,8 +308,8 @@ public class NpcPanel
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"Could not copy {panel._selector.Selection.Name}'s data to clipboard.",
-                    $"Could not copy data from NPC appearance {panel._selector.Selection.Kind} {panel._selector.Selection.Id.Id} to clipboard",
+                Glamourer.Messager.NotificationMessage(ex, $"无法复制{panel._selector.Selection.Name}的数据到剪贴板。",
+                    $"无法从NPC外观{panel._selector.Selection.Kind} {panel._selector.Selection.Id.Id}复制数据到剪贴板。",
                     NotificationType.Error);
             }
         }
@@ -318,7 +318,7 @@ public class NpcPanel
     private sealed class SaveAsDesignButton(NpcPanel panel) : Button
     {
         protected override string Description
-            => "Save this NPCs appearance as a design.\nHold Control to disable applying of customizations for the saved design.\nHold Shift to disable applying of gear for the saved design.";
+            => "将此NPC外观保存为设计。\n按住Ctrl禁止保存外貌。\n按住Shift可禁止保存装备。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.Save;
@@ -328,7 +328,7 @@ public class NpcPanel
 
         protected override void OnClick()
         {
-            ImGui.OpenPopup("Save as Design");
+            ImGui.OpenPopup("保存为设计");
             panel._newName = panel._selector.Selection.Name;
             var data = panel.ToDesignData();
             panel._newDesign = panel._converter.Convert(data, new StateMaterialManager(), ApplicationRules.NpcFromModifiers());

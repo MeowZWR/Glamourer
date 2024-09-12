@@ -64,7 +64,7 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
             }
         }
 
-        ImGuiUtil.HoverTooltip("Edit restrictions for this random design.");
+        ImGuiUtil.HoverTooltip("编辑对此随机设计要作出的限制。");
     }
 
     private void Open(AutoDesignSet set, int designIndex)
@@ -155,7 +155,7 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
         ImGui.TableSetupColumn("input", ImGuiTableColumnFlags.WidthStretch);
         ImGui.TableSetupColumn("del",   ImGuiTableColumnFlags.WidthFixed, buttonSize.X * 2 + ImGui.GetStyle().ItemInnerSpacing.X);
 
-        var orSize = ImGui.CalcTextSize("or ");
+        var orSize = ImGui.CalcTextSize("或 ");
         for (var i = 0; i < random.Predicates.Count; ++i)
         {
             using var id        = ImRaii.PushId(i);
@@ -163,7 +163,7 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
             ImGui.TableNextColumn();
             ImGui.AlignTextToFramePadding();
             if (i != 0)
-                ImGui.TextUnformatted("or ");
+                ImGui.TextUnformatted("或 ");
             else
                 ImGui.Dummy(orSize);
             ImGui.SameLine(0, 0);
@@ -172,7 +172,7 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
             {
                 case RandomPredicate.Contains contains:
                 {
-                    ImGui.TextUnformatted("that contain");
+                    ImGui.TextUnformatted("包含这个文本的");
                     ImGui.TableNextColumn();
                     var data = contains.Value.Text;
                     ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
@@ -189,7 +189,7 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
                 }
                 case RandomPredicate.StartsWith startsWith:
                 {
-                    ImGui.TextUnformatted("whose path starts with");
+                    ImGui.TextUnformatted("路径以此开头的");
                     ImGui.TableNextColumn();
                     var data = startsWith.Value.Text;
                     ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
@@ -206,11 +206,11 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
                 }
                 case RandomPredicate.Exact { Which: RandomPredicate.Exact.Type.Tag } exact:
                 {
-                    ImGui.TextUnformatted("that contain the tag");
+                    ImGui.TextUnformatted("包含这个标签的");
                     ImGui.TableNextColumn();
                     ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                     var data = exact.Value.Text;
-                    if (ImGui.InputTextWithHint("##color", "Contained tag...", ref data, 128))
+                    if (ImGui.InputTextWithHint("##color", "包含标签...", ref data, 128))
                     {
                         if (data.Length == 0)
                             list.RemoveAt(i);
@@ -223,11 +223,11 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
                 }
                 case RandomPredicate.Exact { Which: RandomPredicate.Exact.Type.Color } exact:
                 {
-                    ImGui.TextUnformatted("that are set to the color");
+                    ImGui.TextUnformatted("设置为这个颜色的");
                     ImGui.TableNextColumn();
                     ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
                     var data = exact.Value.Text;
-                    if (ImGui.InputTextWithHint("##color", "Assigned Color is...", ref data, 128))
+                    if (ImGui.InputTextWithHint("##color", "分配的颜色是...", ref data, 128))
                     {
                         if (data.Length == 0)
                             list.RemoveAt(i);
@@ -253,7 +253,7 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
             }
 
             ImGui.TableNextColumn();
-            if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Trash.ToIconString(), buttonSize, "Delete this restriction.", false, true))
+            if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Trash.ToIconString(), buttonSize, "删除这条限制。", false, true))
             {
                 list.RemoveAt(i);
                 _autoDesignManager.ChangeData(_set!, _designIndex, list);
@@ -279,8 +279,8 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
         using var _ = ImRaii.Tooltip();
         var tt = string.Join('\n', designs.Select(d => _designFileSystem.FindLeaf(d, out var l) ? l.FullName() : d.Name.Text).OrderBy(t => t));
         ImGui.TextUnformatted(tt.Length == 0
-            ? "Matches no currently existing designs."
-            : "Matches the following designs:");
+            ? "没有匹配到现有的设计。"
+            : "匹配以下设计：");
         ImGui.Separator();
         ImGui.TextUnformatted(tt);
     }
@@ -288,34 +288,34 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
     private void DrawNewButtons(List<IDesignPredicate> list)
     {
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-        ImGui.InputTextWithHint("##newText", "Add New Restriction...", ref _newText, 128);
+        ImGui.InputTextWithHint("##newText", "添加新限制...", ref _newText, 128);
         var spacing = ImGui.GetStyle().ItemInnerSpacing.X;
         var invalid = _newText.Length == 0;
 
         var buttonSize = new Vector2((ImGui.GetContentRegionAvail().X - 3 * spacing) / 4, 0);
-        var changed = ImGuiUtil.DrawDisabledButton("Starts With", buttonSize,
-                "Add a new condition that design paths must start with the given text.", invalid)
+        var changed = ImGuiUtil.DrawDisabledButton("路径开始", buttonSize,
+                "添加一个新条件：设计路径必须以指定文本开头。", invalid)
          && Add(new RandomPredicate.StartsWith(_newText));
 
         ImGui.SameLine(0, spacing);
-        changed |= ImGuiUtil.DrawDisabledButton("Contains", buttonSize,
-                "Add a new condition that design paths, names or identifiers must contain the given text.", invalid)
+        changed |= ImGuiUtil.DrawDisabledButton("包含文本", buttonSize,
+                "添加一个新条件：设计路径、名称或标识符必须包含指定文本。", invalid)
          && Add(new RandomPredicate.Contains(_newText));
 
         ImGui.SameLine(0, spacing);
-        changed |= ImGuiUtil.DrawDisabledButton("Has Tag", buttonSize,
-                "Add a new condition that the design must contain the given tag.", invalid)
+        changed |= ImGuiUtil.DrawDisabledButton("指定标签", buttonSize,
+                "添加一个新条件：设计必须包含指定标签。", invalid)
          && Add(new RandomPredicate.Exact(RandomPredicate.Exact.Type.Tag, _newText));
 
         ImGui.SameLine(0, spacing);
-        changed |= ImGuiUtil.DrawDisabledButton("Assigned Color", buttonSize,
-                "Add a new condition that the design must be assigned to the given color.", invalid)
+        changed |= ImGuiUtil.DrawDisabledButton("分配颜色", buttonSize,
+                "添加一个新条件：设计必须具有指定的配色。", invalid)
          && Add(new RandomPredicate.Exact(RandomPredicate.Exact.Type.Color, _newText));
 
         if (_randomDesignCombo.Draw(_newDesign, ImGui.GetContentRegionAvail().X - spacing - buttonSize.X))
             _newDesign = _randomDesignCombo.CurrentSelection?.Item1 as Design;
         ImGui.SameLine(0, spacing);
-        if (ImGuiUtil.DrawDisabledButton("Exact Design", buttonSize, "Add a single, specific design.", _newDesign == null))
+        if (ImGuiUtil.DrawDisabledButton("具体设计", buttonSize, "添加单个指定的设计。", _newDesign == null))
         {
             Add(new RandomPredicate.Exact(RandomPredicate.Exact.Type.Identifier, _newDesign!.Identifier.ToString()));
             changed    = true;
@@ -355,7 +355,7 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
             _newDefinition = null;
         }
 
-        if (ImGui.Button("Copy to Clipboard Without Line Breaks", new Vector2(ImGui.GetContentRegionAvail().X, 0)))
+        if (ImGui.Button("复制不含换行符的数据到剪贴板", new Vector2(ImGui.GetContentRegionAvail().X, 0)))
         {
             try
             {
@@ -372,8 +372,8 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
     {
         var designs = IDesignPredicate.Get(list, _designs, _designFileSystem).ToList();
         var button = designs.Count > 0
-            ? $"All Restrictions Combined Match {designs.Count} Designs"
-            : "None of the Restrictions Matches Any Designs";
+            ? $"所有限制条件的组合匹配到{designs.Count}个设计"
+            : "限制条件没能匹配到任何设计";
         ImGuiUtil.DrawDisabledButton(button, new Vector2(ImGui.GetContentRegionAvail().X, 0),
             string.Empty, false, false);
         if (ImGui.IsItemHovered())
@@ -389,11 +389,11 @@ public sealed class RandomRestrictionDrawer : IService, IDisposable
         var list = random.Predicates.ToList();
         if (list.Count == 0)
         {
-            ImGui.TextUnformatted("No Restrictions Set. Selects among all existing Designs.");
+            ImGui.TextUnformatted("未设置限制。在现存所有设计中进行选择。");
         }
         else
         {
-            ImGui.TextUnformatted("Select among designs...");
+            ImGui.TextUnformatted("从这些设计中选择...");
             DrawTable(random, list);
         }
 

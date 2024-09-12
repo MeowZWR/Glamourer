@@ -57,71 +57,71 @@ public class GlamourerChangelog
 
     private static void Add1_3_1_0(Changelog log)
         => log.NextVersion("Version 1.3.1.0")
-            .RegisterHighlight("Glamourer is now released for Dawntrail!")
-            .RegisterEntry("Added support for female Hrothgar.",  1)
-            .RegisterEntry("Added support for the Glasses slot.", 1)
-            .RegisterEntry("Added support for two dye slots.",    1)
+            .RegisterHighlight("Glamourer现已支持「金曦之遗辉」")
+            .RegisterEntry("新增对女性硌狮族的支持。",  1)
+            .RegisterEntry("新增对眼镜插槽的支持。", 1)
+            .RegisterEntry("新增对双染色插槽的支持。",    1)
             .RegisterImportant(
-                "There were some issues with Advanced Dyes stored in Designs. When launching this update, Glamourer will try to migrate all your old designs into the new form.")
-            .RegisterEntry("Unfortunately, this is slightly based on guesswork and may cause false-positive migrations.",            1)
-            .RegisterEntry("In general, the values for Gloss and Specular Strength were swapped, so the migration swaps them back.", 1)
+                "设计中的高级染色存在一些问题。在启动此更新时，Glamourer会尝试将所有旧的设计迁移到新的形式中。")
+            .RegisterEntry("不幸的是，这部分基于猜测，可能会导致误迁移。",            1)
+            .RegisterEntry("一般来说，光泽和反射强度的值被调换了，因此迁移会将它们调换回去。", 1)
             .RegisterEntry(
-                "In some cases this may not be correct, or the values stored were problematic to begin with and will now cause further issues.",
+                "在某些情况下，这可能不正确，或者存储的值本身有问题，就会导致进一步的问题。",
                 1)
             .RegisterImportant(
-                "If your designs lose their specular color, you need to verify that the Specular Strength is non-zero (usually in 0-100%).", 1)
+                "如果您的设计丢失了反射颜色，您需要确认反射强度非零（通常在 0-100% 之间）。", 1)
             .RegisterImportant(
-                "If your designs are extremely glossy and reflective, you need to verify that the Gloss value is greater than zero (usually a power of 2 >= 1, it should never be 0).",
+                "如果您的设计是高光泽和高反射，您需要确认光泽度的值大于零（通常是大于等于1的2的幂，永远不应该是0）。",
                 1)
             .RegisterEntry(
-                "I am very sorry for the inconvenience but there is no way to salvage this sanely in all cases, especially with user-input values.",
+                "对于带来的不便深感抱歉，但在修复问题时没有办法顾及到所有情况，特别是用户输入的值。",
                 1)
             .RegisterImportant(
-                "Any materials already using Dawntrails shaders will currently not be able to edit the Gloss or Specular Strength Values in Advanced Dyes.")
+                "任何已使用「金曦之遗辉」着色器的材质当前无法编辑高级染色中的光泽度或反射度的值。")
             .RegisterImportant(
-                "Skin and Hair Shine from advanced customizations are not supported by the game any longer, so they are not displayed for the moment.")
-            .RegisterHighlight("All eyes now support Limbal rings (which use the Feature Color for their color).")
-            .RegisterHighlight("Dyes can now be dragged and dropped onto other dyes to replicate them.")
-            .RegisterEntry("The job filter in the Unlocks tab has been improved.")
+                "游戏不再支持来自高级外貌中的皮肤和头发光泽度，因此暂时不会显示。")
+            .RegisterHighlight("所有眼睛现在都支持眼瞳轮廓（使用特征颜色）。")
+            .RegisterHighlight("现在可以将染色拖放到其他染色上以复制它们。")
+            .RegisterEntry("解锁选项卡中的职业筛选器已改进。")
             .RegisterHighlight(
-                "Editing designs or actors now has a history and you can undo up to 16 of the last changes you made, separately per design or actor.")
+                "编辑设计或角色现在有历史记录，您可以撤销最后16次更改，设计和角色分开计算。")
             .RegisterEntry(
-                "Some changes (like when a weapon applies its offhand) may count as multiple and have to be stepped back separately.", 1)
-            .RegisterEntry("You can now change the priority or enabled state of associated mods directly.")
-            .RegisterEntry("Glamourer now has a Support Info button akin to Penumbra's.")
-            .RegisterEntry("Glamourer now respects write protection on designs better.")
-            .RegisterEntry("The advanced dye window popup should now get focused when it is opening even in detached state.")
-            .RegisterEntry("Added API and IPC for bonus items, i.e. the Glasses slot.")
-            .RegisterHighlight("You can now display your characters height in Corgis or Olympic Swimming Pools.")
-            .RegisterEntry("Fixed some issues with advanced customizations and dyes applied via IPC. (1.2.3.2)")
+                "某些更改（例如，当武器应用其副手时）可能会计数为多个，需要单独撤销。", 1)
+            .RegisterEntry("现在可以直接更改相关模组的优先级或启用状态。")
+            .RegisterEntry("Glamourer现在有一个类似于Penumbra的支持信息按钮。")
+            .RegisterEntry("Glamourer现在更尊重设计上的写保护。")
+            .RegisterEntry("高级染色窗口弹出时，即使在分离状态下也应获得焦点。")
+            .RegisterEntry("新增API和IPC支持额外物品，即眼镜插槽。")
+            .RegisterHighlight("现在可以以柯基或奥林匹克游泳池显示角色的高度。")
+            .RegisterEntry("修复了与IPC应用的高级外貌和染色相关的一些问题。 (1.2.3.2)")
             .RegisterEntry(
-                "Glamourer now uses the last matching game object for advanced dyes instead of the first (mainly relevant for GPose). (1.2.3.1)");
+                "Glamourer现在使用最后一个匹配的游戏对象进行高级染色，而不是第一个（主要与 GPose 相关）。 (1.2.3.1)");
 
     private static void Add1_2_3_0(Changelog log)
         => log.NextVersion("Version 1.2.3.0")
             .RegisterHighlight(
-                "Added a field to rename designs directly from the mod selector context menu, instead of moving them in the filesystem.")
-            .RegisterEntry("You can choose which rename field (none, either one or both) to display in the settings.", 1)
-            .RegisterEntry("Automatically applied offhand weapons due to mainhand settings now also apply the mainhands dye.")
-            .RegisterHighlight("Added a height display in real-world units next to the height-selector.")
-            .RegisterEntry("This can be configured to use your favourite unit of measurement, even wrong ones, or not display at all.", 1)
+                "新增了一个字段，允许直接从模组选择器上下文菜单中重命名设计，而不是在文件系统中移动它们。")
+            .RegisterEntry("你可以选择在设置中显示哪个重命名字段（无、一个或两个）。", 1)
+            .RegisterEntry("通过主手设置，自动应用副手武器现在也适用于主手染色。")
+            .RegisterHighlight("在高度选择器旁边添加了一个以真实世界单位显示的高度显示。")
+            .RegisterEntry("这可以配置为使用您喜欢的计量单位，即使是错误的单位，或者根本不显示。", 1)
             .RegisterHighlight(
-                "Added a chat command '/glamour applycustomization' that can apply single customization values to actors. Use without arguments for help.")
+                "新增了一个聊天命令 '/glamour applycustomization'，可以将单个外貌值应用于角色。不带参数使用以获取帮助。")
             .RegisterHighlight(
-                "Added an option for designs to always force a redraw when applied to a character, regardless of whether it is necessary or not.")
-            .RegisterHighlight("Added a button to overwrite the selected design with the current player state.")
-            .RegisterEntry("Added some copy/paste functionality for mod associations.")
-            .RegisterEntry("Reworked the API and IPC structure heavily.")
-            .RegisterEntry("Added warnings if Glamourer can not attach successfully to Penumbra or if Penumbras IPC version is not correct.")
-            .RegisterEntry("Added hints for all of the available cheat codes and improved the cheat code display somewhat.")
-            .RegisterEntry("Fixed weapon selectors not having a favourite star available.")
-            .RegisterEntry("Fixed issues with items with custom names.")
-            .RegisterEntry("Fixed the labels for eye colors.")
-            .RegisterEntry("Fixed the tooltip for Apply Dye checkboxes.")
-            .RegisterEntry("Fixed an issue when hovering over assigned mod settings.")
-            .RegisterEntry("Made conformant to Dalamud guidelines by adding a button to open the main UI.")
-            .RegisterEntry("Fixed an issue with visor states. (1.2.1.3)")
-            .RegisterEntry("Fixed an issue with identical weapon types and multiple restricted designs. (1.2.1.3)");
+                "为设计添加了一个选项，无论是否必要，都始终在应用于角色时强制重新绘制。")
+            .RegisterHighlight("添加了一个按钮，用于用当前玩家状态覆盖所选的设计。")
+            .RegisterEntry("为模组关联添加了一些复制/粘贴功能。")
+            .RegisterEntry("彻底重做了 API 和 IPC 结构。")
+            .RegisterEntry("如果 Glamourer 无法成功附加到 Penumbra 或 Penumbras IPC 版本不正确，为其添加警告。")
+            .RegisterEntry("为所有可用的作弊代码添加了提示，并稍微改进了作弊代码的显示。")
+            .RegisterEntry("修复了武器选择器没有可用的收藏星标的问题。")
+            .RegisterEntry("修复了具有自定义名称的物品的问题。")
+            .RegisterEntry("修复了眼睛颜色标签的问题。")
+            .RegisterEntry("修复了应用染料复选框的提示问题。")
+            .RegisterEntry("修复了在悬停在分配的模组设置上时出现的问题。")
+            .RegisterEntry("通过添加一个按钮打开主 UI，使之符合 Dalamud 指南。")
+            .RegisterEntry("修复了调整头部装备状态的问题。 （1.2.1.3）")
+            .RegisterEntry("修复了相同武器类型和多个受限设计的问题。 （1.2.1.3）");
 
     private static void Add1_2_1_0(Changelog log)
         => log.NextVersion("Version 1.2.1.0")

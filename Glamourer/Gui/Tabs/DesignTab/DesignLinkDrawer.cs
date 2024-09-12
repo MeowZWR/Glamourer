@@ -19,11 +19,11 @@ public class DesignLinkDrawer(DesignLinkManager _linkManager, DesignFileSystemSe
 
     public void Draw()
     {
-        using var header = ImRaii.CollapsingHeader("Design Links");
+        using var header = ImRaii.CollapsingHeader("设计链接");
         ImGuiUtil.HoverTooltip(
-            "Design links are links to other designs that will be applied to characters or during automation according to the rules set.\n"
-          + "They apply from top to bottom just like automated design sets, so anything set by an earlier design will not not be set again by later designs, and order is important.\n"
-          + "If a linked design links to other designs, they will also be applied, so circular links are prohibited. ");
+            "设计链接是指向其他设计的链接，这些设计将根据规则直接或通过自动执行应用于角色。\n"
+          + "它们从上到下生效，就像自动执行里的一样，所以前面的设计设置的任何内容都不会被后面的设计再次设置，顺序很重要。\n"
+          + "如果被链接设计链接到其他设计，它们也将被应用，因此禁止循环链接。 ");
         if (!header)
             return;
 
@@ -101,7 +101,7 @@ public class DesignLinkDrawer(DesignLinkManager _linkManager, DesignFileSystemSe
             ImGui.Selectable(_selector.IncognitoMode ? _selector.Selected!.Incognito : _selector.Selected!.Name.Text);
         }
 
-        ImGuiUtil.HoverTooltip("Current Design");
+        ImGuiUtil.HoverTooltip("当前设计");
         DrawDragDrop(_selector.Selected!, LinkOrder.Self, 0);
         ImGui.TableNextColumn();
         using (ImRaii.PushFont(UiBuilder.IconFont))
@@ -155,19 +155,19 @@ public class DesignLinkDrawer(DesignLinkManager _linkManager, DesignFileSystemSe
         var    design = _combo.Design as Design;
         if (design == null)
         {
-            ttAfter      = ttBefore    = "Select a design first.";
+            ttAfter      = ttBefore    = "请先选中一个设计";
             canAddBefore = canAddAfter = false;
         }
         else
         {
             canAddBefore = LinkContainer.CanAddLink(_selector.Selected!, design, LinkOrder.Before, out var error);
             ttBefore = canAddBefore
-                ? $"Add a link at the top of the list to {design.Name}."
-                : $"Can not add a link to {design.Name}:\n{error}";
+                ? $"将{design.Name}链接到上方。"
+                : $"不能为{design.Name}添加链接：\n{error}";
             canAddAfter = LinkContainer.CanAddLink(_selector.Selected!, design, LinkOrder.After, out error);
             ttAfter = canAddAfter
-                ? $"Add a link at the bottom of the list to {design.Name}."
-                : $"Can not add a link to {design.Name}:\n{error}";
+                ? $"将{design.Name}链接到下方。"
+                : $"不能为{design.Name}添加链接：\n{error}";
         }
 
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.ArrowCircleUp.ToIconString(), buttonSize, ttBefore, !canAddBefore, true))
@@ -216,7 +216,7 @@ public class DesignLinkDrawer(DesignLinkManager _linkManager, DesignFileSystemSe
                 newType = (ApplicationType)newTypeInt;
         }
 
-        ImGuiUtil.HoverTooltip("Toggle all application modes at once.");
+        ImGuiUtil.HoverTooltip("应用规则总开关");
 
         ImGui.SameLine();
         Box(0);

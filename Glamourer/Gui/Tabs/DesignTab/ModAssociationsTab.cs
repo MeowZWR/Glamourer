@@ -20,12 +20,12 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
 
     public void Draw()
     {
-        using var h = ImRaii.CollapsingHeader("Mod Associations");
+        using var h = ImRaii.CollapsingHeader("模组关联");
         ImGuiUtil.HoverTooltip(
-            "This tab can store information about specific mods associated with this design.\n\n"
-          + "It does NOT change any mod settings automatically, though there is functionality to apply desired mod settings manually.\n"
-          + "You can also use it to quickly open the associated mod page in Penumbra.\n\n"
-          + "It is not feasible to apply those changes automatically in general cases, since there would be no way to revert those changes, handle multiple designs applying at once, etc.");
+            "在此面板可以存储关联到此设计的特定模组的信息。\n\n"
+          + "它不会自动更改模组的任何设置，尽管有手动应用所需模组设置的功能。\n"
+          + "你可以使用它快速打开模组在Penumbra中的页面。\n\n"
+          + "在一般情况下，不太可能自动应用这些更改，因为没有办法恢复这些更改并同时处理多个生效的设计。");
         if (!h)
             return;
 
@@ -37,24 +37,24 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
     private void DrawCopyButtons()
     {
         var size = new Vector2((ImGui.GetContentRegionAvail().X - 2 * ImGui.GetStyle().ItemSpacing.X) / 3, 0);
-        if (ImGui.Button("Copy All to Clipboard", size))
+        if (ImGui.Button("全部复制到剪贴板", size))
             _copy = selector.Selected!.AssociatedMods.Select(kvp => (kvp.Key, kvp.Value)).ToArray();
 
         ImGui.SameLine();
 
-        if (ImGuiUtil.DrawDisabledButton("Add from Clipboard", size,
+        if (ImGuiUtil.DrawDisabledButton("从剪贴板添加", size,
                 _copy != null
-                    ? $"Add {_copy.Length} mod association(s) from clipboard."
-                    : "Copy some mod associations to the clipboard, first.", _copy == null))
+                    ? $"从剪贴板添加{_copy.Length}个模组关联。"
+                    : "请先将一些模组关联复制到剪贴板。", _copy == null))
             foreach (var (mod, setting) in _copy!)
                 manager.UpdateMod(selector.Selected!, mod, setting);
 
         ImGui.SameLine();
 
-        if (ImGuiUtil.DrawDisabledButton("Set from Clipboard", size,
+        if (ImGuiUtil.DrawDisabledButton("从剪贴板设置", size,
                 _copy != null
-                    ? $"Set {_copy.Length} mod association(s) from clipboard and discard existing."
-                    : "Copy some mod associations to the clipboard, first.", _copy == null))
+                    ? $"从剪贴板设置 {_copy.Length} 个模组关联并丢弃现有的。"
+                    : "请先将一些模组关联复制到剪贴板。", _copy == null))
         {
             while (selector.Selected!.AssociatedMods.Count > 0)
                 manager.RemoveMod(selector.Selected!, selector.Selected!.AssociatedMods.Keys[0]);
@@ -66,7 +66,7 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
     private void DrawApplyAllButton()
     {
         var (id, name) = penumbra.CurrentCollection;
-        if (ImGuiUtil.DrawDisabledButton($"Try Applying All Associated Mods to {name}##applyAll",
+        if (ImGuiUtil.DrawDisabledButton($"尝试应用所有关联的模组到：{name}##applyAll",
                 new Vector2(ImGui.GetContentRegionAvail().X, 0), string.Empty, id == Guid.Empty))
             ApplyAll();
     }
@@ -74,8 +74,8 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
     public void DrawApplyButton()
     {
         var (id, name) = penumbra.CurrentCollection;
-        if (ImGuiUtil.DrawDisabledButton("Apply Mod Associations", Vector2.Zero,
-                $"Try to apply all associated mod settings to Penumbras current collection {name}",
+        if (ImGuiUtil.DrawDisabledButton("应用模组关联", Vector2.Zero,
+                $"尝试应用所有关联的模组设置到你当前在Penumbra选中的合集：{name}",
                 selector.Selected!.AssociatedMods.Count == 0 || id == Guid.Empty))
             ApplyAll();
     }
@@ -94,9 +94,9 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
 
         ImGui.TableSetupColumn("##Buttons", ImGuiTableColumnFlags.WidthFixed,
             ImGui.GetFrameHeight() * 3 + ImGui.GetStyle().ItemInnerSpacing.X * 2);
-        ImGui.TableSetupColumn("Mod Name",  ImGuiTableColumnFlags.WidthStretch);
-        ImGui.TableSetupColumn("State",     ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("State").X);
-        ImGui.TableSetupColumn("Priority",  ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Priority").X);
+        ImGui.TableSetupColumn("模组名称",  ImGuiTableColumnFlags.WidthStretch);
+        ImGui.TableSetupColumn("状态",      ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("State").X);
+        ImGui.TableSetupColumn("优先级",    ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Priority").X);
         ImGui.TableSetupColumn("##Options", ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Applym").X);
         ImGui.TableHeadersRow();
 
@@ -129,21 +129,21 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
         var canDelete = config.DeleteDesignModifier.IsActive();
         if (canDelete)
         {
-            if (ImUtf8.IconButton(FontAwesomeIcon.Trash, "Delete this mod from associations."u8))
+            if (ImUtf8.IconButton(FontAwesomeIcon.Trash, "从关联中删除此模组。"u8))
                 removedMod = mod;
         }
         else
         {
-            ImUtf8.IconButton(FontAwesomeIcon.Trash, $"Delete this mod from associations.\nHold {config.DeleteDesignModifier} to delete.",
+            ImUtf8.IconButton(FontAwesomeIcon.Trash, $"从关联中删除此模组。\n按住{config.DeleteDesignModifier}来删除。",
                 disabled: true);
         }
 
         ImUtf8.SameLineInner();
-        if (ImUtf8.IconButton(FontAwesomeIcon.Clipboard, "Copy this mod setting to clipboard."u8))
+        if (ImUtf8.IconButton(FontAwesomeIcon.Clipboard, "复制这个模组设置到剪贴板。"u8))
             _copy = [(mod, settings)];
 
         ImUtf8.SameLineInner();
-        ImUtf8.IconButton(FontAwesomeIcon.RedoAlt, "Update the settings of this mod association."u8);
+        ImUtf8.IconButton(FontAwesomeIcon.RedoAlt, "更新此关联模组当前的设置。"u8);
         if (ImGui.IsItemHovered())
         {
             var newSettings = penumbra.GetModSettings(mod);
@@ -159,8 +159,8 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
             {
                 if (namesDifferent)
                     ImUtf8.Text("Directory Name"u8);
-                ImUtf8.Text("Enabled"u8);
-                ImUtf8.Text("Priority"u8);
+                ImUtf8.Text("已启用"u8);
+                ImUtf8.Text("优先级"u8);
                 ModCombo.DrawSettingsLeft(newSettings);
             }
 
@@ -181,7 +181,7 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
         if (ImUtf8.Selectable($"{mod.Name}##name"))
             penumbra.OpenModPage(mod);
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip($"Mod Directory:    {mod.DirectoryName}\n\nClick to open mod page in Penumbra.");
+            ImGui.SetTooltip($"模组目录： {mod.DirectoryName}\n\n点击打开 Penumbra 中的模组页面。");
         ImGui.TableNextColumn();
         var enabled = settings.Enabled;
         if (TwoStateCheckbox.Instance.Draw("##Enabled"u8, ref enabled))
@@ -193,7 +193,7 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
         if (ImUtf8.InputScalarOnDeactivated("##Priority"u8, ref priority))
             updatedMod = (mod, settings with { Priority = priority });
         ImGui.TableNextColumn();
-        if (ImGuiUtil.DrawDisabledButton("Apply", new Vector2(ImGui.GetContentRegionAvail().X, 0), string.Empty,
+        if (ImGuiUtil.DrawDisabledButton("应用", new Vector2(ImGui.GetContentRegionAvail().X, 0), string.Empty,
                 !penumbra.Available))
         {
             var text = penumbra.SetMod(mod, settings);
@@ -210,7 +210,7 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
             return;
 
         using var t = ImRaii.Tooltip();
-        ImGui.TextUnformatted("This will also try to apply the following settings to the current collection:");
+        ImGui.TextUnformatted("还将尝试将以下设置也应用到当前合集：");
 
         ImGui.NewLine();
         using (var _ = ImRaii.Group())
@@ -230,16 +230,16 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
         var currentName = _modCombo.CurrentSelection.Mod.Name;
         ImGui.TableNextColumn();
         var tt = currentName.IsNullOrEmpty()
-            ? "Please select a mod first."
+            ? "请先选择一个模组。"
             : selector.Selected!.AssociatedMods.ContainsKey(_modCombo.CurrentSelection.Mod)
-                ? "The design already contains an association with the selected mod."
+                ? "此设计已经关联了选中的模组。"
                 : string.Empty;
 
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Plus.ToIconString(), new Vector2(ImGui.GetFrameHeight()), tt, tt.Length > 0,
                 true))
             manager.AddMod(selector.Selected!, _modCombo.CurrentSelection.Mod, _modCombo.CurrentSelection.Settings);
         ImGui.TableNextColumn();
-        _modCombo.Draw("##new", currentName.IsNullOrEmpty() ? "Select new Mod..." : currentName, string.Empty,
+        _modCombo.Draw("##new", currentName.IsNullOrEmpty() ? "选择新模组..." : currentName, string.Empty,
             ImGui.GetContentRegionAvail().X, ImGui.GetTextLineHeight());
     }
 }

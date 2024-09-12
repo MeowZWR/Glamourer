@@ -34,7 +34,7 @@ public sealed class HumanNpcCombo(
     }
 
     public bool Draw(float width)
-        => Draw(label, CurrentSelection.Name.IsNullOrEmpty() ? "Human Non-Player-Characters..." : CurrentSelection.Name, string.Empty, width,
+        => Draw(label, CurrentSelection.Name.IsNullOrEmpty() ? "人类NPC..." : CurrentSelection.Name, string.Empty, width,
             ImGui.GetTextLineHeightWithSpacing());
 
 

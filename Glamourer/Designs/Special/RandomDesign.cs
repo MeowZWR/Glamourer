@@ -9,7 +9,7 @@ namespace Glamourer.Designs.Special;
 public class RandomDesign(RandomDesignGenerator rng) : IDesignStandIn
 {
     public const string  SerializedName = "//Random";
-    public const string  ResolvedName   = "Random";
+    public const string  ResolvedName   = "随机";
     private      Design? _currentDesign;
 
     public IReadOnlyList<IDesignPredicate> Predicates { get; private set; } = [];

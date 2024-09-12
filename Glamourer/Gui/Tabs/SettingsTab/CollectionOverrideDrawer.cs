@@ -25,10 +25,10 @@ public class CollectionOverrideDrawer(
 
     public void Draw()
     {
-        using var header = ImRaii.CollapsingHeader("Collection Overrides");
+        using var header = ImRaii.CollapsingHeader("合集覆盖");
         ImGuiUtil.HoverTooltip(
-            "Here you can set up overrides for Penumbra collections that should have their settings changed when automatically applying mod settings from a design.\n"
-          + "Instead of the collection associated with the overridden character, the overridden collection will be manipulated.");
+            "在这里，您可以为Penumbra设置覆盖，当自动应用来自设计的模组设置时，这些合集中的设置应该被更改。\n"
+          + "将操作被覆盖的合集，而不是与被覆盖角色有关的合集。");
         if (!header)
             return;
 
@@ -54,14 +54,14 @@ public class CollectionOverrideDrawer(
         var (exists, actor, collection, name) = collectionOverrides.Fetch(idx);
 
         ImGui.TableNextColumn();
-        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Trash.ToIconString(), buttonSize, "Delete this override.", false, true))
+        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Trash.ToIconString(), buttonSize, "删除此覆盖。", false, true))
             collectionOverrides.DeleteOverride(idx--);
 
         ImGui.TableNextColumn();
         DrawActorIdentifier(idx, actor);
 
         ImGui.TableNextColumn();
-        if (combo.Draw("##collection", name, $"Select the overriding collection. Current GUID:", ImGui.GetContentRegionAvail().X, ImGui.GetTextLineHeight()))
+        if (combo.Draw("##collection", name, $"选择覆盖的合集。当前GUID：", ImGui.GetContentRegionAvail().X, ImGui.GetTextLineHeight()))
         {
             var (guid, _, newName) = combo.CurrentSelection;
             collectionOverrides.ChangeOverride(idx, guid, newName);
@@ -82,18 +82,18 @@ public class CollectionOverrideDrawer(
     {
         if (!exists)
         {
-            ImGui.TextUnformatted("<Does not Exist>");
+            ImGui.TextUnformatted("<不存在>");
             if (!ImGui.IsItemHovered())
                 return;
 
             using var tt1 = ImRaii.Tooltip();
-            ImGui.TextUnformatted($"The design {name} with the GUID");
+            ImGui.TextUnformatted($"设计 {name} 的 GUID");
             using (ImRaii.PushFont(UiBuilder.MonoFont))
             {
                 ImGui.TextUnformatted($"    {collection}");
             }
 
-            ImGui.TextUnformatted("does not exist in Penumbra.");
+            ImGui.TextUnformatted("在 Penumbra 中不存在。");
             return;
         }
 
@@ -123,7 +123,7 @@ public class CollectionOverrideDrawer(
             if (source)
             {
                 ImGui.SetDragDropPayload("DraggingOverride", nint.Zero, 0);
-                ImGui.TextUnformatted($"Reordering Override #{idx + 1}...");
+                ImGui.TextUnformatted($"重新排序覆盖 #{idx + 1}...");
                 _dragDropIndex = idx;
             }
         }
@@ -133,13 +133,13 @@ public class CollectionOverrideDrawer(
     {
         var (currentId, currentName) = penumbra.CurrentCollection;
         ImGui.TableNextColumn();
-        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.PersonCirclePlus.ToIconString(), buttonSize, "Add override for current player.",
+        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.PersonCirclePlus.ToIconString(), buttonSize, "添加对当前玩家的覆盖。",
                 !objects.Player.Valid && currentId != Guid.Empty, true))
             collectionOverrides.AddOverride([objects.PlayerData.Identifier], currentId, currentName);
 
         ImGui.TableNextColumn();
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-        if (ImGui.InputTextWithHint("##newActor", "New Identifier...", ref _newIdentifier, 80))
+        if (ImGui.InputTextWithHint("##newActor", "新标识符...", ref _newIdentifier, 80))
             try
             {
                 _identifiers = actors.FromUserString(_newIdentifier, false);
@@ -151,10 +151,10 @@ public class CollectionOverrideDrawer(
             }
 
         var tt = _identifiers.Any(i => i.IsValid)
-            ? $"Add a new override for {_identifiers.First(i => i.IsValid)}."
+            ? $"为[{_identifiers.First(i => i.IsValid)}]添加新的覆盖"
             : _newIdentifier.Length == 0
-                ? "Please enter an identifier string first."
-                : $"The identifier string {_newIdentifier} does not result in a valid identifier{(_exception == null ? "." : $":\n\n{_exception?.Message}")}";
+                ? "请先输入标识符字符串。"
+                : $"此标字符串[{_newIdentifier}]不是有效的标识符。{(_exception == null ? "." : $":\n\n{_exception?.Message}")}";
 
         ImGui.TableNextColumn();
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Plus.ToIconString(), buttonSize, tt, tt[0] is not 'A', true))

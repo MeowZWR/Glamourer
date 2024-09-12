@@ -7,7 +7,7 @@ namespace Glamourer.Gui.Tabs.NpcTab;
 public class NpcTab(NpcSelector _selector, NpcPanel _panel) : ITab
 {
     public ReadOnlySpan<byte> Label
-        => "NPCs"u8;
+        => "非玩家角色"u8;
 
     public void DrawContent()
     {

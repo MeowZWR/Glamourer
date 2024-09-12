@@ -89,12 +89,12 @@ public class AutoDesignManager : ISavable, IReadOnlyList<AutoDesignSet>, IDispos
         if (match.Success)
         {
             var number      = match.Groups["Number"];
-            var replacement = number.Success ? $"(Duplicate {int.Parse(number.Value) + 1})" : "(Duplicate 2)";
+            var replacement = number.Success ? $"(副本 {int.Parse(number.Value) + 1})" : "(副本 2)";
             name = name.Replace(match.Value, replacement);
         }
         else
         {
-            name += " (Duplicate)";
+            name += " (副本)";
         }
 
         var newSet = new AutoDesignSet(name, set.Identifiers) { Enabled = false };
@@ -431,14 +431,14 @@ public class AutoDesignManager : ISavable, IReadOnlyList<AutoDesignSet>, IDispos
             var name = obj["Name"]?.ToObject<string>() ?? string.Empty;
             if (name.Length == 0)
             {
-                Glamourer.Messager.NotificationMessage("Skipped loading Automation Set: No name provided.", NotificationType.Warning);
+                Glamourer.Messager.NotificationMessage("已跳过加载自动化执行集：未提供名称。", NotificationType.Warning);
                 continue;
             }
 
             var id = _actors.FromJson(obj["Identifier"] as JObject);
             if (!IdentifierValid(id, out var group))
             {
-                Glamourer.Messager.NotificationMessage("Skipped loading Automation Set: Invalid Identifier.", NotificationType.Warning);
+                Glamourer.Messager.NotificationMessage("已跳过加载自动化执行集：无效的标识符。", NotificationType.Warning);
                 continue;
             }
 

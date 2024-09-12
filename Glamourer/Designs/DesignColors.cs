@@ -27,13 +27,13 @@ public class DesignColorUi(DesignColors colors, Configuration config)
         var buttonSize = new Vector2(ImGui.GetFrameHeight());
         ImGui.TableSetupColumn("##Delete",   ImGuiTableColumnFlags.WidthFixed, buttonSize.X);
         ImGui.TableSetupColumn("##Select",   ImGuiTableColumnFlags.WidthFixed, buttonSize.X);
-        ImGui.TableSetupColumn("Color Name", ImGuiTableColumnFlags.WidthStretch);
+        ImGui.TableSetupColumn("颜色名称", ImGuiTableColumnFlags.WidthStretch);
 
         ImGui.TableHeadersRow();
 
         ImGui.TableNextColumn();
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Recycle.ToIconString(), buttonSize,
-                "Revert the color used for missing design colors to its default.", colors.MissingColor == DesignColors.MissingColorDefault,
+                "还原被用于已不存在的设计的颜色到默认状态。", colors.MissingColor == DesignColors.MissingColorDefault,
                 true))
         {
             changeString = DesignColors.MissingColorName;
@@ -50,13 +50,13 @@ public class DesignColorUi(DesignColors colors, Configuration config)
         ImGui.TableNextColumn();
         ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ImGui.GetStyle().FramePadding.X);
         ImGui.TextUnformatted(DesignColors.MissingColorName);
-        ImGuiUtil.HoverTooltip("This color is used when the color specified in a design is not available.");
+        ImGuiUtil.HoverTooltip("当设计中指定的颜色不可用时，将使用此颜色。");
 
 
         var disabled = !config.DeleteDesignModifier.IsActive();
-        var tt       = "Delete this color. This does not remove it from designs using it.";
+        var tt       = "删除此颜色。但并不会将其从正在使用它的设计中删除。";
         if (disabled)
-            tt += $"\nHold {config.DeleteDesignModifier} to delete.";
+            tt += $"\n按住{config.DeleteDesignModifier}来删除。";
 
         foreach (var ((name, color), idx) in colors.WithIndex())
         {
@@ -83,12 +83,12 @@ public class DesignColorUi(DesignColors colors, Configuration config)
 
         ImGui.TableNextColumn();
         (tt, disabled) = _newName.Length == 0
-            ? ("Specify a name for a new color first.", true)
+            ? ("请先指定新颜色的名称。", true)
             : _newName is DesignColors.MissingColorName or DesignColors.AutomaticName
-                ? ($"You can not use the name {DesignColors.MissingColorName} or {DesignColors.AutomaticName}, choose a different one.", true)
+                ? ($"你不能使用这个名称 {DesignColors.MissingColorName} 或 {DesignColors.AutomaticName}，请选择不同的名称。", true)
                 : colors.ContainsKey(_newName)
-                    ? ($"The color {_newName} already exists, please choose a different name.", true)
-                    : ($"Add a new color {_newName} to your list.", false);
+                    ? ($"此颜色名称：{_newName}已经存在，请选择不同的名称。", true)
+                    : ($"添加新颜色：{_newName}到你的列表。", false);
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Plus.ToIconString(), buttonSize, tt, disabled, true))
         {
             changeString = _newName;
@@ -98,7 +98,7 @@ public class DesignColorUi(DesignColors colors, Configuration config)
         ImGui.TableNextColumn();
         ImGui.TableNextColumn();
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-        if (ImGui.InputTextWithHint("##newDesignColor", "New Color Name...", ref _newName, 64, ImGuiInputTextFlags.EnterReturnsTrue))
+        if (ImGui.InputTextWithHint("##newDesignColor", "新颜色名称...", ref _newName, 64, ImGuiInputTextFlags.EnterReturnsTrue))
         {
             changeString = _newName;
             changeValue  = 0xFFFFFFFF;
@@ -133,8 +133,8 @@ public class DesignColorUi(DesignColors colors, Configuration config)
 
 public class DesignColors : ISavable, IReadOnlyDictionary<string, uint>
 {
-    public const string AutomaticName       = "Automatic";
-    public const string MissingColorName    = "Missing Color";
+    public const string AutomaticName       = "自动配色";
+    public const string MissingColorName    = "缺失颜色";
     public const uint   MissingColorDefault = 0xFF0000D0;
 
     private readonly SaveService              _saveService;

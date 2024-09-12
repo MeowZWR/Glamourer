@@ -71,13 +71,13 @@ public class GenericPopupWindow : Window
             return;
 
         ImGuiUtil.TextWrapped(
-            "Glamourer has some festival-specific behaviour that is turned on by default. You can always turn this behaviour on or off in the general settings, and choose your current preference now.");
+            "Glamourer有一些节日彩蛋功能，默认情况下是开启的。你可以在“插件设置”-“特性设置”-“启动节日彩蛋”找到该选项，立即选择你当前的偏好吧。");
 
         var buttonWidth = new Vector2(150 * ImGuiHelpers.GlobalScale, 0);
         var yPos        = ImGui.GetWindowHeight() - 2 * ImGui.GetFrameHeight();
         var xPos        = (ImGui.GetWindowWidth() - ImGui.GetStyle().ItemSpacing.X) / 2 - buttonWidth.X;
         ImGui.SetCursorPos(new Vector2(xPos, yPos));
-        if (ImGui.Button("Let's Check It Out!", buttonWidth))
+        if (ImGui.Button("让我们来看看吧！", buttonWidth))
         {
             _config.DisableFestivals = 0;
             _config.Save();
@@ -85,7 +85,7 @@ public class GenericPopupWindow : Window
         }
 
         ImGui.SameLine();
-        if (ImGui.Button("Not Right Now.", buttonWidth))
+        if (ImGui.Button("现在可不行。", buttonWidth))
         {
             _config.DisableFestivals = 2;
             _config.Save();

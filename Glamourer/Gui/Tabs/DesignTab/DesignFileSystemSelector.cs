@@ -206,7 +206,7 @@ public sealed class DesignFileSystemSelector : FileSystemSelector<Design, Design
 
     private void NewDesignButton(Vector2 size)
     {
-        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Plus.ToIconString(), size, "Create a new design with default configuration.", false,
+        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Plus.ToIconString(), size, "新建一个带默认配置的设计。", false,
                 true))
         {
             _cloneDesign   = null;
@@ -217,7 +217,7 @@ public sealed class DesignFileSystemSelector : FileSystemSelector<Design, Design
 
     private void ImportDesignButton(Vector2 size)
     {
-        if (!ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.FileImport.ToIconString(), size, "Try to import a design from your clipboard.", false,
+        if (!ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.FileImport.ToIconString(), size, "尝试从剪贴板导入一个设计。", false,
                 true))
             return;
 
@@ -229,15 +229,15 @@ public sealed class DesignFileSystemSelector : FileSystemSelector<Design, Design
         }
         catch
         {
-            Glamourer.Messager.NotificationMessage("Could not import data from clipboard.", NotificationType.Error, false);
+            Glamourer.Messager.NotificationMessage("无法从剪贴板数据导入。", NotificationType.Error, false);
         }
     }
 
     private void CloneDesignButton(Vector2 size)
     {
         var tt = SelectedLeaf == null
-            ? "No design selected."
-            : "Clone the currently selected design to a duplicate";
+            ? "没有选中设计。"
+            : "为选中的设计创建一个副本。";
         if (!ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Clone.ToIconString(), size, tt, SelectedLeaf == null, true))
             return;
 
@@ -247,7 +247,7 @@ public sealed class DesignFileSystemSelector : FileSystemSelector<Design, Design
     }
 
     private void DeleteButton(Vector2 size)
-        => DeleteSelectionButton(size, _config.DeleteDesignModifier, "design", "designs", _designManager.Delete);
+        => DeleteSelectionButton(size, _config.DeleteDesignModifier, "这个设计", "这些设计", _designManager.Delete);
 
     private void DrawNewDesignPopup()
     {
@@ -262,7 +262,7 @@ public sealed class DesignFileSystemSelector : FileSystemSelector<Design, Design
             else if (design != null)
                 _designManager.CreateClone(design, _newName, true);
             else
-                Glamourer.Messager.NotificationMessage("Could not create a design, clipboard did not contain valid design data.",
+                Glamourer.Messager.NotificationMessage("无法创建设计，剪贴板未包含有效的数据。",
                     NotificationType.Error, false);
             _clipboardText = null;
         }
@@ -293,13 +293,13 @@ public sealed class DesignFileSystemSelector : FileSystemSelector<Design, Design
 
     private void SetFilterTooltip()
     {
-        FilterTooltip = "Filter designs for those where their full paths or names contain the given substring.\n"
-          + "Enter m:[string] to filter for designs with with a mod association containing the string.\n"
-          + "Enter t:[string] to filter for designs set to specific tags.\n"
-          + "Enter c:[string] to filter for designs set to specific colors.\n"
-          + "Enter i:[string] to filter for designs containing specific items.\n"
-          + "Enter n:[string] to filter only for design names and no paths.\n\n"
-          + "Use None as a placeholder value that only matches empty lists or names.";
+        FilterTooltip = "按设计的完整路径或名称关键字进行筛选。\n"
+          + "输入 m:[字符串] 筛选含有关联模组关键字的设计。\n"
+          + "输入 t:[字符串] 筛选含有特定标签的设计。\n"
+          + "输入 c:[字符串] 筛选设置为指定颜色的设计。\n"
+          + "输入 i:[字符串] 筛选包含特定物品的设计。\n"
+          + "输入 n:[字符串] 只筛选设计名称，不筛选路径。\n\n"
+          + "使用[None]作为仅匹配空列表或名称的占位符。";
     }
 
     /// <summary> Appropriately identify and set the string filter and its type. </summary>

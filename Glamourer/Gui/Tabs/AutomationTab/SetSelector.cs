@@ -59,7 +59,7 @@ public class SetSelector : IDisposable
         => GetSetName(Selection, SelectionIndex);
 
     public string GetSetName(AutoDesignSet? set, int index)
-        => set == null ? "No Selection" : IncognitoMode ? $"Auto Design Set #{index + 1}" : set.Name;
+        => set == null ? "未选择" : IncognitoMode ? $"自动化执行集 #{index + 1}" : set.Name;
 
     private void OnAutomationChange(AutomationChanged.Type type, AutoDesignSet? set, object? data)
     {
@@ -141,7 +141,7 @@ public class SetSelector : IDisposable
         using var style = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, Vector2.Zero)
             .Push(ImGuiStyleVar.FrameRounding, 0);
         ImGui.SetNextItemWidth(_width - ImGui.GetFrameHeight());
-        if (LowerString.InputWithHint("##filter", "Filter...", ref _filter, 64))
+        if (LowerString.InputWithHint("##filter", "筛选...", ref _filter, 64))
             _dirty = true;
         ImGui.SameLine();
         var f = _enabledFilter;
@@ -162,7 +162,7 @@ public class SetSelector : IDisposable
         ImGui.GetWindowDrawList().AddLine(pos, pos with { Y = ImGui.GetItemRectMax().Y }, ImGui.GetColorU32(ImGuiCol.Border),
             ImGuiHelpers.GlobalScale);
 
-        ImGuiUtil.HoverTooltip("Filter to show only enabled or disabled sets.");
+        ImGuiUtil.HoverTooltip("筛选切换仅显示已启用项目或已禁用项目。");
 
         DrawSelector();
         DrawSelectionButtons();
@@ -227,58 +227,58 @@ public class SetSelector : IDisposable
 
     private static void HelpButton(Vector2 size)
     {
-        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.QuestionCircle.ToIconString(), size, "How does Automation work?", false, true))
+        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.QuestionCircle.ToIconString(), size, "自动执行集是如何工作的？", false, true))
             ImGui.OpenPopup("Automation Help");
 
         static void HalfLine()
             => ImGui.Dummy(new Vector2(ImGui.GetTextLineHeight() / 2));
 
         const string longestLine =
-            "A single set can contain multiple automated designs that apply under different conditions and different parts of their design.";
+            "执行集中的角色设计遵循一个大概的执行规则，如果需要更精确的控制，请使用“角色设计”中的“应用规则”。";
 
         ImGuiUtil.HelpPopup("Automation Help",
             new Vector2(ImGui.CalcTextSize(longestLine).X + 50 * ImGuiHelpers.GlobalScale, 33 * ImGui.GetTextLineHeightWithSpacing()), () =>
             {
                 HalfLine();
-                ImGui.TextUnformatted("What is Automation?");
-                ImGui.BulletText("Automation helps you to automatically apply Designs to specific characters under specific circumstances.");
+                ImGui.TextUnformatted("什么是自动执行？");
+                ImGui.BulletText("自动执行可帮助你在特定条件下自动将“角色设计”应用于指定角色。");
                 HalfLine();
 
-                ImGui.TextUnformatted("Automated Design Sets");
-                ImGui.BulletText("First, you create automated design sets. An automated design set can be... ");
+                ImGui.TextUnformatted("设计自动执行集");
+                ImGui.BulletText("首先，你应该创建一个自动执行集。它可以... ");
                 using var indent = ImRaii.PushIndent();
-                ImGuiUtil.BulletTextColored(ColorId.EnabledAutoSet.Value(),  "... enabled, or");
-                ImGuiUtil.BulletTextColored(ColorId.DisabledAutoSet.Value(), "... disabled.");
+                ImGuiUtil.BulletTextColored(ColorId.EnabledAutoSet.Value(),  "... 被启用，或者");
+                ImGuiUtil.BulletTextColored(ColorId.DisabledAutoSet.Value(), "... 被禁用。");
                 indent.Pop(1);
-                ImGui.BulletText("You can create new, empty automated design sets, or duplicate existing ones.");
-                ImGui.BulletText("You can name automated design sets arbitrarily.");
-                ImGui.BulletText("You can re-order automated design sets via drag & drop in the selector.");
-                ImGui.BulletText("Each automated design set is assigned to exactly one specific character.");
+                ImGui.BulletText("你可以新建一个空白的执行集，或在现有执行集上创建一个副本。");
+                ImGui.BulletText("你可以对执行集随意命名。");
+                ImGui.BulletText("你可以在左侧选择器中使用鼠标拖拽执行集对它们排序。");
+                ImGui.BulletText("每个自动执行集都需要指定一个角色。");
                 indent.Push();
-                ImGui.BulletText("On creation, it is assigned to your current Player Character.");
-                ImGui.BulletText("You can assign sets to any players, retainers, mannequins and most human NPCs.");
-                ImGui.BulletText("Only one automated design set can be enabled at the same time for each specific character.");
+                ImGui.BulletText("创建时，会将其指定给当前玩家的角色。");
+                ImGui.BulletText("你可以将执行集分配给任何玩家、雇员、服装模特和大多数人类NPC。");
+                ImGui.BulletText("每个角色只能同时启用一个自动执行集。");
                 indent.Push();
-                ImGui.BulletText("Enabling another automatically disables the prior one.");
+                ImGui.BulletText("启用一个角色的执行集，会自动禁用他的上一个执行集。");
                 indent.Pop(2);
 
                 HalfLine();
-                ImGui.TextUnformatted("Automated Designs");
-                ImGui.BulletText(longestLine);
+                ImGui.TextUnformatted("执行集中的角色设计");
+                ImGui.BulletText("单个自动执行集可以包含多个角色设计，每个角色设计可以按不同的条件来执行。");
                 ImGui.BulletText(
-                    "The order of these automated designs can also be changed via drag & drop, and is relevant for the application.");
-                ImGui.BulletText("Automated designs respect their own, coarse applications rules, and the designs own application rules.");
-                ImGui.BulletText("Automated designs can be configured to be job- or job-group specific and only apply on these jobs, then.");
-                ImGui.BulletText("There is also the special option 'Reset', which can be used to reset remaining slots to the game's values.");
+                    "这些角色设计的排序也可以通过鼠标拖拽进行更改，排序也与执行规则有关。");
+                ImGui.BulletText("自动执行集将同时使用自己的粗略规则和角色设计中的详细规则。");
+                ImGui.BulletText("角色设计可以被分配给指定的职业或职能类型，使其只在对应职业上生效。");
+                ImGui.BulletText("还有一个特殊选项“还原”，可用来将指定栏位重置为游戏值。");
                 ImGui.BulletText(
-                    "Automated designs apply from top to bottom, either on top of your characters current state, or its game state.");
-                ImGui.BulletText("For a value to apply, it needs to:");
+                    "执行集也有优先级，从上到下进行应用，无论是在当前Glamourer已生效的状态，还是在游戏角色实际状态上。");
+                ImGui.BulletText("要应用某个值（装备、染色、外观的值），它需要：");
                 indent.Push();
-                ImGui.BulletText("Be configured to apply in the design itself.");
-                ImGui.BulletText("Be configured to apply in the automation rules.");
-                ImGui.BulletText("Fulfill the conditions of the automation rules.");
-                ImGui.BulletText("Be a valid value for the current (on its own application) state of the character.");
-                ImGui.BulletText("Not have had anything applied to the same value before from a different design.");
+                ImGui.BulletText("在角色设计中已配置应用规则。");
+                ImGui.BulletText("在执行集中已配置执行规则。");
+                ImGui.BulletText("满足执行规则的条件。");
+                ImGui.BulletText("是角色当前状态（其自己的应用规则）上的有效值。");
+                ImGui.BulletText("未在优先级更高的角色设计中应用过相同的值。");
                 indent.Pop(1);
             });
     }
@@ -289,13 +289,13 @@ public class SetSelector : IDisposable
         if (!id.IsValid)
             id = _actors.CreatePlayer(ByteString.FromSpanUnsafe("New Design"u8, true, false, true), ushort.MaxValue);
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Plus.ToIconString(), size,
-                $"Create a new Automatic Design Set for {id}. The associated player can be changed later.", !id.IsValid, true))
-            _manager.AddDesignSet("New Automation Set", id);
+                $"新建一个自动执行项目给{id}。关联角色名字可在创建成功后修改。", !id.IsValid, true))
+            _manager.AddDesignSet("新建自动执行集", id);
     }
 
     private void DuplicateSetButton(Vector2 size)
     {
-        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Clone.ToIconString(), size, "Duplicate the current Automatic Design Set.",
+        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Clone.ToIconString(), size, "复制当前选中的自动执行集。",
                 Selection == null, true))
             _manager.DuplicateDesignSet(Selection!);
     }
@@ -306,9 +306,9 @@ public class SetSelector : IDisposable
         var keyValid = _config.DeleteDesignModifier.IsActive();
         var (disabled, tt) = HasSelection
             ? keyValid
-                ? (false, "Delete the currently selected design set.")
-                : (true, $"Delete the currently selected design set.\nHold {_config.DeleteDesignModifier} to delete.")
-            : (true, "No Automatic Design Set selected.");
+                ? (false, "删除选中的项目。")
+                : (true, $"删除选中的项目。\n按住 {_config.DeleteDesignModifier} 点击来删除。")
+            : (true, "没有选中自动执行项目。");
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Trash.ToIconString(), size, tt, disabled, true))
             _manager.DeleteDesignSet(SelectionIndex);
     }
@@ -349,7 +349,7 @@ public class SetSelector : IDisposable
         {
             if (source)
             {
-                ImGui.TextUnformatted($"Moving design set {GetSetName(set, index)} from position {index + 1}...");
+                ImGui.TextUnformatted($"移动来自第{index + 1}行的自动执行项目 {GetSetName(set, index)}...");
                 if (ImGui.SetDragDropPayload(dragDropLabel, nint.Zero, 0))
                     _dragIndex = index;
             }

@@ -23,17 +23,17 @@ public class UnlockTable : Table<EquipItem>, IDisposable
         PenumbraChangedItemTooltip tooltip, ObjectUnlocked @event, JobService jobs, FavoriteManager favorites)
         : base("ItemUnlockTable", new ItemList(items),
             new FavoriteColumn(favorites, @event) { Label = "F" },
-            new NameColumn(textures, tooltip) { Label     = "Item Name..." },
-            new SlotColumn { Label                        = "Equip Slot" },
-            new TypeColumn { Label                        = "Item Type..." },
-            new UnlockDateColumn(itemUnlocks) { Label     = "Unlocked" },
-            new ItemIdColumn { Label                      = "Item Id..." },
-            new ModelDataColumn(items) { Label            = "Model Data..." },
-            new JobColumn(jobs) { Label                   = "Jobs" },
-            new RequiredLevelColumn { Label               = "Level..." },
-            new DyableColumn { Label                      = "Dye" },
-            new CrestColumn { Label                       = "Crest" },
-            new TradableColumn { Label                    = "Trade" }
+            new NameColumn(textures, tooltip) { Label     = "物品名称..." },
+            new SlotColumn { Label                        = "装备栏" },
+            new TypeColumn { Label                        = "物品类型..." },
+            new UnlockDateColumn(itemUnlocks) { Label     = "已解锁" },
+            new ItemIdColumn { Label                      = "物品ID..." },
+            new ModelDataColumn(items) { Label            = "模型数据..." },
+            new JobColumn(jobs) { Label                   = "职业" },
+            new RequiredLevelColumn { Label               = "等级..." },
+            new DyableColumn { Label                      = "染色" },
+            new CrestColumn { Label                       = "队徽" },
+            new TradableColumn { Label                    = "可交易" }
         )
     {
         _event   =  @event;
@@ -199,17 +199,17 @@ public class UnlockTable : Table<EquipItem>, IDisposable
         private static string ToString(EquipSlot slot)
             => slot switch
             {
-                EquipSlot.MainHand => "Mainhand",
-                EquipSlot.OffHand  => "Offhand",
-                EquipSlot.Head     => "Head",
-                EquipSlot.Body     => "Body",
-                EquipSlot.Hands    => "Hands",
-                EquipSlot.Legs     => "Legs",
-                EquipSlot.Feet     => "Feet",
-                EquipSlot.Ears     => "Ears",
-                EquipSlot.Neck     => "Neck",
-                EquipSlot.Wrists   => "Wrists",
-                EquipSlot.RFinger  => "Finger",
+                EquipSlot.MainHand => "主手",
+                EquipSlot.OffHand  => "副手",
+                EquipSlot.Head     => "头部",
+                EquipSlot.Body     => "身体",
+                EquipSlot.Hands    => "手部",
+                EquipSlot.Legs     => "腿部",
+                EquipSlot.Feet     => "脚部",
+                EquipSlot.Ears     => "耳朵",
+                EquipSlot.Neck     => "颈部",
+                EquipSlot.Wrists   => "腕部",
+                EquipSlot.RFinger  => "手指",
                 _                  => string.Empty,
             };
     }
@@ -482,7 +482,7 @@ public class UnlockTable : Table<EquipItem>, IDisposable
     private sealed class TradableColumn : YesNoColumn<EquipItem>
     {
         public TradableColumn()
-            => Tooltip = "Whether the item is tradable.";
+            => Tooltip = "该物品是否可交易。";
 
         protected override bool GetValue(EquipItem item)
             => item.Flags.HasFlag(ItemFlags.IsTradable);
@@ -491,7 +491,7 @@ public class UnlockTable : Table<EquipItem>, IDisposable
     private sealed class CrestColumn : YesNoColumn<EquipItem>
     {
         public CrestColumn()
-            => Tooltip = "Whether a crest can be applied to the item..";
+            => Tooltip = "是否可以在物品上应用队徽..";
 
         protected override bool GetValue(EquipItem item)
             => item.Flags.HasFlag(ItemFlags.IsCrestWorthy);

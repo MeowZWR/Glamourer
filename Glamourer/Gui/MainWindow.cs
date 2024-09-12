@@ -236,10 +236,10 @@ public class MainWindow : Window, IDisposable
     private string GetLabel()
         => (Glamourer.Version.Length == 0, _config.Ephemeral.IncognitoMode) switch
         {
-            (true, true)   => "Glamourer (Incognito Mode)###GlamourerMainWindow",
+            (true, true)   => "Glamourer（匿名模式）###GlamourerMainWindow",
             (true, false)  => "Glamourer###GlamourerMainWindow",
             (false, false) => $"Glamourer v{Glamourer.Version}###GlamourerMainWindow",
-            (false, true)  => $"Glamourer v{Glamourer.Version} (Incognito Mode)###GlamourerMainWindow",
+            (false, true)  => $"Glamourer v{Glamourer.Version}（匿名模式）###GlamourerMainWindow",
         };
 
     private void DrawProblemWindow(string text)
@@ -256,8 +256,8 @@ public class MainWindow : Window, IDisposable
 
         var ignoreAllowed = _config.DeleteDesignModifier.IsActive();
         ImGui.SameLine();
-        if (ImUtf8.ButtonEx("Ignore Penumbra This Time"u8,
-                $"Some functionality, like automation or retaining state, will not work correctly without Penumbra.\n\nIgnore this at your own risk!{(ignoreAllowed ? string.Empty : $"\n\nHold {_config.DeleteDesignModifier} while clicking to enable this button.")}",
+        if (ImUtf8.ButtonEx("这次忽略 Penumbra"u8,
+                $"某些功能，如自动执行或保持状态，没有 Penumbra 将无法正常工作。\n\n忽略此操作风险自负！{(ignoreAllowed ? string.Empty : $"\n\n按住 {_config.DeleteDesignModifier} 键并单击以启用此按钮。)")}",
                 default, !ignoreAllowed))
             _ignorePenumbra = true;
 

@@ -7,7 +7,7 @@ namespace Glamourer.Gui.Tabs.ActorTab;
 public class ActorTab(ActorSelector selector, ActorPanel panel) : ITab
 {
     public ReadOnlySpan<byte> Label
-        => "Actors"u8;
+        => "附近角色"u8;
 
     public void DrawContent()
     {

@@ -97,11 +97,11 @@ public class DesignPanel
         => HeaderDrawer.Draw(SelectionName, 0, ImGui.GetColorU32(ImGuiCol.FrameBg), _leftButtons, _rightButtons);
 
     private string SelectionName
-        => _selector.Selected == null ? "No Selection" : _selector.IncognitoMode ? _selector.Selected.Incognito : _selector.Selected.Name.Text;
+        => _selector.Selected == null ? "未选择" : _selector.IncognitoMode ? _selector.Selected.Incognito : _selector.Selected.Name.Text;
 
     private void DrawEquipment()
     {
-        using var h = ImRaii.CollapsingHeader("Equipment");
+        using var h = ImRaii.CollapsingHeader("装备");
         if (!h)
             return;
 
@@ -157,7 +157,7 @@ public class DesignPanel
     private void DrawCustomize()
     {
         var header = _selector.Selected!.DesignData.ModelId == 0
-            ? "Customization"
+            ? "外貌"
             : $"Customization (Model Id #{_selector.Selected!.DesignData.ModelId})###Customization";
         using var h = ImRaii.CollapsingHeader(header);
         if (!h)
@@ -183,7 +183,7 @@ public class DesignPanel
         if (!_config.UseAdvancedParameters)
             return;
 
-        using var h = ImRaii.CollapsingHeader("Advanced Customizations");
+        using var h = ImRaii.CollapsingHeader("外貌（高级）- 调色盘");
         if (!h)
             return;
 
@@ -195,7 +195,7 @@ public class DesignPanel
         if (!_config.UseAdvancedDyes)
             return;
 
-        using var h = ImRaii.CollapsingHeader("Advanced Dyes");
+        using var h = ImRaii.CollapsingHeader("染色（高级）- 颜色集");
         if (!h)
             return;
 
@@ -209,7 +209,7 @@ public class DesignPanel
         var       available = set.SettingAvailable | CustomizeFlag.Clan | CustomizeFlag.Gender | CustomizeFlag.BodyType;
         var flags = _selector.Selected!.ApplyCustomizeExcludingBodyType == 0 ? 0 :
             (_selector.Selected!.ApplyCustomize & available) == available    ? 3 : 1;
-        if (ImGui.CheckboxFlags("Apply All Customizations", ref flags, 3))
+        if (ImGui.CheckboxFlags("应用全部外貌数据", ref flags, 3))
         {
             var newFlags = flags == 3;
             _manager.ChangeApplyCustomize(_selector.Selected!, CustomizeIndex.Clan,   newFlags);
@@ -219,38 +219,38 @@ public class DesignPanel
         }
 
         var applyClan = _selector.Selected!.DoApplyCustomize(CustomizeIndex.Clan);
-        if (ImGui.Checkbox($"Apply {CustomizeIndex.Clan.ToDefaultName()}", ref applyClan))
+        if (ImGui.Checkbox($"应用{CustomizeIndex.Clan.ToDefaultName()}", ref applyClan))
             _manager.ChangeApplyCustomize(_selector.Selected!, CustomizeIndex.Clan, applyClan);
 
         var applyGender = _selector.Selected!.DoApplyCustomize(CustomizeIndex.Gender);
-        if (ImGui.Checkbox($"Apply {CustomizeIndex.Gender.ToDefaultName()}", ref applyGender))
+        if (ImGui.Checkbox($"应用{CustomizeIndex.Gender.ToDefaultName()}", ref applyGender))
             _manager.ChangeApplyCustomize(_selector.Selected!, CustomizeIndex.Gender, applyGender);
 
 
         foreach (var index in CustomizationExtensions.All.Where(set.IsAvailable))
         {
             var apply = _selector.Selected!.DoApplyCustomize(index);
-            if (ImGui.Checkbox($"Apply {set.Option(index)}", ref apply))
+            if (ImGui.Checkbox($"应用{set.Option(index)}", ref apply))
                 _manager.ChangeApplyCustomize(_selector.Selected!, index, apply);
         }
     }
 
     private void DrawCrestApplication()
     {
-        using var id        = ImRaii.PushId("Crests");
+        using var id        = ImRaii.PushId("队徽");
         var       flags     = (uint)_selector.Selected!.Application.Crest;
-        var       bigChange = ImGui.CheckboxFlags("Apply All Crests", ref flags, (uint)CrestExtensions.AllRelevant);
+        var       bigChange = ImGui.CheckboxFlags("应用所有队徽", ref flags, (uint)CrestExtensions.AllRelevant);
         foreach (var flag in CrestExtensions.AllRelevantSet)
         {
             var apply = bigChange ? ((CrestFlag)flags & flag) == flag : _selector.Selected!.DoApplyCrest(flag);
-            if (ImGui.Checkbox($"Apply {flag.ToLabel()} Crest", ref apply) || bigChange)
+            if (ImGui.Checkbox($"应用{flag.ToLabel()}队徽", ref apply) || bigChange)
                 _manager.ChangeApplyCrest(_selector.Selected!, flag, apply);
         }
     }
 
     private void DrawApplicationRules()
     {
-        using var h = ImRaii.CollapsingHeader("Application Rules");
+        using var h = ImRaii.CollapsingHeader("应用规则");
         if (!h)
             return;
 
@@ -277,37 +277,37 @@ public class DesignPanel
             {
                 var       flags     = (uint)(allFlags & _selector.Selected!.Application.Equip);
                 using var id        = ImRaii.PushId(label);
-                var       bigChange = ImGui.CheckboxFlags($"Apply All {label}", ref flags, (uint)allFlags);
+                var       bigChange = ImGui.CheckboxFlags($"应用全部{label}", ref flags, (uint)allFlags);
                 if (stain)
                     foreach (var slot in slots)
                     {
                         var apply = bigChange ? ((EquipFlag)flags).HasFlag(slot.ToStainFlag()) : _selector.Selected!.DoApplyStain(slot);
-                        if (ImGui.Checkbox($"Apply {slot.ToName()} Dye", ref apply) || bigChange)
+                        if (ImGui.Checkbox($"应用{slot.ToName()}染色", ref apply) || bigChange)
                             _manager.ChangeApplyStains(_selector.Selected!, slot, apply);
                     }
                 else
                     foreach (var slot in slots)
                     {
                         var apply = bigChange ? ((EquipFlag)flags).HasFlag(slot.ToFlag()) : _selector.Selected!.DoApplyEquip(slot);
-                        if (ImGui.Checkbox($"Apply {slot.ToName()}", ref apply) || bigChange)
+                        if (ImGui.Checkbox($"应用{slot.ToName()}", ref apply) || bigChange)
                             _manager.ChangeApplyItem(_selector.Selected!, slot, apply);
                     }
             }
 
-            ApplyEquip("Weapons", ApplicationTypeExtensions.WeaponFlags, false, new[]
+            ApplyEquip("武器", ApplicationTypeExtensions.WeaponFlags, false, new[]
             {
                 EquipSlot.MainHand,
                 EquipSlot.OffHand,
             });
 
             ImUtf8.IconDummy();
-            ApplyEquip("Armor", ApplicationTypeExtensions.ArmorFlags, false, EquipSlotExtensions.EquipmentSlots);
+            ApplyEquip("服装", ApplicationTypeExtensions.ArmorFlags, false, EquipSlotExtensions.EquipmentSlots);
 
             ImUtf8.IconDummy();
-            ApplyEquip("Accessories", ApplicationTypeExtensions.AccessoryFlags, false, EquipSlotExtensions.AccessorySlots);
+            ApplyEquip("饰品", ApplicationTypeExtensions.AccessoryFlags, false, EquipSlotExtensions.AccessorySlots);
 
             ImUtf8.IconDummy();
-            ApplyEquip("Dyes", ApplicationTypeExtensions.StainFlags, true,
+            ApplyEquip("染色", ApplicationTypeExtensions.StainFlags, true,
                 EquipSlotExtensions.FullSlots);
 
             ImUtf8.IconDummy();
@@ -337,7 +337,7 @@ public class DesignPanel
         using var  id        = ImRaii.PushId("Meta");
         const uint all       = (uint)MetaExtensions.All;
         var        flags     = (uint)_selector.Selected!.Application.Meta;
-        var        bigChange = ImGui.CheckboxFlags("Apply All Meta Changes", ref flags, all);
+        var        bigChange = ImGui.CheckboxFlags("应用全部元数据修改", ref flags, all);
 
         foreach (var (index, label) in MetaExtensions.AllRelevant.Zip(MetaLabels))
         {
@@ -349,7 +349,7 @@ public class DesignPanel
 
     private static readonly IReadOnlyList<string> BonusSlotLabels =
     [
-        "Apply Facewear",
+        "应用面甲",
     ];
 
     private void DrawBonusSlotApplication()
@@ -370,11 +370,11 @@ public class DesignPanel
     {
         using var id        = ImRaii.PushId("Parameter");
         var       flags     = (uint)_selector.Selected!.Application.Parameters;
-        var       bigChange = ImGui.CheckboxFlags("Apply All Customize Parameters", ref flags, (uint)CustomizeParameterExtensions.All);
+        var       bigChange = ImGui.CheckboxFlags("应用所有外貌参数", ref flags, (uint)CustomizeParameterExtensions.All);
         foreach (var flag in CustomizeParameterExtensions.AllFlags)
         {
             var apply = bigChange ? ((CustomizeParameterFlag)flags).HasFlag(flag) : _selector.Selected!.DoApplyParameter(flag);
-            if (ImGui.Checkbox($"Apply {flag.ToName()}", ref apply) || bigChange)
+            if (ImGui.Checkbox($"应用{flag.ToName()}", ref apply) || bigChange)
                 _manager.ChangeApplyParameter(_selector.Selected!, flag, apply);
         }
     }
@@ -446,8 +446,8 @@ public class DesignPanel
     private void DrawApplyToSelf()
     {
         var (id, data) = _objects.PlayerData;
-        if (!ImGuiUtil.DrawDisabledButton("Apply to Yourself", Vector2.Zero,
-                "Apply the current design with its settings to your character.\nHold Control to only apply gear.\nHold Shift to only apply customizations.",
+        if (!ImGuiUtil.DrawDisabledButton("应用到自己", Vector2.Zero,
+                "将当前设计按其中设置应用到你的角色。\n按住CTRL仅应用装备。\n按住Shift仅应用外貌。",
                 !data.Valid))
             return;
 
@@ -463,10 +463,10 @@ public class DesignPanel
         var (id, data) = _objects.TargetData;
         var tt = id.IsValid
             ? data.Valid
-                ? "Apply the current design with its settings to your current target.\nHold Control to only apply gear.\nHold Shift to only apply customizations."
-                : "The current target can not be manipulated."
-            : "No valid target selected.";
-        if (!ImGuiUtil.DrawDisabledButton("Apply to Target", Vector2.Zero, tt, !data.Valid))
+                ? "将当前设计按其中设置应用到你的目标。\n按住CTRL仅应用装备。\n按住Shift仅应用外貌。"
+                : "无法应用到当前目标。"
+            : "未选中有效目标。";
+        if (!ImGuiUtil.DrawDisabledButton("应用到目标", Vector2.Zero, tt, !data.Valid))
             return;
 
         if (_state.GetOrCreate(id, data.Objects[0], out var state))
@@ -480,13 +480,13 @@ public class DesignPanel
     {
         var verified = _importService.Verify(_selector.Selected!.DesignData.Customize, out _);
         var tt = verified
-            ? "Export the currently configured customizations of this design to a character creation data file."
-            : "The current design contains customizations that can not be applied during character creation.";
+            ? "将当前设计的外貌数据导出为游戏角色创建时可读取的文档。"
+            : "当前设计包含无法在创建角色时使用的外貌数据。";
         var startPath = GetUserPath();
         if (startPath.Length == 0)
             startPath = null;
-        if (ImGuiUtil.DrawDisabledButton("Export to Dat", Vector2.Zero, tt, !verified))
-            _fileDialog.SaveFileDialog("Save File...", ".dat", "FFXIV_CHARA_01.dat", ".dat", (v, path) =>
+        if (ImGuiUtil.DrawDisabledButton("导出为Dat", Vector2.Zero, tt, !verified))
+            _fileDialog.SaveFileDialog("保存文件...", ".dat", "FFXIV_CHARA_01.dat", ".dat", (v, path) =>
             {
                 if (v && _selector.Selected != null)
                     _importService.SaveDesignAsDat(path, _selector.Selected!.DesignData.Customize, _selector.Selected!.Name);
@@ -506,8 +506,8 @@ public class DesignPanel
 
         protected override string Description
             => panel._selector.Selected!.WriteProtected()
-                ? "Make this design editable."
-                : "Write-protect this design.";
+                ? "解锁设计，使其可以被编辑。"
+                : "锁定设计，使其不能被编辑。";
 
         protected override FontAwesomeIcon Icon
             => panel._selector.Selected!.WriteProtected()
@@ -527,7 +527,7 @@ public class DesignPanel
             => panel._selector.Selected?.WriteProtected() ?? true;
 
         protected override string Description
-            => "Try to apply a design from your clipboard over this design.\nHold Control to only apply gear.\nHold Shift to only apply customizations.";
+            => "尝试使用剪贴板中的设计数据覆盖此设计。\n按住CTRL仅应用装备。\n按住Shift仅应用外貌。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.Clipboard;
@@ -539,13 +539,13 @@ public class DesignPanel
                 var text = ImGui.GetClipboardText();
                 var (applyEquip, applyCustomize) = UiHelpers.ConvertKeysToBool();
                 var design = panel._converter.FromBase64(text, applyCustomize, applyEquip, out _)
-                 ?? throw new Exception("The clipboard did not contain valid data.");
+                 ?? throw new Exception("剪贴板未包含有效数据。");
                 panel._manager.ApplyDesign(panel._selector.Selected!, design);
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"Could not apply clipboard to {panel._selector.Selected!.Name}.",
-                    $"Could not apply clipboard to design {panel._selector.Selected!.Identifier}", NotificationType.Error, false);
+                Glamourer.Messager.NotificationMessage(ex, $"无法将剪贴板数据应用于{panel._selector.Selected!.Name}。",
+                    $"无法将剪贴板数据应用于设计{panel._selector.Selected!.Identifier}", NotificationType.Error, false);
             }
         }
     }
@@ -559,7 +559,7 @@ public class DesignPanel
             => !panel._manager.CanUndo(panel._selector.Selected) || (panel._selector.Selected?.WriteProtected() ?? true);
 
         protected override string Description
-            => "Undo the last time you applied an entire design onto this design, if you accidentally overwrote your design with a different one.";
+            => "如果不小心用不同的设计覆盖了您的设计，请撤消上一次更改。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.SyncAlt;
@@ -572,7 +572,7 @@ public class DesignPanel
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"Could not undo last changes to {panel._selector.Selected!.Name}.",
+                Glamourer.Messager.NotificationMessage(ex, $"无法为{panel._selector.Selected!.Name}撤消上次更改。",
                     NotificationType.Error,
                     false);
             }
@@ -585,7 +585,7 @@ public class DesignPanel
             => panel._selector.Selected != null;
 
         protected override string Description
-            => "Copy the current design to your clipboard.";
+            => "复制当前设计的数据到剪贴板。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.Copy;
@@ -599,8 +599,8 @@ public class DesignPanel
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"Could not copy {panel._selector.Selected!.Name} data to clipboard.",
-                    $"Could not copy data from design {panel._selector.Selected!.Identifier} to clipboard", NotificationType.Error, false);
+                Glamourer.Messager.NotificationMessage(ex, $"无法复制{panel._selector.Selected!.Name}的数据到剪贴板。",
+                    $"无法复制来自设计{panel._selector.Selected!.Identifier}的数据到剪贴板。", NotificationType.Error, false);
             }
         }
     }
@@ -611,7 +611,7 @@ public class DesignPanel
             => panel._selector.Selected != null && panel._objects.Player.Valid;
 
         protected override string Description
-            => "Overwrite this design with your character's current state.";
+            => "用你的角色的当前状态覆盖此设计。";
 
         protected override bool Disabled
             => panel._selector.Selected?.WriteProtected() ?? true;
@@ -625,16 +625,16 @@ public class DesignPanel
             {
                 var (player, actor) = panel._objects.PlayerData;
                 if (!player.IsValid || !actor.Valid || !panel._state.GetOrCreate(player, actor.Objects[0], out var state))
-                    throw new Exception("No player state available.");
+                    throw new Exception("没有可用的玩家状态。");
 
                 var design = panel._converter.Convert(state, ApplicationRules.FromModifiers(state))
-                 ?? throw new Exception("The clipboard did not contain valid data.");
+                 ?? throw new Exception("剪贴板中没有有效数据。");
                 panel._manager.ApplyDesign(panel._selector.Selected!, design);
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, $"Could not apply player state to {panel._selector.Selected!.Name}.",
-                    $"Could not apply player state to design {panel._selector.Selected!.Identifier}", NotificationType.Error, false);
+                Glamourer.Messager.NotificationMessage(ex, $"无法应用玩家状态到{panel._selector.Selected!.Name}。",
+                    $"无法应用玩家状态到设计：{panel._selector.Selected!.Identifier}", NotificationType.Error, false);
             }
         }
     }
@@ -642,7 +642,7 @@ public class DesignPanel
     private sealed class UndoButton(DesignPanel panel) : Button
     {
         protected override string Description
-            => "Undo the last change.";
+            => "撤消上次更改。";
 
         protected override FontAwesomeIcon Icon
             => FontAwesomeIcon.Undo;

@@ -40,7 +40,7 @@ public class ContextMenuService : IDisposable
             IsEnabled   = true,
             IsReturn    = false,
             PrefixChar  = 'G',
-            Name        = "Try On",
+            Name        = "试穿",
             OnClicked   = OnClick,
             IsSubmenu   = false,
             PrefixColor = 541,

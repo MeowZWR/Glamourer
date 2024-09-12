@@ -50,12 +50,12 @@ public class ObjectManagerPanel(ObjectManager _objectManager, ActorManager _acto
                 ImGuiUtil.CopyOnClickSelectable(_objectManager.GPosePlayer.ToString());
             }
 
-            ImGuiUtil.DrawTableColumn("Number of Players");
+            ImGuiUtil.DrawTableColumn("玩家数量");
             ImGuiUtil.DrawTableColumn(_objectManager.Count.ToString());
             ImGui.TableNextColumn();
         }
 
-        var filterChanged = ImGui.InputTextWithHint("##Filter", "Filter...", ref _objectFilter, 64);
+        var filterChanged = ImGui.InputTextWithHint("##Filter", "筛选...", ref _objectFilter, 64);
         using var table2 = ImRaii.Table("##data2", 3,
             ImGuiTableFlags.RowBg | ImGuiTableFlags.BordersOuter | ImGuiTableFlags.ScrollY,
             new Vector2(-1, 20 * ImGui.GetTextLineHeightWithSpacing()));

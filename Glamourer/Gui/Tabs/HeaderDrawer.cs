@@ -48,8 +48,8 @@ public static class HeaderDrawer
     {
         protected override string Description
             => config.IncognitoMode
-                ? "Toggle incognito mode off."
-                : "Toggle incognito mode on.";
+                ? "关闭匿名模式。"
+                : "开启匿名模式。";
 
         protected override FontAwesomeIcon Icon
             => config.IncognitoMode

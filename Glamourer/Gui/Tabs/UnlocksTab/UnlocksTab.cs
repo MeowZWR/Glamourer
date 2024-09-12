@@ -14,7 +14,7 @@ public class UnlocksTab : Window, ITab
     private readonly UnlockTable    _table;
 
     public UnlocksTab(EphemeralConfig config, UnlockOverview overview, UnlockTable table)
-        : base("Unlocked Equipment")
+        : base("已解锁装备/物品")
     {
         _config   = config;
         _overview = overview;
@@ -39,7 +39,7 @@ public class UnlocksTab : Window, ITab
     }
 
     public ReadOnlySpan<byte> Label
-        => "Unlocks"u8;
+        => "解锁物品"u8;
 
     public void DrawContent()
     {
@@ -66,11 +66,11 @@ public class UnlocksTab : Window, ITab
         if (DetailMode)
             buttonSize.X -= ImGui.GetFrameHeight() / 2;
 
-        if (ImGuiUtil.DrawDisabledButton("Overview Mode", buttonSize, "Show tinted icons of sets of unlocks.", !DetailMode))
+        if (ImGuiUtil.DrawDisabledButton("总览模式", buttonSize, "显示已解锁物品的图标。", !DetailMode))
             DetailMode = false;
 
         ImGui.SameLine();
-        if (ImGuiUtil.DrawDisabledButton("Detailed Mode", buttonSize, "Show all unlockable data as a combined filterable and sortable table.",
+        if (ImGuiUtil.DrawDisabledButton("详情模式", buttonSize, "显示所有解锁数据为可筛选和排序的组合表格。",
                 DetailMode))
             DetailMode = true;
 
@@ -78,7 +78,7 @@ public class UnlocksTab : Window, ITab
         {
             ImGui.SameLine();
             if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Expand.ToIconString(), new Vector2(ImGui.GetFrameHeight()),
-                    "Restore all columns to their original size.", false, true))
+                    "将所有列恢复到其原始大小。", false, true))
                 _table.Flags &= ~ImGuiTableFlags.Resizable;
         }
 
@@ -86,7 +86,7 @@ public class UnlocksTab : Window, ITab
         {
             ImGui.SameLine();
             if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.SquareArrowUpRight.ToIconString(), new Vector2(ImGui.GetFrameHeight()),
-                    "Pop the unlocks tab out into its own window.", false, true))
+                    "打开“解锁物品”独立窗口。", false, true))
                 IsOpen = true;
         }
     }

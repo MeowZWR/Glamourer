@@ -41,7 +41,7 @@ public class DesignDetailTab
 
     public void Draw()
     {
-        using var h = ImRaii.CollapsingHeader("Design Details");
+        using var h = ImRaii.CollapsingHeader("设计详情");
         if (!h)
             return;
 
@@ -61,7 +61,7 @@ public class DesignDetailTab
         ImGui.TableSetupColumn("Type", ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Last Update Datem").X);
         ImGui.TableSetupColumn("Data", ImGuiTableColumnFlags.WidthStretch);
 
-        ImGuiUtil.DrawFrameColumn("Design Name");
+        ImGuiUtil.DrawFrameColumn("设计名称");
         ImGui.TableNextColumn();
         var width = new Vector2(ImGui.GetContentRegionAvail().X, 0);
         var name  = _newName ?? _selector.Selected!.Name;
@@ -80,7 +80,7 @@ public class DesignDetailTab
         }
 
         var identifier = _selector.Selected!.Identifier.ToString();
-        ImGuiUtil.DrawFrameColumn("Unique Identifier");
+        ImGuiUtil.DrawFrameColumn("唯一标识符");
         ImGui.TableNextColumn();
         var fileName = _saveService.FileNames.DesignFile(_selector.Selected!);
         using (var mono = ImRaii.PushFont(UiBuilder.MonoFont))
@@ -101,9 +101,9 @@ public class DesignDetailTab
         }
 
         ImGuiUtil.HoverTooltip(
-            $"Open the file\n\t{fileName}\ncontaining this design in the .json-editor of your choice.\n\nRight-Click to copy identifier to clipboard.");
+            $"打开此文件：\n\t{fileName}\n在您选择的.json编辑器中包控制此设计。\n\n右键单击可将标识符复制到剪贴板。");
 
-        ImGuiUtil.DrawFrameColumn("Full Selector Path");
+        ImGuiUtil.DrawFrameColumn("完整选择器路径");
         ImGui.TableNextColumn();
         var path = _newPath ?? _selector.SelectedLeaf!.FullName();
         ImGui.SetNextItemWidth(width.X);
@@ -122,33 +122,33 @@ public class DesignDetailTab
             }
             catch (Exception ex)
             {
-                Glamourer.Messager.NotificationMessage(ex, ex.Message, "Could not rename or move design", NotificationType.Error);
+                Glamourer.Messager.NotificationMessage(ex, ex.Message, "无法重命名或移动设计", NotificationType.Error);
             }
 
-        ImGuiUtil.DrawFrameColumn("Quick Design Bar");
+        ImGuiUtil.DrawFrameColumn("快速设计栏");
         ImGui.TableNextColumn();
-        if (ImGui.RadioButton("Display##qdb", _selector.Selected.QuickDesign))
+        if (ImGui.RadioButton("显示##qdb", _selector.Selected.QuickDesign))
             _manager.SetQuickDesign(_selector.Selected!, true);
         var hovered = ImGui.IsItemHovered();
         ImGui.SameLine();
-        if (ImGui.RadioButton("Hide##qdb", !_selector.Selected.QuickDesign))
+        if (ImGui.RadioButton("隐藏##qdb", !_selector.Selected.QuickDesign))
             _manager.SetQuickDesign(_selector.Selected!, false);
         if (hovered || ImGui.IsItemHovered())
-            ImGui.SetTooltip("Display or hide this design in your quick design bar.");
+            ImGui.SetTooltip("在快速设计栏中显示或隐藏此设计。");
 
         var forceRedraw = _selector.Selected!.ForcedRedraw;
-        ImGuiUtil.DrawFrameColumn("Force Redrawing");
+        ImGuiUtil.DrawFrameColumn("强制重绘");
         ImGui.TableNextColumn();
         if (ImGui.Checkbox("##ForceRedraw", ref forceRedraw))
             _manager.ChangeForcedRedraw(_selector.Selected!, forceRedraw);
-        ImGuiUtil.HoverTooltip("Set this design to always force a redraw when it is applied through any means.");
+        ImGuiUtil.HoverTooltip("设置使此设计在任何方式应用时始终强制重新绘制。");
 
-        ImGuiUtil.DrawFrameColumn("Color");
+        ImGuiUtil.DrawFrameColumn("配色");
         var colorName = _selector.Selected!.Color.Length == 0 ? DesignColors.AutomaticName : _selector.Selected!.Color;
         ImGui.TableNextColumn();
-        if (_colorCombo.Draw("##colorCombo", colorName, "Associate a color with this design.\n"
-              + "Right-Click to revert to automatic coloring.\n"
-              + "Hold Control and scroll the mousewheel to scroll.",
+        if (_colorCombo.Draw("##colorCombo", colorName, "将颜色与此设计相关联。\n"
+              + "右键单击可恢复为自动配色。\n"
+              + "按住Ctrl并滚动鼠标滚轮进行滚动选择。",
                 width.X - ImGui.GetStyle().ItemSpacing.X - ImGui.GetFrameHeight(), ImGui.GetTextLineHeight())
          && _colorCombo.CurrentSelection != null)
         {
@@ -171,18 +171,18 @@ public class DesignDetailTab
             var       size = new Vector2(ImGui.GetFrameHeight());
             using var font = ImRaii.PushFont(UiBuilder.IconFont);
             ImGuiUtil.DrawTextButton(FontAwesomeIcon.ExclamationCircle.ToIconString(), size, 0, _colors.MissingColor);
-            ImGuiUtil.HoverTooltip("The color associated with this design does not exist.");
+            ImGuiUtil.HoverTooltip("与此设计相关联的颜色不存在。");
         }
 
-        ImGuiUtil.DrawFrameColumn("Creation Date");
+        ImGuiUtil.DrawFrameColumn("创建日期");
         ImGui.TableNextColumn();
         ImGuiUtil.DrawTextButton(_selector.Selected!.CreationDate.LocalDateTime.ToString("F"), width, 0);
 
-        ImGuiUtil.DrawFrameColumn("Last Update Date");
+        ImGuiUtil.DrawFrameColumn("最后更新日期");
         ImGui.TableNextColumn();
         ImGuiUtil.DrawTextButton(_selector.Selected!.LastEdit.LocalDateTime.ToString("F"), width, 0);
 
-        ImGuiUtil.DrawFrameColumn("Tags");
+        ImGuiUtil.DrawFrameColumn("标签");
         ImGui.TableNextColumn();
         DrawTags();
     }
@@ -217,7 +217,7 @@ public class DesignDetailTab
                 ImGuiUtil.TextWrapped(desc);
             }
 
-            if (ImGui.Button("Edit Description"))
+            if (ImGui.Button("编辑描述"))
                 _editDescriptionMode = true;
         }
         else
@@ -232,7 +232,7 @@ public class DesignDetailTab
                 _newDescription = null;
             }
 
-            if (ImGui.Button("Stop Editing"))
+            if (ImGui.Button("停止编辑"))
                 _editDescriptionMode = false;
         }
     }

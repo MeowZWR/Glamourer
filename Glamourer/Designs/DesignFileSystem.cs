@@ -42,10 +42,10 @@ public sealed class DesignFileSystem : FileSystem<Design>, IDisposable, ISavable
     public struct CreationDate : ISortMode<Design>
     {
         public string Name
-            => "Creation Date (Older First)";
+            => "创建日期（较早的优先）";
 
         public string Description
-            => "In each folder, sort all subfolders lexicographically, then sort all leaves using their creation date.";
+            => "在每个折叠组中，按字母顺序对所有子组进行排序，然后按创建日期对所有子项目进行排序。";
 
         public IEnumerable<IPath> GetChildren(Folder f)
             => f.GetSubFolders().Cast<IPath>().Concat(f.GetLeaves().OrderBy(l => l.Value.CreationDate));
@@ -54,10 +54,10 @@ public sealed class DesignFileSystem : FileSystem<Design>, IDisposable, ISavable
     public struct UpdateDate : ISortMode<Design>
     {
         public string Name
-            => "Update Date (Older First)";
+            => "更新日期（较早的优先）";
 
         public string Description
-            => "In each folder, sort all subfolders lexicographically, then sort all leaves using their last update date.";
+            => "在每个折叠组中，按字母顺序对所有子组进行排序，然后按最后更新日期对所有子项目进行排序。";
 
         public IEnumerable<IPath> GetChildren(Folder f)
             => f.GetSubFolders().Cast<IPath>().Concat(f.GetLeaves().OrderBy(l => l.Value.LastEdit));
@@ -66,10 +66,10 @@ public sealed class DesignFileSystem : FileSystem<Design>, IDisposable, ISavable
     public struct InverseCreationDate : ISortMode<Design>
     {
         public string Name
-            => "Creation Date (Newer First)";
+            => "创建日期（较晚的优先）";
 
         public string Description
-            => "In each folder, sort all subfolders lexicographically, then sort all leaves using their inverse creation date.";
+            => "在每个折叠组中，按字母顺序对所有子组进行排序，然后按创建日期对所有子项目进行反向排序。";
 
         public IEnumerable<IPath> GetChildren(Folder f)
             => f.GetSubFolders().Cast<IPath>().Concat(f.GetLeaves().OrderByDescending(l => l.Value.CreationDate));
@@ -78,10 +78,10 @@ public sealed class DesignFileSystem : FileSystem<Design>, IDisposable, ISavable
     public struct InverseUpdateDate : ISortMode<Design>
     {
         public string Name
-            => "Update Date (Newer First)";
+            => "更新日期（较晚的优先）";
 
         public string Description
-            => "In each folder, sort all subfolders lexicographically, then sort all leaves using their inverse last update date.";
+            => "在每个折叠组中，按字母顺序对所有子组进行排序，然后按最后更新日期对所有子项目进行反向排序。";
 
         public IEnumerable<IPath> GetChildren(Folder f)
             => f.GetSubFolders().Cast<IPath>().Concat(f.GetLeaves().OrderByDescending(l => l.Value.LastEdit));

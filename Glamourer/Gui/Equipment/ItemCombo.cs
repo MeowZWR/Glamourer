@@ -91,16 +91,16 @@ public sealed class ItemCombo : FilterComboCache<EquipItem>
 
         return slot switch
         {
-            EquipSlot.Head    => sheet.GetRow(740)?.Text.ToString() ?? "Head",
-            EquipSlot.Body    => sheet.GetRow(741)?.Text.ToString() ?? "Body",
-            EquipSlot.Hands   => sheet.GetRow(742)?.Text.ToString() ?? "Hands",
-            EquipSlot.Legs    => sheet.GetRow(744)?.Text.ToString() ?? "Legs",
-            EquipSlot.Feet    => sheet.GetRow(745)?.Text.ToString() ?? "Feet",
-            EquipSlot.Ears    => sheet.GetRow(746)?.Text.ToString() ?? "Ears",
-            EquipSlot.Neck    => sheet.GetRow(747)?.Text.ToString() ?? "Neck",
-            EquipSlot.Wrists  => sheet.GetRow(748)?.Text.ToString() ?? "Wrists",
-            EquipSlot.RFinger => sheet.GetRow(749)?.Text.ToString() ?? "Right Ring",
-            EquipSlot.LFinger => sheet.GetRow(750)?.Text.ToString() ?? "Left Ring",
+            EquipSlot.Head    => sheet.GetRow(740)?.Text.ToString() ?? "头部装备",
+            EquipSlot.Body    => sheet.GetRow(741)?.Text.ToString() ?? "身体装备",
+            EquipSlot.Hands   => sheet.GetRow(742)?.Text.ToString() ?? "手部装备",
+            EquipSlot.Legs    => sheet.GetRow(744)?.Text.ToString() ?? "腿部装备",
+            EquipSlot.Feet    => sheet.GetRow(745)?.Text.ToString() ?? "脚部装备",
+            EquipSlot.Ears    => sheet.GetRow(746)?.Text.ToString() ?? "耳部装备",
+            EquipSlot.Neck    => sheet.GetRow(747)?.Text.ToString() ?? "颈部装备",
+            EquipSlot.Wrists  => sheet.GetRow(748)?.Text.ToString() ?? "腕部装备",
+            EquipSlot.RFinger => sheet.GetRow(749)?.Text.ToString() ?? "右戒指",
+            EquipSlot.LFinger => sheet.GetRow(750)?.Text.ToString() ?? "左戒指",
             _                 => string.Empty,
         };
     }

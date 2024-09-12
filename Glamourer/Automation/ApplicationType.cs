@@ -21,11 +21,11 @@ public static class ApplicationTypeExtensions
     public static readonly IReadOnlyList<(ApplicationType, string)> Types =
     [
         (ApplicationType.Customizations,
-            "Apply all customization changes that are enabled in this design and that are valid in a fixed design and for the given race and gender."),
-        (ApplicationType.Armor, "Apply all armor piece changes that are enabled in this design and that are valid in a fixed design."),
-        (ApplicationType.Accessories, "Apply all accessory changes that are enabled in this design and that are valid in a fixed design."),
-        (ApplicationType.GearCustomization, "Apply all dye and crest changes that are enabled in this design."),
-        (ApplicationType.Weapons, "Apply all weapon changes that are enabled in this design and that are valid with the current weapon worn."),
+            "应用此设计中启用的所有外貌修改，这些修改须在自动执行中有效，并适用于指定的种族和性别。"),
+        (ApplicationType.Armor, "应用此设计中启用的所有服装修改，这些修改须在自动执行中有效。"),
+        (ApplicationType.Accessories, "应用此设计中启用的所有饰品修改，这些修改须在自动执行中有效。"),
+        (ApplicationType.GearCustomization, "应用此设计中启用的所有染色和队徽修改"),
+        (ApplicationType.Weapons, "应用此设计中启用的所有武器修改，须符合当前职业，否则不生效。"),
     ];
 
     public static ApplicationCollection Collection(this ApplicationType type)

@@ -18,18 +18,18 @@ public partial class CustomizationDrawer
         if (_withApply)
         {
             using var disabled = ImRaii.Disabled(_locked);
-            if (UiHelpers.DrawCheckbox("##applyGender", "Apply gender of this design.", ChangeApply.HasFlag(CustomizeFlag.Gender),
+            if (UiHelpers.DrawCheckbox("##applyGender", "应用此设计的性别。", ChangeApply.HasFlag(CustomizeFlag.Gender),
                     out var applyGender, _locked))
                 ChangeApply = applyGender ? ChangeApply | CustomizeFlag.Gender : ChangeApply & ~CustomizeFlag.Gender;
             ImGui.SameLine();
-            if (UiHelpers.DrawCheckbox("##applyClan", "Apply clan of this design.", ChangeApply.HasFlag(CustomizeFlag.Clan), out var applyClan,
+            if (UiHelpers.DrawCheckbox("##applyClan", "应用此设计的部族。", ChangeApply.HasFlag(CustomizeFlag.Clan), out var applyClan,
                     _locked))
                 ChangeApply = applyClan ? ChangeApply | CustomizeFlag.Clan : ChangeApply & ~CustomizeFlag.Clan;
             ImGui.SameLine();
         }
 
         ImGui.AlignTextToFramePadding();
-        ImGui.TextUnformatted("Gender & Clan");
+        ImGui.TextUnformatted("性别 & 部族");
     }
 
     private void DrawGenderSelector()
@@ -50,7 +50,7 @@ public partial class CustomizationDrawer
 
         if (_lockedRedraw && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
             ImGui.SetTooltip(
-                "The gender can not be changed as this requires a redraw of the character, which is not supported for this actor.");
+                "无法更改性别，这需要重绘角色，而此角色不支持这个操作。");
     }
 
     private void DrawRaceCombo()
@@ -70,7 +70,7 @@ public partial class CustomizationDrawer
         }
 
         if (_lockedRedraw && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
-            ImGui.SetTooltip("The race can not be changed as this requires a redraw of the character, which is not supported for this actor.");
+            ImGui.SetTooltip("无法更改种族，这需要重绘角色，而此角色不支持这个操作。");
     }
 
     private void DrawBodyType()

@@ -62,8 +62,8 @@ public class SetPanel(
             var enabled = Selection.Enabled;
             if (ImGui.Checkbox("##Enabled", ref enabled))
                 _manager.SetState(_selector.SelectionIndex, enabled);
-            ImGuiUtil.LabeledHelpMarker("Enabled",
-                "Whether the designs in this set should be applied at all. Only one set can be enabled for a character at the same time.");
+            ImGuiUtil.LabeledHelpMarker("启用",
+                "是否应用该自动执行集中的设计。一个角色同时只能启用一个执行集。");
         }
 
         ImGui.SameLine();
@@ -72,9 +72,9 @@ public class SetPanel(
             var useGame = _selector.Selection!.BaseState is AutoDesignSet.Base.Game;
             if (ImGui.Checkbox("##gameState", ref useGame))
                 _manager.ChangeBaseState(_selector.SelectionIndex, useGame ? AutoDesignSet.Base.Game : AutoDesignSet.Base.Current);
-            ImGuiUtil.LabeledHelpMarker("Use Game State as Base",
-                "When this is enabled, the designs matching conditions will be applied successively on top of what your character is supposed to look like for the game. "
-              + "Otherwise, they will be applied on top of the characters actual current look using Glamourer.");
+            ImGuiUtil.LabeledHelpMarker("使用游戏状态作为基础。",
+                "启用此选项后，符合条件的角色设计将按顺序应用于游戏中角色的外观上。\n"
+              + "禁用此选项后，设计将应用于角色当前被Glamourer修改后的实际外观上。");
         }
 
         ImGui.SameLine();
@@ -87,8 +87,8 @@ public class SetPanel(
                 _config.Save();
             }
 
-            ImGuiUtil.LabeledHelpMarker("Show Editing",
-                "Show options to change the name or the associated character or NPC of this design set.");
+            ImGuiUtil.LabeledHelpMarker("显示可编辑内容",
+                "显示更改此执行集的名称、关联角色/NPC的选项。取消勾选以精简视图。");
         }
 
         if (_config.ShowAutomationSetEditing)
@@ -100,7 +100,7 @@ public class SetPanel(
             var name  = _tempName ?? Selection.Name;
             var flags = _selector.IncognitoMode ? ImGuiInputTextFlags.ReadOnly | ImGuiInputTextFlags.Password : ImGuiInputTextFlags.None;
             ImGui.SetNextItemWidth(330 * ImGuiHelpers.GlobalScale);
-            if (ImGui.InputText("Rename Set##Name", ref name, 128, flags))
+            if (ImGui.InputText("重命名执行集##Name", ref name, 128, flags))
                 _tempName = name;
 
             if (ImGui.IsItemDeactivated())
@@ -153,25 +153,25 @@ public class SetPanel(
 
         if (singleRow)
         {
-            ImGui.TableSetupColumn("Design", ImGuiTableColumnFlags.WidthFixed, 220 * ImGuiHelpers.GlobalScale);
+            ImGui.TableSetupColumn("角色设计",      ImGuiTableColumnFlags.WidthFixed, 220 * ImGuiHelpers.GlobalScale);
             if (_config.ShowAllAutomatedApplicationRules)
-                ImGui.TableSetupColumn("Application", ImGuiTableColumnFlags.WidthFixed,
+                ImGui.TableSetupColumn("执行规则", ImGuiTableColumnFlags.WidthFixed,
                     6 * ImGui.GetFrameHeight() + 10 * ImGuiHelpers.GlobalScale);
             else
-                ImGui.TableSetupColumn("Use", ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Use").X);
+                ImGui.TableSetupColumn("使用", ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Use").X);
         }
         else
         {
-            ImGui.TableSetupColumn("Design / Job Restrictions", ImGuiTableColumnFlags.WidthFixed, 250 * ImGuiHelpers.GlobalScale);
+            ImGui.TableSetupColumn("角色设计/职业限制", ImGuiTableColumnFlags.WidthFixed, 250 * ImGuiHelpers.GlobalScale);
             if (_config.ShowAllAutomatedApplicationRules)
-                ImGui.TableSetupColumn("Application", ImGuiTableColumnFlags.WidthFixed,
+                ImGui.TableSetupColumn("执行规则", ImGuiTableColumnFlags.WidthFixed,
                     3 * ImGui.GetFrameHeight() + 4 * ImGuiHelpers.GlobalScale);
             else
-                ImGui.TableSetupColumn("Use", ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Use").X);
+                ImGui.TableSetupColumn("使用", ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Use").X);
         }
 
         if (singleRow)
-            ImGui.TableSetupColumn("Job Restrictions", ImGuiTableColumnFlags.WidthStretch);
+            ImGui.TableSetupColumn("职业限制", ImGuiTableColumnFlags.WidthStretch);
 
         if (_config.ShowUnlockedItemWarnings)
             ImGui.TableSetupColumn(string.Empty, ImGuiTableColumnFlags.WidthFixed, 2 * ImGui.GetFrameHeight() + 4 * ImGuiHelpers.GlobalScale);
@@ -183,8 +183,8 @@ public class SetPanel(
             ImGui.TableNextColumn();
             var keyValid = _config.DeleteDesignModifier.IsActive();
             var tt = keyValid
-                ? "Remove this design from the set."
-                : $"Remove this design from the set.\nHold {_config.DeleteDesignModifier} to remove.";
+                ? "移除此角色设计。"
+                : $"按住 {_config.DeleteDesignModifier} 来移除此角色设计。";
 
             if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Trash.ToIconString(), new Vector2(ImGui.GetFrameHeight()), tt, !keyValid, true))
                 _endAction = () => _manager.DeleteDesign(Selection, idx);
@@ -219,7 +219,7 @@ public class SetPanel(
         ImGui.TableNextColumn();
         ImGui.TableNextColumn();
         ImGui.AlignTextToFramePadding();
-        ImGui.TextUnformatted("New");
+        ImGui.TextUnformatted("添加");
         ImGui.TableNextColumn();
         _designCombo.Draw(Selection, null, -1);
         ImGui.TableNextRow();
@@ -233,13 +233,13 @@ public class SetPanel(
     private void DrawConditions(AutoDesign design, int idx)
     {
         var usingGearset = design.GearsetIndex >= 0;
-        if (ImGui.Button($"{(usingGearset ? "Gearset:" : "Jobs:")}##usingGearset"))
+        if (ImGui.Button($"{(usingGearset ? "套装" : "职业")}##usingGearset"))
         {
             usingGearset = !usingGearset;
             _manager.ChangeGearsetCondition(Selection, idx, (short)(usingGearset ? 0 : -1));
         }
 
-        ImGuiUtil.HoverTooltip("Click to switch between Job and Gearset restrictions.");
+        ImGuiUtil.HoverTooltip("单击可在职业和套装之间切换限制。");
 
         ImGui.SameLine(0, ImGui.GetStyle().ItemInnerSpacing.X);
         if (usingGearset)
@@ -288,21 +288,21 @@ public class SetPanel(
 
             var item = designData.Item(slot);
             if (!_itemUnlocks.IsUnlocked(item.Id, out _))
-                sb.AppendLine($"{item.Name} in {slot.ToName()} slot is not unlocked. Consider obtaining it via gameplay means!");
+                sb.AppendLine($"在{slot.ToName()}部位的{item.Name}还没有获取过。请考虑在游戏中去获取它！");
         }
 
         using var style = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, new Vector2(2 * ImGuiHelpers.GlobalScale, 0));
 
         var tt = _config.UnlockedItemMode
-            ? "\nThese items will be skipped when applied automatically.\n\nTo change this, disable the Obtained Item Mode setting."
+            ? "\n这些物品将在自动应用时被跳过。\n\n要更改此设置，请禁用“已获取物品模式”。"
             : string.Empty;
-        DrawWarning(sb, _config.UnlockedItemMode ? 0xA03030F0 : 0x0, size, tt, "All equipment to be applied is unlocked.");
+        DrawWarning(sb, _config.UnlockedItemMode ? 0xA03030F0 : 0x0, size, tt, "所有待应用的物品均已解锁。");
 
         sb.Clear();
         var sb2       = new StringBuilder();
         var customize = designData.Customize;
         if (!designData.IsHuman)
-            sb.AppendLine("The base model id can not be changed automatically to something non-human.");
+            sb.AppendLine("基础模型id不能自动应用于某些非人类角色。");
 
         var set = _customizations.Manager.GetSet(customize.Clan, customize.Gender);
         foreach (var type in CustomizationExtensions.All)
@@ -322,9 +322,9 @@ public class SetPanel(
 
         ImGui.SameLine();
         tt = _config.UnlockedItemMode
-            ? "\nThese customizations will be skipped when applied automatically.\n\nTo change this, disable the Obtained Item Mode setting."
+            ? "\n这些外貌将在自动应用时被跳过。\n\n要更改此设置，请禁用“已获取物品模式”。"
             : string.Empty;
-        DrawWarning(sb2, _config.UnlockedItemMode ? 0xA03030F0 : 0x0, size, tt, "All customizations to be applied are unlocked.");
+        DrawWarning(sb2, _config.UnlockedItemMode ? 0xA03030F0 : 0x0, size, tt, "所有待应用的外貌均已解锁。");
         ImGui.SameLine();
         return;
 
@@ -370,7 +370,7 @@ public class SetPanel(
         {
             if (source)
             {
-                ImGui.TextUnformatted($"Moving design #{index + 1:D2}...");
+                ImGui.TextUnformatted($"移动角色设计 #{index + 1:D2}...");
                 if (ImGui.SetDragDropPayload(dragDropLabel, nint.Zero, 0))
                 {
                     _dragIndex                 = index;
@@ -393,7 +393,7 @@ public class SetPanel(
         }
 
         style.Pop();
-        ImGuiUtil.HoverTooltip("Toggle all application modes at once.");
+        ImGuiUtil.HoverTooltip("一键开关");
         if (_config.ShowAllAutomatedApplicationRules)
         {
             void Box(int idx)
@@ -429,16 +429,17 @@ public class SetPanel(
         ImGui.SameLine();
         _identifierDrawer.DrawName(200 - ImGui.GetStyle().ItemSpacing.X);
         _identifierDrawer.DrawNpcs(330);
-        var buttonWidth = new Vector2(165 * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X / 2, 0);
-        if (ImGuiUtil.DrawDisabledButton("Set to Character", buttonWidth, string.Empty, !_identifierDrawer.CanSetPlayer))
+        var buttonWidth = new Vector2(105 * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X / 2, 0);//中文视图下这样更舒服
+        if (ImGuiUtil.DrawDisabledButton("分配给玩家", buttonWidth, string.Empty, !_identifierDrawer.CanSetPlayer))
             _manager.ChangeIdentifier(setIndex, _identifierDrawer.PlayerIdentifier);
         ImGui.SameLine();
-        if (ImGuiUtil.DrawDisabledButton("Set to NPC", buttonWidth, string.Empty, !_identifierDrawer.CanSetNpc))
+        if (ImGuiUtil.DrawDisabledButton("分配给NPC", buttonWidth, string.Empty, !_identifierDrawer.CanSetNpc))
             _manager.ChangeIdentifier(setIndex, _identifierDrawer.NpcIdentifier);
-        if (ImGuiUtil.DrawDisabledButton("Set to Retainer", buttonWidth, string.Empty, !_identifierDrawer.CanSetRetainer))
+        ImGui.SameLine();//中文视图下这样更舒服
+        if (ImGuiUtil.DrawDisabledButton("分配给雇员", buttonWidth, string.Empty, !_identifierDrawer.CanSetRetainer))
             _manager.ChangeIdentifier(setIndex, _identifierDrawer.RetainerIdentifier);
         ImGui.SameLine();
-        if (ImGuiUtil.DrawDisabledButton("Set to Mannequin", buttonWidth, string.Empty, !_identifierDrawer.CanSetRetainer))
+        if (ImGuiUtil.DrawDisabledButton("分配给服装模特", buttonWidth, string.Empty, !_identifierDrawer.CanSetRetainer))
             _manager.ChangeIdentifier(setIndex, _identifierDrawer.MannequinIdentifier);
     }
 
@@ -450,7 +451,7 @@ public class SetPanel(
             CurrentSelection    = design.Jobs;
             CurrentSelectionIdx = jobs.JobGroups.Values.IndexOf(j => j.Id == design.Jobs.Id);
             if (Draw("##JobGroups", design.Jobs.Name,
-                    "Select for which job groups this design should be applied.\nControl + Right-Click to set to all classes.",
+                    "选择应该将此设计应用于哪些职业。\n按住键盘Ctrl键+鼠标右键点击此处设置为所有职业。",
                     ImGui.GetContentRegionAvail().X, ImGui.GetTextLineHeightWithSpacing())
              && CurrentSelectionIdx >= 0)
                 manager.ChangeJobCondition(set, autoDesignIndex, CurrentSelection);

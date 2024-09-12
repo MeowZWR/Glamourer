@@ -104,7 +104,7 @@ public class MaterialDrawer(DesignManager _designManager, Configuration _config)
     {
         var deleteEnabled = _config.DeleteDesignModifier.IsActive();
         if (!ImUtf8.IconButton(FontAwesomeIcon.Trash,
-                $"Delete this color row.{(deleteEnabled ? string.Empty : $"\nHold {_config.DeleteDesignModifier} to delete.")}", disabled:
+                $"删除此行颜色集。{(deleteEnabled ? string.Empty : $"\n按住{_config.DeleteDesignModifier}来删除。")}", disabled:
                 !deleteEnabled || design.WriteProtected()))
             return;
 
@@ -114,36 +114,36 @@ public class MaterialDrawer(DesignManager _designManager, Configuration _config)
 
     private void CopyButton(in ColorRow row)
     {
-        if (ImUtf8.IconButton(FontAwesomeIcon.Clipboard, "Export this row to your clipboard."u8))
+        if (ImUtf8.IconButton(FontAwesomeIcon.Clipboard, "将此行导出到剪贴板。"u8))
             ColorRowClipboard.Row = row;
     }
 
     private void PasteButton(Design design, MaterialValueIndex index)
     {
-        if (ImUtf8.IconButton(FontAwesomeIcon.Paste, "Import an exported row from your clipboard onto this row."u8,
+        if (ImUtf8.IconButton(FontAwesomeIcon.Paste, "将导出的高级染色数据从剪贴板导入到此行。"u8,
                 disabled: !ColorRowClipboard.IsSet || design.WriteProtected()))
             _designManager.ChangeMaterialValue(design, index, ColorRowClipboard.Row);
     }
 
     private void EnabledToggle(Design design, MaterialValueIndex index, bool enabled)
     {
-        if (ImUtf8.Checkbox("Enabled"u8, ref enabled))
+        if (ImUtf8.Checkbox("启用"u8, ref enabled))
             _designManager.ChangeApplyMaterialValue(design, index, enabled);
     }
 
     private void RevertToggle(Design design, MaterialValueIndex index, bool revert)
     {
-        if (ImUtf8.Checkbox("Revert"u8, ref revert))
+        if (ImUtf8.Checkbox("还原"u8, ref revert))
             _designManager.ChangeMaterialRevert(design, index, revert);
         ImUtf8.HoverTooltip(
-            "If this is checked, Glamourer will try to revert the advanced dye row to its game state instead of applying a specific row."u8);
+            "如果选中此项，Glamourer将尝试将此行高级染色恢复到其游戏状态，不应用此行。"u8);
     }
 
     public sealed class MaterialSlotCombo; 
 
     public void DrawNew(Design design)
     {
-        if (EquipSlotCombo.Draw("##slot", "Choose a slot for an advanced dye row.", ref _newSlot))
+        if (EquipSlotCombo.Draw("##slot", "为高级染色选择一个装备类型。", ref _newSlot))
             _newKey = MaterialValueIndex.FromSlot(_newSlot) with
             {
                 MaterialIndex = (byte)_newMaterialIdx,
@@ -155,8 +155,8 @@ public class MaterialDrawer(DesignManager _designManager, Configuration _config)
         DrawRowIdxDrag();
         ImUtf8.SameLineInner();
         var exists = design.GetMaterialDataRef().TryGetValue(_newKey, out _);
-        if (ImUtf8.ButtonEx("Add New Row"u8,
-                exists ? "The selected advanced dye row already exists."u8 : "Add the selected advanced dye row."u8, Vector2.Zero,
+        if (ImUtf8.ButtonEx("添加一行"u8,
+                exists ? "所选高级染色已存在"u8 : "添加一行高级染色。"u8, Vector2.Zero,
                 exists || design.WriteProtected()))
             _designManager.ChangeMaterialValue(design, _newKey, ColorRow.Empty);
     }
@@ -187,19 +187,19 @@ public class MaterialDrawer(DesignManager _designManager, Configuration _config)
     {
         var tmp = row;
         using var _ = ImRaii.Disabled(disabled);
-        var applied = ImGuiUtil.ColorPicker("##diffuse", "Change the diffuse value for this row.", row.Diffuse, v => tmp.Diffuse = v, "D");
+        var applied = ImGuiUtil.ColorPicker("##diffuse", "更改此行的漫反射值。", row.Diffuse, v => tmp.Diffuse = v, "D");
         ImUtf8.SameLineInner();
-        applied |= ImGuiUtil.ColorPicker("##specular", "Change the specular value for this row.", row.Specular, v => tmp.Specular = v, "S");
+        applied |= ImGuiUtil.ColorPicker("##specular", "更改此行的镜面反射值。", row.Specular, v => tmp.Specular = v, "S");
         ImUtf8.SameLineInner();
-        applied |= ImGuiUtil.ColorPicker("##emissive", "Change the emissive value for this row.", row.Emissive, v => tmp.Emissive = v, "E");
+        applied |= ImGuiUtil.ColorPicker("##emissive", "更改此行的发光值。", row.Emissive, v => tmp.Emissive = v, "E");
         ImUtf8.SameLineInner();
         ImGui.SetNextItemWidth(GlossWidth * ImGuiHelpers.GlobalScale);
         applied |= AdvancedDyePopup.DragGloss(ref tmp.GlossStrength);
-        ImUtf8.HoverTooltip("Change the gloss strength for this row."u8);
+        ImUtf8.HoverTooltip("更改此行的光泽强度。"u8);
         ImUtf8.SameLineInner();
         ImGui.SetNextItemWidth(SpecularStrengthWidth * ImGuiHelpers.GlobalScale);
         applied |= AdvancedDyePopup.DragSpecularStrength(ref tmp.SpecularStrength);
-        ImUtf8.HoverTooltip("Change the specular strength for this row."u8);
+        ImUtf8.HoverTooltip("更改此行的镜面反射强度。"u8);
         if (applied)
             _designManager.ChangeMaterialValue(design, index, tmp);
     }

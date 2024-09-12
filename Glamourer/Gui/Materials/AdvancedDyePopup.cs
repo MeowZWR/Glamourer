@@ -80,7 +80,7 @@ public sealed unsafe class AdvancedDyePopup(
             }
         }
 
-        ImGuiUtil.HoverTooltip("Open advanced dyes for this slot.");
+        ImGuiUtil.HoverTooltip("打开此插槽的高级染色窗口。");
     }
 
     private (string Path, string GamePath) ResourceName(MaterialValueIndex index)
@@ -130,9 +130,9 @@ public sealed unsafe class AdvancedDyePopup(
                 using var enabled = ImRaii.Enabled();
                 var (path, gamePath) = ResourceName(index);
                 if (gamePath.Length == 0 || path.Length == 0)
-                    ImGui.SetTooltip("This material does not exist.");
+                    ImGui.SetTooltip("此材质不存在。");
                 else if (!available)
-                    ImGui.SetTooltip($"This material does not have an associated color set.\n\n{gamePath}\n{path}");
+                    ImGui.SetTooltip($"此材质没有关联的颜色集。\n\n{gamePath}\n{path}");
                 else
                     ImGui.SetTooltip($"{gamePath}\n{path}");
             }
@@ -173,7 +173,7 @@ public sealed unsafe class AdvancedDyePopup(
         DrawTabBar(textures, materials, ref firstAvailable);
 
         if (firstAvailable)
-            ImGui.TextUnformatted("No Editable Materials available.");
+            ImGui.TextUnformatted("没有可编辑的材质。");
     }
 
     private void DrawWindow(ReadOnlySpan<Pointer<Texture>> textures, ReadOnlySpan<Pointer<Material>> materials)
@@ -254,7 +254,7 @@ public sealed unsafe class AdvancedDyePopup(
     {
         using var id         = ImRaii.PushId(100);
         var       buttonSize = new Vector2(ImGui.GetFrameHeight());
-        ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Crosshairs.ToIconString(), buttonSize, "Highlight all affected colors on the character.",
+        ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Crosshairs.ToIconString(), buttonSize, "高亮显示角色身上所有受影响的颜色。",
             false, true);
         if (ImGui.IsItemHovered())
             preview.OnHover(materialIndex with { RowIndex = byte.MaxValue }, _actor.Index, table);
@@ -262,17 +262,17 @@ public sealed unsafe class AdvancedDyePopup(
         ImGui.AlignTextToFramePadding();
         using (ImRaii.PushFont(UiBuilder.MonoFont))
         {
-            ImGui.TextUnformatted("All Color Row Pairs (1-16)");
+            ImGui.TextUnformatted("所有颜色行");
         }
 
         var spacing = ImGui.GetStyle().ItemInnerSpacing.X;
         ImGui.SameLine(ImGui.GetWindowSize().X - 3 * buttonSize.X - 2 * spacing - ImGui.GetStyle().WindowPadding.X);
-        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Clipboard.ToIconString(), buttonSize, "Export this table to your clipboard.", false,
+        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Clipboard.ToIconString(), buttonSize, "将此颜色集表导出到剪贴板。", false,
                 true))
             ColorRowClipboard.Table = table;
         ImGui.SameLine(0, spacing);
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Paste.ToIconString(), buttonSize,
-                "Import an exported table from your clipboard onto this table.", !ColorRowClipboard.IsTableSet, true))
+                "将导出的表从剪贴板导入到此表。", !ColorRowClipboard.IsTableSet, true))
             for (var idx = 0; idx < ColorTable.NumRows; ++idx)
             {
                 var row         = ColorRowClipboard.Table[idx];
@@ -286,7 +286,7 @@ public sealed unsafe class AdvancedDyePopup(
             }
 
         ImGui.SameLine(0, spacing);
-        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.UndoAlt.ToIconString(), buttonSize, "Reset this table to game state.", !_anyChanged,
+        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.UndoAlt.ToIconString(), buttonSize, "将此表重置为游戏状态。", !_anyChanged,
                 true))
             for (byte i = 0; i < ColorTable.NumRows; ++i)
                 stateManager.ResetMaterialValue(_state, materialIndex with { RowIndex = i }, ApplySettings.Game);
@@ -316,7 +316,7 @@ public sealed unsafe class AdvancedDyePopup(
         }
 
         var buttonSize = new Vector2(ImGui.GetFrameHeight());
-        ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Crosshairs.ToIconString(), buttonSize, "Highlight the affected colors on the character.",
+        ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Crosshairs.ToIconString(), buttonSize, "高亮显示角色身上受影响的颜色。",
             false, true);
         if (ImGui.IsItemHovered())
             preview.OnHover(index, _actor.Index, table);
@@ -327,20 +327,20 @@ public sealed unsafe class AdvancedDyePopup(
         {
             var rowIndex  = index.RowIndex / 2 + 1;
             var rowSuffix = (index.RowIndex & 1) == 0 ? 'A' : 'B';
-            ImGui.TextUnformatted($"Row {rowIndex,2}{rowSuffix}");
+            ImGui.TextUnformatted($"行#{rowIndex,2}{rowSuffix}");
         }
 
         ImGui.SameLine(0, ImGui.GetStyle().ItemSpacing.X * 2);
-        var applied = ImGuiUtil.ColorPicker("##diffuse", "Change the diffuse value for this row.", value.Model.Diffuse,
+        var applied = ImGuiUtil.ColorPicker("##diffuse", "更改此行的漫反射值。", value.Model.Diffuse,
             v => value.Model.Diffuse = v, "D");
 
         var spacing = ImGui.GetStyle().ItemInnerSpacing;
         ImGui.SameLine(0, spacing.X);
-        applied |= ImGuiUtil.ColorPicker("##specular", "Change the specular value for this row.", value.Model.Specular,
+        applied |= ImGuiUtil.ColorPicker("##specular", "更改此行的镜面反射值。", value.Model.Specular,
             v => value.Model.Specular = v, "S");
 
         ImGui.SameLine(0, spacing.X);
-        applied |= ImGuiUtil.ColorPicker("##emissive", "Change the emissive value for this row.", value.Model.Emissive,
+        applied |= ImGuiUtil.ColorPicker("##emissive", "更改此行的发光值。", value.Model.Emissive,
             v => value.Model.Emissive = v, "E");
 
         ImGui.SameLine(0, spacing.X);
@@ -348,7 +348,7 @@ public sealed unsafe class AdvancedDyePopup(
         {
             ImGui.SetNextItemWidth(100 * ImGuiHelpers.GlobalScale);
             applied |= DragGloss(ref value.Model.GlossStrength);
-            ImGuiUtil.HoverTooltip("Change the gloss strength for this row.");
+            ImGuiUtil.HoverTooltip("更改此行的光泽强度。");
         }
         else
         {
@@ -360,7 +360,7 @@ public sealed unsafe class AdvancedDyePopup(
         {
             ImGui.SetNextItemWidth(100 * ImGuiHelpers.GlobalScale);
             applied |= DragSpecularStrength(ref value.Model.SpecularStrength);
-            ImGuiUtil.HoverTooltip("Change the specular strength for this row.");
+            ImGuiUtil.HoverTooltip("更改此行的镜面反射强度。");
         }
         else
         {
@@ -368,19 +368,19 @@ public sealed unsafe class AdvancedDyePopup(
         }
 
         ImGui.SameLine(0, spacing.X);
-        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Clipboard.ToIconString(), buttonSize, "Export this row to your clipboard.", false,
+        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Clipboard.ToIconString(), buttonSize, "将此行导出到剪贴板。", false,
                 true))
             ColorRowClipboard.Row = value.Model;
         ImGui.SameLine(0, spacing.X);
         if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Paste.ToIconString(), buttonSize,
-                "Import an exported row from your clipboard onto this row.", !ColorRowClipboard.IsSet, true))
+                "将导出的行从剪贴板导入到此行。", !ColorRowClipboard.IsSet, true))
         {
             value.Model = ColorRowClipboard.Row;
             applied     = true;
         }
 
         ImGui.SameLine(0, spacing.X);
-        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.UndoAlt.ToIconString(), buttonSize, "Reset this row to game state.", !changed, true))
+        if (ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.UndoAlt.ToIconString(), buttonSize, "将此行重置为游戏状态。", !changed, true))
             stateManager.ResetMaterialValue(_state, index, ApplySettings.Game);
 
         if (applied)

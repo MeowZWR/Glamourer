@@ -80,25 +80,25 @@ public sealed class PenumbraChangedItemTooltip : IDisposable
             case EquipSlot.RFinger:
                 using (_ = !openTooltip ? null : ImRaii.Tooltip())
                 {
-                    ImGui.TextUnformatted($"{prefix}Right-Click to apply to current actor (Right Finger).");
-                    ImGui.TextUnformatted($"{prefix}Shift + Right-Click to apply to current actor (Left Finger).");
+                    ImGui.TextUnformatted($"{prefix}右键点击应用到当前角色(右指)。");
+                    ImGui.TextUnformatted($"{prefix}Shift+右键点击应用到当前角色(左指)。");
                     if (last.Valid)
                         ImGui.TextUnformatted(
-                            $"{prefix}Control + Right-Click to re-apply {last.Name} to current actor (Right Finger).");
+                            $"{prefix}Ctrl+右键点击重新应用[{last.Name}]到当前角色(右指)。");
 
                     var last2 = _lastItems[EquipSlot.LFinger.ToIndex()];
                     if (last2.Valid)
                         ImGui.TextUnformatted(
-                            $"{prefix}Shift + Control + Right-Click to re-apply {last.Name} to current actor (Left Finger).");
+                            $"{prefix}Shift+Ctrl+右键点击重新应用[{last.Name}]到当前角色(左指)。");
                 }
 
                 break;
             default:
                 using (_ = !openTooltip ? null : ImRaii.Tooltip())
                 {
-                    ImGui.TextUnformatted($"{prefix}Right-Click to apply to current actor.");
+                    ImGui.TextUnformatted($"{prefix}右键点击应用到当前角色。");
                     if (last.Valid)
-                        ImGui.TextUnformatted($"{prefix}Control + Right-Click to re-apply {last.Name} to current actor.");
+                        ImGui.TextUnformatted($"{prefix}Ctrl+右键点击重新应用{last.Name}到当前角色。");
                 }
 
                 break;
@@ -118,22 +118,22 @@ public sealed class PenumbraChangedItemTooltip : IDisposable
                 switch (ImGui.GetIO().KeyCtrl, ImGui.GetIO().KeyShift)
                 {
                     case (false, false):
-                        Glamourer.Log.Debug($"Applying {item.Name} to Right Finger.");
+                        Glamourer.Log.Debug($"应用[{item.Name}]到右指。");
                         SetLastItem(EquipSlot.RFinger, item, state);
                         _stateManager.ChangeItem(state, EquipSlot.RFinger, item, ApplySettings.Manual);
                         break;
                     case (false, true):
-                        Glamourer.Log.Debug($"Applying {item.Name} to Left Finger.");
+                        Glamourer.Log.Debug($"应用[{item.Name}]到左指。");
                         SetLastItem(EquipSlot.LFinger, item, state);
                         _stateManager.ChangeItem(state, EquipSlot.LFinger, item, ApplySettings.Manual);
                         break;
                     case (true, false) when last.Valid:
-                        Glamourer.Log.Debug($"Re-Applying {last.Name} to Right Finger.");
+                        Glamourer.Log.Debug($"重新应用[{last.Name}]到右指。");
                         SetLastItem(EquipSlot.RFinger, default, state);
                         _stateManager.ChangeItem(state, EquipSlot.RFinger, last, ApplySettings.Manual);
                         break;
                     case (true, true) when _lastItems[EquipSlot.LFinger.ToIndex()].Valid:
-                        Glamourer.Log.Debug($"Re-Applying {last.Name} to Left Finger.");
+                        Glamourer.Log.Debug($"重新应用[{last.Name}]到左指。");
                         SetLastItem(EquipSlot.LFinger, default, state);
                         _stateManager.ChangeItem(state, EquipSlot.LFinger, last, ApplySettings.Manual);
                         break;
@@ -143,13 +143,13 @@ public sealed class PenumbraChangedItemTooltip : IDisposable
             default:
                 if (ImGui.GetIO().KeyCtrl && last.Valid)
                 {
-                    Glamourer.Log.Debug($"Re-Applying {last.Name} to {slot.ToName()}.");
+                    Glamourer.Log.Debug($"重新应用[{last.Name}到{slot.ToName()}.");
                     SetLastItem(slot, default, state);
                     _stateManager.ChangeItem(state, slot, last, ApplySettings.Manual);
                 }
                 else
                 {
-                    Glamourer.Log.Debug($"Applying {item.Name} to {slot.ToName()}.");
+                    Glamourer.Log.Debug($"应用[{item.Name}到{slot.ToName()}.");
                     SetLastItem(slot, item, state);
                     _stateManager.ChangeItem(state, slot, item, ApplySettings.Manual);
                 }
@@ -191,7 +191,7 @@ public sealed class PenumbraChangedItemTooltip : IDisposable
 
                 var customize = _objects.Player.Model.GetCustomize();
                 if (CheckGenderRace(customize, race, gender) && VerifyValue(customize, index, value))
-                    ImGui.TextUnformatted("[Glamourer] Right-Click to apply to current actor.");
+                    ImGui.TextUnformatted("[Glamourer] 右键单击应用到当前角色。");
 
                 return;
             }

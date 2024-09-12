@@ -94,7 +94,7 @@ public abstract class DesignComboBase : FilterComboCache<Tuple<IDesignStandIn, s
     {
         _currentDesign = currentDesign;
         InnerWidth     = 400 * ImGuiHelpers.GlobalScale;
-        var  name = label ?? "Select Design Here...";
+        var  name = label ?? "在此处选择设计...";
         bool ret;
         using (_ = currentDesign != null ? ImRaii.PushColor(ImGuiCol.Text, DesignColors.GetColor(currentDesign as Design)) : null)
         {
@@ -106,7 +106,7 @@ public abstract class DesignComboBase : FilterComboCache<Tuple<IDesignStandIn, s
         {
             if (ImGui.IsItemClicked(ImGuiMouseButton.Right) && ImGui.GetIO().KeyCtrl)
                 TabSelected.Invoke(MainWindow.TabType.Designs, design);
-            ImGuiUtil.HoverTooltip("Control + Right-Click to move to design.");
+            ImGuiUtil.HoverTooltip("Ctrl+右键单击移动到此设计。");
         }
 
         QuickSelectedDesignTooltip(currentDesign);

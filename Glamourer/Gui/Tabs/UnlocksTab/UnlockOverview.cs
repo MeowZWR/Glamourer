@@ -65,7 +65,7 @@ public class UnlockOverview(
             if (customizations.Manager.GetSet(clan, gender).HairStyles.Count == 0)
                 continue;
 
-            if (ImGui.Selectable($"{(gender is Gender.Male ? '♂' : '♀')} {clan.ToShortName()} Hair & Paint",
+            if (ImGui.Selectable($"{(gender is Gender.Male ? '♂' : '♀')} {clan.ToShortName()} 发型 & 面妆",
                     _selected2 == clan && _selected3 == gender))
             {
                 _selected1 = FullEquipType.Unknown;
@@ -131,7 +131,7 @@ public class UnlockOverview(
                     ImGui.Image(wrap.ImGuiHandle, size);
                 ImGui.TextUnformatted(unlockData.Name);
                 ImGui.TextUnformatted($"{customize.Index.ToDefaultName()} {customize.Value.Value}");
-                ImGui.TextUnformatted(unlocked ? $"Unlocked on {time:g}" : "Not unlocked.");
+                ImGui.TextUnformatted(unlocked ? $"于{time:g}解锁。" : "未解锁。");
             }
 
             if (counter != iconsPerRow - 1)

@@ -7,9 +7,9 @@ namespace Glamourer.Gui.Tabs.NpcTab;
 public sealed class NpcFilter(LocalNpcAppearanceData _favorites) : FilterUtility<NpcData>
 {
     protected override string Tooltip
-        => "Filter NPC appearances for those where their names contain the given substring.\n"
-          + "Enter i:[number] to filter for NPCs of certain IDs.\n"
-          + "Enter c:[string] to filter for NPC appearances set to specific colors.";
+        => "按指定字符串来筛选NPC。\n"
+          + "输入 i:[数字] 按NPC的确切ID来筛选。\n"
+          + "输入 c:[字符串] 按NPC外观详情里的指定配色来筛选。";
 
     protected override (LowerString, long, int) FilterChange(string input)
         => input.Length switch

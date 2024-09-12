@@ -12,7 +12,7 @@ public class DesignTab(DesignFileSystemSelector _selector, DesignPanel _panel, I
     : ITab
 {
     public ReadOnlySpan<byte> Label
-        => "Designs"u8;
+        => "角色设计"u8;
 
     public void DrawContent()
     {

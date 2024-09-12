@@ -32,7 +32,7 @@ public class IdentifierDrawer
     public void DrawName(float width)
     {
         ImGui.SetNextItemWidth(width);
-        if (ImGui.InputTextWithHint("##Name", "Character Name...", ref _characterName, 32))
+        if (ImGui.InputTextWithHint("##Name", "角色名称...", ref _characterName, 32))
             UpdateIdentifiers();
     }
 
