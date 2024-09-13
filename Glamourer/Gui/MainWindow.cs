@@ -193,7 +193,7 @@ public class MainWindow : Window, IDisposable
 
     /// <summary> The longest support button text. </summary>
     public static ReadOnlySpan<byte> SupportInfoButtonText
-        => "Copy Support Info to Clipboard"u8;
+        => "复制支持信息到剪贴板"u8;
 
     /// <summary> Draw the support button group on the right-hand side of the window. </summary>
     public static void DrawSupportButtons(Glamourer glamourer, Changelog changelog)
@@ -204,13 +204,16 @@ public class MainWindow : Window, IDisposable
         CustomGui.DrawDiscordButton(Glamourer.Messager, width);
 
         ImGui.SetCursorPos(new Vector2(xPos, ImGui.GetFrameHeightWithSpacing()));
-        DrawSupportButton(glamourer); 
+        CustomGui.DrawCNDiscordButton(Glamourer.Messager, width);
 
         ImGui.SetCursorPos(new Vector2(xPos, 2 * ImGui.GetFrameHeightWithSpacing()));
-        CustomGui.DrawGuideButton(Glamourer.Messager, width);
+        DrawSupportButton(glamourer); 
 
         ImGui.SetCursorPos(new Vector2(xPos, 3 * ImGui.GetFrameHeightWithSpacing()));
-        if (ImGui.Button("Show Changelogs", new Vector2(width, 0)))
+        CustomGui.DrawGuideButton(Glamourer.Messager, width);
+
+        ImGui.SetCursorPos(new Vector2(xPos, 4 * ImGui.GetFrameHeightWithSpacing()));
+        if (ImGui.Button("显示更新日志", new Vector2(width, 0)))
             changelog.ForceOpen = true;
     }
 

@@ -47,6 +47,7 @@ public class SettingsTab(
         ImGui.NewLine();
         ImGui.NewLine();
         ImGui.NewLine();
+        ImGui.NewLine();
 
         using (ImRaii.Child("SettingsChild"))
         {
