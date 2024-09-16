@@ -132,7 +132,7 @@ public class MainWindow : Window, IDisposable
         {
             if (_penumbra.CurrentMajor == 0)
                 DrawProblemWindow(
-                    "Could not attach to Penumbra. Please make sure Penumbra is installed and running.\n\nPenumbra is required for Glamourer to work properly.");
+                    "无法附加到 Penumbra。请确保 Penumbra 已安装并正在运行。\n\nGlamourer 需要 Penumbra 才能正常工作。");
             else if (_penumbra is
                      {
 
@@ -140,10 +140,10 @@ public class MainWindow : Window, IDisposable
                          CurrentMinor: >= PenumbraService.RequiredPenumbraFeatureVersion,
                      })
                 DrawProblemWindow(
-                    $"You are currently not attached to Penumbra, seemingly by manually detaching from it.\n\nPenumbra's last API Version was {_penumbra.CurrentMajor}.{_penumbra.CurrentMinor}.\n\nPenumbra is required for Glamourer to work properly.");
+                    $"您当前未连接到 Penumbra，似乎是通过手动断开连接的。\n\nPenumbra 的最后 API 版本是 {_penumbra.CurrentMajor}.{_penumbra.CurrentMinor}。\n\nGlamourer 需要 Penumbra 才能正常工作。");
             else
                 DrawProblemWindow(
-                    $"Attaching to Penumbra failed.\n\nPenumbra's API Version was {_penumbra.CurrentMajor}.{_penumbra.CurrentMinor}, but Glamourer requires a version of {PenumbraService.RequiredPenumbraBreakingVersion}.{PenumbraService.RequiredPenumbraFeatureVersion}, where the major version has to match exactly, and the minor version has to be greater or equal.\nYou may need to update Penumbra or enable Testing Builds for it for this version of Glamourer.\n\nPenumbra is required for Glamourer to work properly.");
+                    $"连接到 Penumbra 失败。\n\nPenumbra 的 API 版本是 {_penumbra.CurrentMajor}.{_penumbra.CurrentMinor}，但 Glamourer 需要的版本是 {PenumbraService.RequiredPenumbraBreakingVersion}.{PenumbraService.RequiredPenumbraFeatureVersion}，其中主版本号必须完全匹配，次版本号必须大于或等于。\n您可能需要更新 Penumbra 或为这个版本的 Glamourer 启用测试构建。\n\nGlamourer 需要 Penumbra 才能正常工作。");
         }
         else
         {
@@ -254,7 +254,7 @@ public class MainWindow : Window, IDisposable
         color.Pop();
 
         ImGui.NewLine();
-        if (ImUtf8.Button("Try Attaching Again"u8))
+        if (ImUtf8.Button("尝试重新连接"u8))
             _penumbra.Reattach();
 
         var ignoreAllowed = _config.DeleteDesignModifier.IsActive();
