@@ -30,6 +30,21 @@ public class StateEditor(
     protected readonly Configuration       Config       = config;
     protected readonly ItemManager         Items        = items;
 
+    readonly List<FullEquipType> CraftMainHands = new()
+    {
+        FullEquipType.Saw,             // CRP
+        FullEquipType.CrossPeinHammer, // BSM
+        FullEquipType.RaisingHammer,   // ARM
+        FullEquipType.LapidaryHammer,  // GSM
+        FullEquipType.Knife,           // LTW
+        FullEquipType.Needle,          // WVR
+        FullEquipType.Alembic,         // ALC
+        FullEquipType.Frypan,          // CUL
+        FullEquipType.Pickaxe,         // MIN
+        FullEquipType.Hatchet,         // BTN
+        FullEquipType.FishingRod,      // FSH
+    };
+
     /// <summary> Turn an actor to. </summary>
     public void ChangeModelId(ActorState state, uint modelId, CustomizeArray customize, nint equipData, StateSource source,
         uint key = 0)
@@ -359,6 +374,9 @@ public class StateEditor(
                     }
 
                     var currentType = state.BaseData.Item(weaponSlot).Type;
+
+                    if (weaponSlot == EquipSlot.OffHand && CraftMainHands.Contains(currentType)) continue;
+
                     if (mergedDesign.Weapons.TryGet(currentType, state.LastJob, out var weapon))
                     {
                         var source = settings.UseSingleSource ? settings.Source :
