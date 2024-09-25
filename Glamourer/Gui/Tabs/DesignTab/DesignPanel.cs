@@ -326,10 +326,10 @@ public class DesignPanel
 
     private static readonly IReadOnlyList<string> MetaLabels =
     [
-        "Apply Wetness",
-        "Apply Hat Visibility",
-        "Apply Visor State",
-        "Apply Weapon Visibility",
+        "应用湿身",
+        "应用头部装备可见性",
+        "应用头部装备状态",
+        "应用武器可见性",
     ];
 
     private void DrawMetaApplication()
