@@ -2,8 +2,8 @@
   {
     "Author": "Ottermandias",
     "Name": "Glamourer",
-    "Punchline": "Change and save appearance of players.",
-    "Description": "Adds functionality to change and store appearance of players, customization and equip. Requires Penumbra to be installed and activated to work. Can also add preview options to the Changed Items tab for Penumbra.",
+    "Punchline": "改变和保存玩家外观。",
+    "Description": "为玩家提供更改保存自定义外貌和装备外观的功能。\n将预览选项添加到了Penumbra的“模组-更改项目”选项卡中。\n需要安装并启用Penumbra才能工作。",
     "Tags": [
       "Appearance",
       "Glamour",
