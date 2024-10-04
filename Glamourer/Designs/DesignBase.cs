@@ -280,7 +280,7 @@ public class DesignBase
             var item = _designData.BonusItem(slot);
             ret[slot.ToString()] = new JObject()
             {
-                ["BonusId"] = item.CustomId.Id,
+                ["BonusId"] = item.Id.Id,
                 ["Apply"]   = DoApplyBonusItem(slot),
             };
         }
