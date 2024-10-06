@@ -251,7 +251,7 @@ public class ActorPanel
         if (!_config.DebugMode)
             return;
 
-        using var h = ImUtf8.CollapsingHeaderId("Debug Data"u8);
+        using var h = ImUtf8.CollapsingHeaderId("调试数据"u8);
         if (!h)
             return;
 

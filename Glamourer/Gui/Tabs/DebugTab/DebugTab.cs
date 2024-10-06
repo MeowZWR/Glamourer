@@ -13,7 +13,7 @@ public unsafe class DebugTab(ServiceManager manager) : ITab
         => _config.DebugMode;
 
     public ReadOnlySpan<byte> Label
-        => "Debug"u8;
+        => "插件调试"u8;
 
     private readonly DebugTabHeader[] _headers =
     [
