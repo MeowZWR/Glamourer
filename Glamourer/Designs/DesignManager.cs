@@ -77,8 +77,6 @@ public sealed class DesignManager : DesignEditor
 
             design.Index = Designs.Count;
             Designs.Add(design);
-
-            SaveService.ImmediateSave(design);
         }
 
         var failed = MoveInvalidNames(invalidNames);
