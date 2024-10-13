@@ -37,18 +37,19 @@ public sealed class Design : DesignBase, ISavable, IDesignStandIn
     // Metadata
     public new const int FileVersion = 2;
 
-    public Guid                         Identifier     { get; internal init; }
-    public DateTimeOffset               CreationDate   { get; internal init; }
-    public DateTimeOffset               LastEdit       { get; internal set; }
-    public LowerString                  Name           { get; internal set; } = LowerString.Empty;
-    public string                       Description    { get; internal set; } = string.Empty;
-    public string[]                     Tags           { get; internal set; } = [];
-    public int                          Index          { get; internal set; }
-    public bool                         ForcedRedraw   { get; internal set; }
-    public bool                         QuickDesign    { get; internal set; } = true;
-    public string                       Color          { get; internal set; } = string.Empty;
-    public SortedList<Mod, ModSettings> AssociatedMods { get; private set; }  = [];
-    public LinkContainer                Links          { get; private set; }  = [];
+    public Guid                         Identifier        { get; internal init; }
+    public DateTimeOffset               CreationDate      { get; internal init; }
+    public DateTimeOffset               LastEdit          { get; internal set; }
+    public LowerString                  Name              { get; internal set; } = LowerString.Empty;
+    public string                       Description       { get; internal set; } = string.Empty;
+    public string[]                     Tags              { get; internal set; } = [];
+    public int                          Index             { get; internal set; }
+    public bool                         ForcedRedraw      { get; internal set; }
+    public bool                         ResetAdvancedDyes { get; internal set; }
+    public bool                         QuickDesign       { get; internal set; } = true;
+    public string                       Color             { get; internal set; } = string.Empty;
+    public SortedList<Mod, ModSettings> AssociatedMods    { get; private set; }  = [];
+    public LinkContainer                Links             { get; private set; }  = [];
 
     public string Incognito
         => Identifier.ToString()[..8];
@@ -95,24 +96,25 @@ public sealed class Design : DesignBase, ISavable, IDesignStandIn
     {
         var ret = new JObject()
         {
-            ["FileVersion"]    = FileVersion,
-            ["Identifier"]     = Identifier,
-            ["CreationDate"]   = CreationDate,
-            ["LastEdit"]       = LastEdit,
-            ["Name"]           = Name.Text,
-            ["Description"]    = Description,
-            ["ForcedRedraw"]   = ForcedRedraw,
-            ["Color"]          = Color,
-            ["QuickDesign"]    = QuickDesign,
-            ["Tags"]           = JArray.FromObject(Tags),
-            ["WriteProtected"] = WriteProtected(),
-            ["Equipment"]      = SerializeEquipment(),
-            ["Bonus"]          = SerializeBonusItems(),
-            ["Customize"]      = SerializeCustomize(),
-            ["Parameters"]     = SerializeParameters(),
-            ["Materials"]      = SerializeMaterials(),
-            ["Mods"]           = SerializeMods(),
-            ["Links"]          = Links.Serialize(),
+            ["FileVersion"]       = FileVersion,
+            ["Identifier"]        = Identifier,
+            ["CreationDate"]      = CreationDate,
+            ["LastEdit"]          = LastEdit,
+            ["Name"]              = Name.Text,
+            ["Description"]       = Description,
+            ["ForcedRedraw"]      = ForcedRedraw,
+            ["ResetAdvancedDyes"] = ResetAdvancedDyes,
+            ["Color"]             = Color,
+            ["QuickDesign"]       = QuickDesign,
+            ["Tags"]              = JArray.FromObject(Tags),
+            ["WriteProtected"]    = WriteProtected(),
+            ["Equipment"]         = SerializeEquipment(),
+            ["Bonus"]             = SerializeBonusItems(),
+            ["Customize"]         = SerializeCustomize(),
+            ["Parameters"]        = SerializeParameters(),
+            ["Materials"]         = SerializeMaterials(),
+            ["Mods"]              = SerializeMods(),
+            ["Links"]             = Links.Serialize(),
         };
         return ret;
     }
@@ -144,7 +146,8 @@ public sealed class Design : DesignBase, ISavable, IDesignStandIn
 
     #region Deserialization
 
-    public static Design LoadDesign(SaveService saveService, CustomizeService customizations, ItemManager items, DesignLinkLoader linkLoader, JObject json)
+    public static Design LoadDesign(SaveService saveService, CustomizeService customizations, ItemManager items, DesignLinkLoader linkLoader,
+        JObject json)
     {
         var version = json["FileVersion"]?.ToObject<int>() ?? 0;
         return version switch
@@ -156,7 +159,8 @@ public sealed class Design : DesignBase, ISavable, IDesignStandIn
     }
 
     /// <summary> The values for gloss and specular strength were switched. Swap them for all appropriate designs. </summary>
-    private static Design LoadDesignV1(SaveService saveService, CustomizeService customizations, ItemManager items, DesignLinkLoader linkLoader, JObject json)
+    private static Design LoadDesignV1(SaveService saveService, CustomizeService customizations, ItemManager items, DesignLinkLoader linkLoader,
+        JObject json)
     {
         var design             = LoadDesignV2(customizations, items, linkLoader, json);
         var materialDesignData = design.GetMaterialDataRef();
@@ -214,7 +218,7 @@ public sealed class Design : DesignBase, ISavable, IDesignStandIn
             Glamourer.Messager.AddMessage(new Notification(
                 $"Swapped Gloss and Specular Strength in {materialDesignData.Values.Count} Rows in design {design.Incognito} {reason}",
                 NotificationType.Info));
-            saveService.Save(SaveType.ImmediateSync,design);
+            saveService.Save(SaveType.ImmediateSync, design);
         }
     }
 
@@ -242,8 +246,9 @@ public sealed class Design : DesignBase, ISavable, IDesignStandIn
         LoadParameters(json["Parameters"], design, design.Name);
         LoadMaterials(json["Materials"], design, design.Name);
         LoadLinks(linkLoader, json["Links"], design);
-        design.Color        = json["Color"]?.ToObject<string>() ?? string.Empty;
-        design.ForcedRedraw = json["ForcedRedraw"]?.ToObject<bool>() ?? false;
+        design.Color             = json["Color"]?.ToObject<string>() ?? string.Empty;
+        design.ForcedRedraw      = json["ForcedRedraw"]?.ToObject<bool>() ?? false;
+        design.ResetAdvancedDyes = json["ResetAdvancedDyes"]?.ToObject<bool>() ?? false;
         return design;
 
         static string[] ParseTags(JObject json)

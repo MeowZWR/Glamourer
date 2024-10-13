@@ -10,6 +10,7 @@ using ImGuiNET;
 using OtterGui;
 using OtterGui.Log;
 using OtterGui.Raii;
+using OtterGui.Text;
 using OtterGui.Widgets;
 using Penumbra.GameData.Enums;
 using Penumbra.GameData.Structs;
@@ -424,23 +425,26 @@ public class SetPanel(
 
     private void DrawIdentifierSelection(int setIndex)
     {
-        using var id = ImRaii.PushId("Identifiers");
+        using var id = ImUtf8.PushId("Identifiers"u8);
         _identifierDrawer.DrawWorld(130);
         ImGui.SameLine();
         _identifierDrawer.DrawName(200 - ImGui.GetStyle().ItemSpacing.X);
         _identifierDrawer.DrawNpcs(330);
-        var buttonWidth = new Vector2(105 * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X / 2, 0);//中文视图下这样更舒服
-        if (ImGuiUtil.DrawDisabledButton("分配给玩家", buttonWidth, string.Empty, !_identifierDrawer.CanSetPlayer))
+        var buttonWidth = new Vector2(165 * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X / 2, 0);
+        if (ImUtf8.ButtonEx("分配给玩家"u8, string.Empty, buttonWidth, !_identifierDrawer.CanSetPlayer))
             _manager.ChangeIdentifier(setIndex, _identifierDrawer.PlayerIdentifier);
         ImGui.SameLine();
-        if (ImGuiUtil.DrawDisabledButton("分配给NPC", buttonWidth, string.Empty, !_identifierDrawer.CanSetNpc))
+        if (ImUtf8.ButtonEx("分配给NPC"u8, string.Empty, buttonWidth, !_identifierDrawer.CanSetNpc))
             _manager.ChangeIdentifier(setIndex, _identifierDrawer.NpcIdentifier);
-        ImGui.SameLine();//中文视图下这样更舒服
-        if (ImGuiUtil.DrawDisabledButton("分配给雇员", buttonWidth, string.Empty, !_identifierDrawer.CanSetRetainer))
+        ImGui.SameLine();
+        if (ImUtf8.ButtonEx("分配给雇员"u8, string.Empty, buttonWidth, !_identifierDrawer.CanSetRetainer))
             _manager.ChangeIdentifier(setIndex, _identifierDrawer.RetainerIdentifier);
         ImGui.SameLine();
-        if (ImGuiUtil.DrawDisabledButton("分配给服装模特", buttonWidth, string.Empty, !_identifierDrawer.CanSetRetainer))
+        if (ImUtf8.ButtonEx("分配给服装模特"u8, string.Empty, buttonWidth, !_identifierDrawer.CanSetRetainer))
             _manager.ChangeIdentifier(setIndex, _identifierDrawer.MannequinIdentifier);
+        ImGui.SameLine();
+        if (ImUtf8.ButtonEx("分配给所属NPC"u8, string.Empty, buttonWidth, !_identifierDrawer.CanSetOwned))
+            _manager.ChangeIdentifier(setIndex, _identifierDrawer.OwnedIdentifier);
     }
 
     private sealed class JobGroupCombo(AutoDesignManager manager, JobService jobs, Logger log)

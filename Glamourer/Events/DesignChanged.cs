@@ -90,6 +90,9 @@ public sealed class DesignChanged()
         /// <summary> An existing design had changed whether it always forces a redraw or not. </summary>
         ForceRedraw,
 
+        /// <summary> An existing design had changed whether it always resets advanced dyes or not. </summary>
+        ResetAdvancedDyes,
+
         /// <summary> An existing design changed whether a specific customization is applied. </summary>
         ApplyCustomize,
 

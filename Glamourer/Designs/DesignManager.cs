@@ -334,6 +334,17 @@ public sealed class DesignManager : DesignEditor
         DesignChanged.Invoke(DesignChanged.Type.ForceRedraw, design, null);
     }
 
+    public void ChangeResetAdvancedDyes(Design design, bool resetAdvancedDyes)
+    {
+        if (design.ResetAdvancedDyes == resetAdvancedDyes)
+            return;
+
+        design.ResetAdvancedDyes = resetAdvancedDyes;
+        SaveService.QueueSave(design);
+        Glamourer.Log.Debug($"Set {design.Identifier} to {(resetAdvancedDyes ? "not" : string.Empty)} reset advanced dyes.");
+        DesignChanged.Invoke(DesignChanged.Type.ResetAdvancedDyes, design, null);
+    }
+
     /// <summary> Change whether to apply a specific customize value. </summary>
     public void ChangeApplyCustomize(Design design, CustomizeIndex idx, bool value)
     {

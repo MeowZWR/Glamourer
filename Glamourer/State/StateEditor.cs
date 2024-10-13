@@ -124,7 +124,7 @@ public class StateEditor(
         }
     }
 
-    public void ChangeBonusItem(object data, BonusItemFlag slot, BonusItem item, ApplySettings settings = default)
+    public void ChangeBonusItem(object data, BonusItemFlag slot, EquipItem item, ApplySettings settings = default)
     {
         var state = (ActorState)data;
         if (!Editor.ChangeBonusItem(state, slot, item, settings.Source, out var old, settings.Key))
@@ -398,7 +398,7 @@ public class StateEditor(
                     Editor.ChangeMetaState(state, meta, mergedDesign.Design.DesignData.GetMeta(meta), Source(meta), out _, settings.Key);
             }
 
-            if (settings.ResetMaterials)
+            if (settings.ResetMaterials || mergedDesign.ResetAdvancedDyes)
                 state.Materials.Clear();
 
             foreach (var (key, value) in mergedDesign.Design.Materials)

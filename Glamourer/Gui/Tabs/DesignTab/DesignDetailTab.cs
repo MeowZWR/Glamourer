@@ -143,6 +143,13 @@ public class DesignDetailTab
             _manager.ChangeForcedRedraw(_selector.Selected!, forceRedraw);
         ImGuiUtil.HoverTooltip("设置使此设计在任何方式应用时始终强制重新绘制。");
 
+        var resetMaterials = _selector.Selected!.ResetAdvancedDyes;
+        ImGuiUtil.DrawFrameColumn("重置高级染色");
+        ImGui.TableNextColumn();
+        if (ImGui.Checkbox("##ResetAdvancedDyes", ref resetMaterials))
+            _manager.ChangeResetAdvancedDyes(_selector.Selected!, resetMaterials);
+        ImGuiUtil.HoverTooltip("将此设计设置为在通过任何方式应用时重置任何先前应用的高级染料。");
+
         ImGuiUtil.DrawFrameColumn("配色");
         var colorName = _selector.Selected!.Color.Length == 0 ? DesignColors.AutomaticName : _selector.Selected!.Color;
         ImGui.TableNextColumn();
