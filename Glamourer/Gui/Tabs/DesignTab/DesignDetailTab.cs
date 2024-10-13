@@ -148,7 +148,7 @@ public class DesignDetailTab
         ImGui.TableNextColumn();
         if (ImGui.Checkbox("##ResetAdvancedDyes", ref resetMaterials))
             _manager.ChangeResetAdvancedDyes(_selector.Selected!, resetMaterials);
-        ImGuiUtil.HoverTooltip("将此设计设置为在通过任何方式应用时重置任何先前应用的高级染料。");
+        ImGuiUtil.HoverTooltip("将此设计设置为在通过任何方式应用时，重置先前应用的任何高级染色。");
 
         ImGuiUtil.DrawFrameColumn("配色");
         var colorName = _selector.Selected!.Color.Length == 0 ? DesignColors.AutomaticName : _selector.Selected!.Color;
@@ -169,7 +169,7 @@ public class DesignDetailTab
         if (_colors.TryGetValue(_selector.Selected!.Color, out var currentColor))
         {
             ImGui.SameLine();
-            if (DesignColorUi.DrawColorButton($"Color associated with {_selector.Selected!.Color}", currentColor, out var newColor))
+            if (DesignColorUi.DrawColorButton($"与 {_selector.Selected!.Color} 关联的颜色", currentColor, out var newColor))
                 _colors.SetColor(_selector.Selected!.Color, newColor);
         }
         else if (_selector.Selected!.Color.Length != 0)

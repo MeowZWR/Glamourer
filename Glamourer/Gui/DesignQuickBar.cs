@@ -310,7 +310,7 @@ public sealed class DesignQuickBar : Window, IDisposable
         if (_playerIdentifier.IsValid && _playerState is { IsLocked: false } && _playerData.Valid)
         {
             available |= 1;
-            tooltip   = "左键单击：将玩家角色的高级外貌、高级染料设置还原为游戏状态。";
+            tooltip   = "左键单击：将玩家角色的高级外貌、高级染色设置还原为游戏状态。";
         }
 
         if (_targetIdentifier.IsValid && _targetState is { IsLocked: false } && _targetData.Valid)
@@ -318,7 +318,7 @@ public sealed class DesignQuickBar : Window, IDisposable
             if (available != 0)
                 tooltip += '\n';
             available |= 2;
-            tooltip   += $"右键单击：将{_targetIdentifier}高级外貌、高级染料设置还原为游戏状态。";
+            tooltip   += $"右键单击：将{_targetIdentifier}高级外貌、高级染色设置还原为游戏状态。";
         }
 
         if (available == 0)

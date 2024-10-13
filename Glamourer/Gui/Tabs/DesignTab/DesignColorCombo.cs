@@ -28,7 +28,7 @@ public sealed class DesignColorCombo(DesignColors _designColors, bool _skipAutom
         var       ret         = base.DrawSelectable(globalIdx, selected);
         if (isAutomatic)
             ImGuiUtil.HoverTooltip(
-                "The automatic color uses the colors dependent on the design state, as defined in the regular color definitions.");
+                "自动配色将按照配色设置中常规颜色的定义，依据设计状态进行设置。");
         return ret;
     }
 }

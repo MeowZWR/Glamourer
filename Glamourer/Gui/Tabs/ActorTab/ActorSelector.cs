@@ -52,7 +52,7 @@ public class ActorSelector(ObjectManager objects, ActorManager actors, Ephemeral
             using var tt = ImUtf8.Tooltip();
             ImUtf8.Text("筛选包含输入内容的名字。"u8);
             ImGui.Dummy(new Vector2(0, ImGui.GetTextLineHeight() / 2));
-            ImUtf8.Text("指定筛选规则为:"u8);
+            ImUtf8.Text("可指定的筛选:"u8);
             var color = ColorId.HeaderButtons.Value();
             ImUtf8.Text("<p>"u8, color);
             ImGui.SameLine(0, 0);

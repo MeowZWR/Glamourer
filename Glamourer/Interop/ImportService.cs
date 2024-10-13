@@ -16,14 +16,14 @@ public class ImportService(CustomizeService _customizations, IDragDropManager _d
     public void CreateDatSource()
         => _dragDropManager.CreateImGuiSource("DatDragger", m => m.Files.Count == 1 && m.Extensions.Contains(".dat"), m =>
         {
-            ImGui.TextUnformatted($"Dragging {Path.GetFileName(m.Files[0])} to import customizations for Glamourer...");
+            ImGui.TextUnformatted($"拖拽 {Path.GetFileName(m.Files[0])} 导入外貌数据到 Glamourer...");
             return true;
         });
 
     public void CreateCharaSource()
         => _dragDropManager.CreateImGuiSource("CharaDragger", m => m.Files.Count == 1 && m.Extensions.Contains(".chara") || m.Extensions.Contains(".cma"), m =>
         {
-            ImGui.TextUnformatted($"Dragging {Path.GetFileName(m.Files[0])} to import Anamnesis/CMTool data for Glamourer...");
+            ImGui.TextUnformatted($"拖拽 {Path.GetFileName(m.Files[0])} 导入 Anamnesis/CMTool 数据到 Glamourer...");
             return true;
         });
 

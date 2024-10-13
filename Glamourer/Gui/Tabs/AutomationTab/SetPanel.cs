@@ -430,7 +430,7 @@ public class SetPanel(
         ImGui.SameLine();
         _identifierDrawer.DrawName(200 - ImGui.GetStyle().ItemSpacing.X);
         _identifierDrawer.DrawNpcs(330);
-        var buttonWidth = new Vector2(165 * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X / 2, 0);
+        var buttonWidth = new Vector2(90 * ImGuiHelpers.GlobalScale - ImGui.GetStyle().ItemSpacing.X / 2, 0);
         if (ImUtf8.ButtonEx("分配给玩家"u8, string.Empty, buttonWidth, !_identifierDrawer.CanSetPlayer))
             _manager.ChangeIdentifier(setIndex, _identifierDrawer.PlayerIdentifier);
         ImGui.SameLine();
