@@ -11,7 +11,7 @@ public class GlamourerChangelog
     public GlamourerChangelog(Configuration config)
     {
         _config   = config;
-        Changelog = new Changelog("Glamourer Changelog", ConfigData, Save);
+        Changelog = new Changelog("Glamourer 更新日志", ConfigData, Save);
 
         Add1_0_0_0(Changelog);
         Add1_0_0_1(Changelog);
@@ -58,12 +58,12 @@ public class GlamourerChangelog
     }
 
     private static void Add1_3_3_0(Changelog log)
-        => log.NextVersion("Version 1.3.3.0")
-            .RegisterHighlight("Added the option to create automations for owned human NPCs (like trust avatars).")
-            .RegisterEntry("Added some special filters to the Actors tab selector, hover over it to see the options.")
-            .RegisterEntry("Added an option for designs to always reset all previously applied advanced dyes.")
-            .RegisterEntry("Added some new NPC-only customizations to the valid customizations.")
-            .RegisterEntry("Reworked quite a bit of things around face wear / bonus items. Please let me know if anything broke.");
+        => log.NextVersion("版本 1.3.3.0")
+            .RegisterHighlight("新增了为所属人类 NPC（如亲信战友）创建自动执行的选项。")
+            .RegisterEntry("在附近角色选项卡中添加了一些特殊筛选器，悬停可以查看选项。")
+            .RegisterEntry("为角色设计添加了一个选项，可以始终重置所有先前应用的高级染色。")
+            .RegisterEntry("新增了一些仅限 NPC 使用的外貌选项，添加到了有效的外貌设置中。")
+            .RegisterEntry("对面部配饰/额外物品进行了大量重构。如果出现任何问题，请告知。");
 
     private static void Add1_3_2_0(Changelog log)
         => log.NextVersion("版本 1.3.2.0")
@@ -83,7 +83,7 @@ public class GlamourerChangelog
             .RegisterEntry("新增了附加物品的 API。（版本 1.3.1.1）");
 
     private static void Add1_3_1_0(Changelog log)
-        => log.NextVersion("Version 1.3.1.0")
+        => log.NextVersion("版本 1.3.1.0")
             .RegisterHighlight("Glamourer现已支持「金曦之遗辉」")
             .RegisterEntry("新增对女性硌狮族的支持。",  1)
             .RegisterEntry("新增对眼镜插槽的支持。", 1)
@@ -125,7 +125,7 @@ public class GlamourerChangelog
                 "Glamourer现在使用最后一个匹配的游戏对象进行高级染色，而不是第一个（主要与 GPose 相关）。 (1.2.3.1)");
 
     private static void Add1_2_3_0(Changelog log)
-        => log.NextVersion("Version 1.2.3.0")
+        => log.NextVersion("版本 1.2.3.0")
             .RegisterHighlight(
                 "新增了一个字段，允许直接从模组选择器上下文菜单中重命名设计，而不是在文件系统中移动它们。")
             .RegisterEntry("你可以选择在设置中显示哪个重命名字段（无、一个或两个）。", 1)
@@ -151,7 +151,7 @@ public class GlamourerChangelog
             .RegisterEntry("修复了相同武器类型和多个受限设计的问题。 （1.2.1.3）");
 
     private static void Add1_2_1_0(Changelog log)
-        => log.NextVersion("Version 1.2.1.0")
+        => log.NextVersion("版本 1.2.1.0")
             .RegisterEntry("Updated for .net 8 and FFXIV 6.58, using some new framework options to improve performance and stability.")
             .RegisterEntry("Previewing changed items in Penumbra now works with all weapons in GPose. (1.2.0.8)")
             .RegisterEntry(
@@ -172,7 +172,7 @@ public class GlamourerChangelog
             .RegisterEntry("Fixed issue with design link application rule checkboxes. (1.2.0.1)");
 
     private static void Add1_2_0_0(Changelog log)
-        => log.NextVersion("Version 1.2.0.0")
+        => log.NextVersion("版本 1.2.0.0")
             .RegisterHighlight("Added the option to link to other designs in a design, causing all of them to be applied at once.")
             .RegisterEntry("This required reworking the handling for applying multiple designs at once (i.e.merging them).", 1)
             .RegisterEntry(
@@ -223,7 +223,7 @@ public class GlamourerChangelog
         => log.NextVersion(string.Empty);
 
     private static void Add1_1_0_4(Changelog log)
-        => log.NextVersion("Version 1.1.0.4")
+        => log.NextVersion("版本 1.1.0.4")
             .RegisterEntry("Added a check and warning for a lingering Palette+ installation.")
             .RegisterHighlight(
                 "Added a button to only revert advanced customizations to game state to the quick design bar. This can be toggled off in the interface settings.")
@@ -237,7 +237,7 @@ public class GlamourerChangelog
             .RegisterEntry("Fixed another wrong restricted item.");
 
     private static void Add1_1_0_2(Changelog log)
-        => log.NextVersion("Version 1.1.0.2")
+        => log.NextVersion("版本 1.1.0.2")
             .RegisterEntry("Added design colors in the preview of combos (in the quick bar and the automation panel).")
             .RegisterHighlight("Improved Palette+ import options: Instead of entering a name, you can now select from available palettes.")
             .RegisterHighlight("In the settings tab, there is also a button to import ALL palettes from Palette+ as separate designs.", 1)
@@ -250,7 +250,7 @@ public class GlamourerChangelog
 
 
     private static void Add1_1_0_0(Changelog log)
-        => log.NextVersion("Version 1.1.0.0")
+        => log.NextVersion("版本 1.1.0.0")
             .RegisterHighlight("Added a new tab to browse, apply or copy (human) NPC appearances.")
             .RegisterHighlight("A characters body type can now be changed when copying state or saving designs from certain NPCs.")
             .RegisterHighlight("Added support for picking advanced colors for your characters customizations.")
@@ -274,7 +274,7 @@ public class GlamourerChangelog
             .RegisterEntry("Added IPC to apply designs by GUID, and obtain a list of designs.");
 
     private static void Add1_0_7_0(Changelog log)
-        => log.NextVersion("Version 1.0.7.0")
+        => log.NextVersion("版本 1.0.7.0")
             .RegisterHighlight("Glamourer now can set the free company crests on body slots, head slots and shields.")
             .RegisterEntry("Fixed an issue with tooltips in certain combo selectors.")
             .RegisterEntry("Fixed some issues with Hide Hat Gear and monsters turned into humans.")
@@ -284,7 +284,7 @@ public class GlamourerChangelog
             .RegisterEntry("Pre-emptively fixed a potential issue for the holidays.");
 
     private static void Add1_0_6_0(Changelog log)
-        => log.NextVersion("Version 1.0.6.0")
+        => log.NextVersion("版本 1.0.6.0")
             .RegisterHighlight("Added the option to define custom color groups and associate designs with them.")
             .RegisterEntry("You can create and name design colors in Settings -> Colors -> Custom Design Colors.", 1)
             .RegisterEntry(
@@ -312,7 +312,7 @@ public class GlamourerChangelog
             .RegisterEntry("Added option to open the Glamourer main window at game start independently of Debug Mode.");
 
     private static void Add1_0_5_0(Changelog log)
-        => log.NextVersion("Version 1.0.5.0")
+        => log.NextVersion("版本 1.0.5.0")
             .RegisterHighlight("Dyes are can now be favorited the same way equipment pieces can.")
             .RegisterHighlight(
                 "The quick design bar combo can now be scrolled through via mousewheel when hovering over the combo without opening it.")
@@ -330,7 +330,7 @@ public class GlamourerChangelog
             .RegisterEntry("Fixed a problem with characters not redrawing after leaving GPose even if necessary.");
 
     private static void Add1_0_4_0(Changelog log)
-        => log.NextVersion("Version 1.0.4.0")
+        => log.NextVersion("版本 1.0.4.0")
             .RegisterEntry("The GPose target is now used for target-dependent functionality in GPose.")
             .RegisterEntry("Fixed a few issues with transformations, especially their weapons and head gear.")
             .RegisterEntry(
@@ -343,7 +343,7 @@ public class GlamourerChangelog
             .RegisterEntry("Removed the default key combination for toggling the quick bar. (1.0.3.1)");
 
     private static void Add1_0_3_0(Changelog log)
-        => log.NextVersion("Version 1.0.3.0")
+        => log.NextVersion("版本 1.0.3.0")
             .RegisterEntry("Hopefully improved Palette+ compatibility.")
             .RegisterHighlight(
                 "Added a Quick Design Bar, which is a small bar in which you can select your designs and apply them to yourself or your target, or revert them.")
@@ -360,7 +360,7 @@ public class GlamourerChangelog
             .RegisterEntry("Added missing dot to changelog entry.");
 
     private static void Add1_0_2_0(Changelog log)
-        => log.NextVersion("Version 1.0.2.0")
+        => log.NextVersion("版本 1.0.2.0")
             .RegisterHighlight("Added option to favorite items so they appear first in the item selection combos.")
             .RegisterEntry(
                 "The reordering in the combo only happens after closing and opening it again so items do not vanish from view when you (un)favor them.",
@@ -376,7 +376,7 @@ public class GlamourerChangelog
             .RegisterEntry("Worked around a bug in the game's code breaking certain Monk Fist Weapons again... thanks SE.");
 
     private static void Add1_0_1_1(Changelog log)
-        => log.NextVersion("Version 1.0.1.1")
+        => log.NextVersion("版本 1.0.1.1")
             .RegisterImportant(
                 "Updated for 6.5 - Square Enix shuffled around a lot of things this update, so some things still might not work but have not been noticed yet. Please report any issues.")
             .RegisterHighlight(
@@ -392,7 +392,7 @@ public class GlamourerChangelog
             .RegisterEntry("Other new codes will be published in other ways.", 1);
 
     private static void Add1_0_0_6(Changelog log)
-        => log.NextVersion("Version 1.0.0.6")
+        => log.NextVersion("版本 1.0.0.6")
             .RegisterHighlight(
                 "Added two buttons to the top-right of the Glamourer window that allow you to revert your own player characters state to Game or to Automation state from any tab.")
             .RegisterEntry("Added the Shift/Control modifiers to the Apply buttons in the Designs tab, too.")
@@ -406,7 +406,7 @@ public class GlamourerChangelog
             .RegisterHighlight("This should fix tails and ears not being shared via Mare!", 1);
 
     private static void Add1_0_0_3(Changelog log)
-        => log.NextVersion("Version 1.0.0.3")
+        => log.NextVersion("版本 1.0.0.3")
             .RegisterHighlight("Reintroduced holding Control or Shift to apply only gear or customization changes.")
             .RegisterEntry("Deletion of multiple selected designs at once is now supported.")
             .RegisterEntry(
@@ -427,7 +427,7 @@ public class GlamourerChangelog
             .RegisterEntry("Apply Forced Wetness state after creation of draw objects, maybe fixing it turning off on zone changes.");
 
     private static void Add1_0_0_2(Changelog log)
-        => log.NextVersion("Version 1.0.0.2")
+        => log.NextVersion("版本 1.0.0.2")
             .RegisterHighlight("Added support for 'Clipboard' as a design source for /glamour apply.")
             .RegisterEntry("Improved tooltips for tri-state toggles.")
             .RegisterEntry("Improved some labels of settings to clarify what they do.")
@@ -450,7 +450,7 @@ public class GlamourerChangelog
                 "Hopefully fixed ear shape numbering for Elezen and Lalafell (yes SE, just put a 1-indexed option in a sea of 0-indexed options, sure. Fuck off-by-one error).");
 
     private static void Add1_0_0_1(Changelog log)
-        => log.NextVersion("Version 1.0.0.1")
+        => log.NextVersion("版本 1.0.0.1")
             .RegisterImportant("Fixed Issue with Migration of identically named designs. "
               + "If you lost any designs during migration, try going to \"%appdata%\\XIVLauncher\\pluginConfigs\\Glamourer\\\" "
               + "and renaming the file \"Designs.json.bak\" to \"Designs.json\", then restarting.")
@@ -461,7 +461,7 @@ public class GlamourerChangelog
             .RegisterEntry("Fixed an issue with some weapons not being recognized as offhands correctly.");
 
     private static void Add1_0_0_0(Changelog log)
-        => log.NextVersion("Version 1.0.0.0 (Full Rework)")
+        => log.NextVersion("版本 1.0.0.0 (Full Rework)")
             .RegisterHighlight(
                 "Glamourer has been reworked entirely. Basically everything has been written anew from the ground up, even though some things may look the same.")
             .RegisterEntry(
