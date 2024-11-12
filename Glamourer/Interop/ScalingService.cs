@@ -16,7 +16,7 @@ public unsafe class ScalingService : IDisposable
         interop.InitializeFromAttributes(this);
         _setupMountHook =
             interop.HookFromAddress<SetupMount>((nint)MountContainer.MemberFunctionPointers.SetupMount, SetupMountDetour);
-        _setupOrnamentHook = interop.HookFromAddress<SetupOrnament>((nint)Ornament.MemberFunctionPointers.SetupOrnament, SetupOrnamentDetour);
+        _setupOrnamentHook = interop.HookFromSignature<SetupOrnament>(Sigs.GlamourerOrnamentSig, SetupOrnamentDetour); // 从在Penumbra.GameData中Signatures.cs临时添加的签名获取
         _calculateHeightHook =
             interop.HookFromAddress<CalculateHeight>((nint)Character.MemberFunctionPointers.CalculateHeight, CalculateHeightDetour);
 
