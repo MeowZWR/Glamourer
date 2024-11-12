@@ -58,8 +58,8 @@ public class DesignDetailTab
         if (!table)
             return;
 
-        ImGui.TableSetupColumn("Type", ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Reset Advanced Dyes").X);
-        ImGui.TableSetupColumn("Data", ImGuiTableColumnFlags.WidthStretch);
+        ImGui.TableSetupColumn("类型", ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("重置高级染色").X);
+        ImGui.TableSetupColumn("数据", ImGuiTableColumnFlags.WidthStretch);
 
         ImGuiUtil.DrawFrameColumn("设计名称");
         ImGui.TableNextColumn();
@@ -92,7 +92,7 @@ public class DesignDetailTab
                 }
                 catch (Exception ex)
                 {
-                    Glamourer.Messager.NotificationMessage(ex, $"Could not open file {fileName}.", $"Could not open file {fileName}",
+                    Glamourer.Messager.NotificationMessage(ex, $"无法打开文件 {fileName} 。", $"无法打开文件 {fileName}",
                         NotificationType.Warning);
                 }
 
@@ -143,12 +143,12 @@ public class DesignDetailTab
             _manager.ChangeForcedRedraw(_selector.Selected!, forceRedraw);
         ImGuiUtil.HoverTooltip("设置使此设计在任何方式应用时始终强制重新绘制。");
 
-        var resetMaterials = _selector.Selected!.ResetAdvancedDyes;
+        var resetAdvancedDyes = _selector.Selected!.ResetAdvancedDyes;
         ImGuiUtil.DrawFrameColumn("重置高级染色");
         ImGui.TableNextColumn();
-        if (ImGui.Checkbox("##ResetAdvancedDyes", ref resetMaterials))
-            _manager.ChangeResetAdvancedDyes(_selector.Selected!, resetMaterials);
-        ImGuiUtil.HoverTooltip("将此设计设置为在通过任何方式应用时，重置先前应用的任何高级染色。");
+        if (ImGui.Checkbox("##ResetAdvancedDyes", ref resetAdvancedDyes))
+            _manager.ChangeResetAdvancedDyes(_selector.Selected!, resetAdvancedDyes);
+        ImGuiUtil.HoverTooltip("将此设计设置为通过任何方式应用时重置之前应用的高级染色。");
 
         ImGuiUtil.DrawFrameColumn("配色");
         var colorName = _selector.Selected!.Color.Length == 0 ? DesignColors.AutomaticName : _selector.Selected!.Color;
