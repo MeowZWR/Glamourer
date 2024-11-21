@@ -5,6 +5,7 @@ using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Penumbra.GameData;
 using Penumbra.GameData.Interop;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using Character = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 namespace Glamourer.Interop;
@@ -16,12 +17,11 @@ public unsafe class ScalingService : IDisposable
         interop.InitializeFromAttributes(this);
         _setupMountHook =
             interop.HookFromAddress<SetupMount>((nint)MountContainer.MemberFunctionPointers.SetupMount, SetupMountDetour);
-        _setupOrnamentHook = interop.HookFromSignature<SetupOrnament>(Sigs.GlamourerOrnamentSig, SetupOrnamentDetour); // 从在Penumbra.GameData中Signatures.cs临时添加的签名获取
         _calculateHeightHook =
             interop.HookFromAddress<CalculateHeight>((nint)Character.MemberFunctionPointers.CalculateHeight, CalculateHeightDetour);
 
         _setupMountHook.Enable();
-        _setupOrnamentHook.Enable();
+        _updateOrnamentHook.Enable();
         _placeMinionHook.Enable();
         _calculateHeightHook.Enable();
     }
@@ -29,19 +29,21 @@ public unsafe class ScalingService : IDisposable
     public void Dispose()
     {
         _setupMountHook.Dispose();
-        _setupOrnamentHook.Dispose();
+        _updateOrnamentHook.Dispose();
         _placeMinionHook.Dispose();
         _calculateHeightHook.Dispose();
     }
 
     private delegate void  SetupMount(MountContainer* container, short mountId, uint unk1, uint unk2, uint unk3, byte unk4);
-    private delegate void  SetupOrnament(Ornament* ornament, uint* unk1, float* unk2);
+    private delegate void  UpdateOrnament(OrnamentContainer* ornament);
     private delegate void  PlaceMinion(Companion* character);
     private delegate float CalculateHeight(Character* character);
 
     private readonly Hook<SetupMount> _setupMountHook;
 
-    private readonly Hook<SetupOrnament> _setupOrnamentHook;
+    // TODO: Use client structs sig.
+    [Signature(Sigs.UpdateOrnament, DetourName = nameof(UpdateOrnamentDetour))]
+    private readonly Hook<UpdateOrnament> _updateOrnamentHook = null!;
 
     private readonly Hook<CalculateHeight> _calculateHeightHook;
 
@@ -57,25 +59,17 @@ public unsafe class ScalingService : IDisposable
         SetScaleCustomize(container->OwnerObject, race, clan, gender);
     }
 
-    private void SetupOrnamentDetour(Ornament* ornament, uint* unk1, float* unk2)
+    private void UpdateOrnamentDetour(OrnamentContainer* container)
     {
-        var character = ornament->GetParentCharacter();
-        if (character == null)
-        {
-            _setupOrnamentHook.Original(ornament, unk1, unk2);
-            return;
-        }
-
-        var (race, clan, gender) = GetScaleRelevantCustomize(character);
-        SetScaleCustomize(character, character->GameObject.DrawObject);
-        _setupOrnamentHook.Original(ornament, unk1, unk2);
-        SetScaleCustomize(character, race, clan, gender);
+        var (race, clan, gender) = GetScaleRelevantCustomize(container->OwnerObject);
+        SetScaleCustomize(container->OwnerObject, container->OwnerObject->DrawObject);
+        _updateOrnamentHook.Original(container);
+        SetScaleCustomize(container->OwnerObject, race, clan, gender);
     }
 
     private void PlaceMinionDetour(Companion* companion)
     {
-        // TODO Update CS
-        var owner = (Actor)((nint*)companion)[0x45C];
+        var owner = (Actor)(GameObject*)companion->Owner;
         if (!owner.IsCharacter)
         {
             _placeMinionHook.Original(companion);

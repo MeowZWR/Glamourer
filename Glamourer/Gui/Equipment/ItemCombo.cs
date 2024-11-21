@@ -2,7 +2,7 @@
 using Glamourer.Services;
 using Glamourer.Unlocks;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using OtterGui;
 using OtterGui.Classes;
 using OtterGui.Log;
@@ -88,21 +88,21 @@ public sealed class ItemCombo : FilterComboCache<EquipItem>
 
     private static string GetLabel(IDataManager gameData, EquipSlot slot)
     {
-        var sheet = gameData.GetExcelSheet<Addon>()!;
+        var sheet = gameData.GetExcelSheet<Addon>();
 
         return slot switch
         {
-            EquipSlot.Head    => sheet.GetRow(740)?.Text.ToString() ?? "头部装备",
-            EquipSlot.Body    => sheet.GetRow(741)?.Text.ToString() ?? "身体装备",
-            EquipSlot.Hands   => sheet.GetRow(742)?.Text.ToString() ?? "手部装备",
-            EquipSlot.Legs    => sheet.GetRow(744)?.Text.ToString() ?? "腿部装备",
-            EquipSlot.Feet    => sheet.GetRow(745)?.Text.ToString() ?? "脚部装备",
-            EquipSlot.Ears    => sheet.GetRow(746)?.Text.ToString() ?? "耳部装备",
-            EquipSlot.Neck    => sheet.GetRow(747)?.Text.ToString() ?? "颈部装备",
-            EquipSlot.Wrists  => sheet.GetRow(748)?.Text.ToString() ?? "腕部装备",
-            EquipSlot.RFinger => sheet.GetRow(749)?.Text.ToString() ?? "右戒指",
-            EquipSlot.LFinger => sheet.GetRow(750)?.Text.ToString() ?? "左戒指",
-            _                 => string.Empty,
+            EquipSlot.Head    => sheet.TryGetRow(740, out var text) ? text.Text.ToString() : "头部装备",
+            EquipSlot.Body    => sheet.TryGetRow(741, out var text) ? text.Text.ToString() : "身体装备",
+            EquipSlot.Hands   => sheet.TryGetRow(742, out var text) ? text.Text.ToString() : "手部装备",
+            EquipSlot.Legs    => sheet.TryGetRow(744, out var text) ? text.Text.ToString() : "腿部装备",
+            EquipSlot.Feet    => sheet.TryGetRow(745, out var text) ? text.Text.ToString() : "脚部装备",
+            EquipSlot.Ears    => sheet.TryGetRow(746, out var text) ? text.Text.ToString() : "耳部装备",
+            EquipSlot.Neck    => sheet.TryGetRow(747, out var text) ? text.Text.ToString() : "颈部装备",
+            EquipSlot.Wrists  => sheet.TryGetRow(748, out var text) ? text.Text.ToString() : "腕部装备",
+            EquipSlot.RFinger => sheet.TryGetRow(749, out var text) ? text.Text.ToString() : "右戒指",
+            EquipSlot.LFinger => sheet.TryGetRow(750, out var text) ? text.Text.ToString() : "左戒指",
+            _ => string.Empty,
         };
     }
 
