@@ -374,6 +374,9 @@ public class StateEditor(
                     }
 
                     var currentType = state.BaseData.Item(weaponSlot).Type;
+
+                    if (weaponSlot == EquipSlot.OffHand && CraftMainHands.Contains(currentType)) continue;
+
                     if (mergedDesign.Weapons.TryGet(currentType, state.LastJob, true, out var weapon))
                     {
                         var source = settings.UseSingleSource ? settings.Source :
