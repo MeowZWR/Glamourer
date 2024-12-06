@@ -28,10 +28,14 @@ public sealed class Design : DesignBase, ISavable, IDesignStandIn
     internal Design(Design other)
         : base(other)
     {
-        Tags           = [.. other.Tags];
-        Description    = other.Description;
-        QuickDesign    = other.QuickDesign;
-        AssociatedMods = new SortedList<Mod, ModSettings>(other.AssociatedMods);
+        Tags              = [.. other.Tags];
+        Description       = other.Description;
+        QuickDesign       = other.QuickDesign;
+        ForcedRedraw      = other.ForcedRedraw;
+        ResetAdvancedDyes = other.ResetAdvancedDyes;
+        Color             = other.Color;
+        AssociatedMods    = new SortedList<Mod, ModSettings>(other.AssociatedMods);
+        Links             = Links.Clone();
     }
 
     // Metadata
@@ -54,7 +58,7 @@ public sealed class Design : DesignBase, ISavable, IDesignStandIn
     public string Incognito
         => Identifier.ToString()[..8];
 
-    public IEnumerable<(IDesignStandIn Design, ApplicationType Flags, JobFlag Jobs)> AllLinks
+    public IEnumerable<(IDesignStandIn Design, ApplicationType Flags, JobFlag Jobs)> AllLinks(bool newApplication)
         => LinkContainer.GetAllLinks(this).Select(t => ((IDesignStandIn)t.Link.Link, t.Link.Type, JobFlag.All));
 
     #endregion
