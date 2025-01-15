@@ -38,6 +38,7 @@ public class GlamourerChangelog
         Add1_3_2_0(Changelog);
         Add1_3_3_0(Changelog);
         Add1_3_4_0(Changelog);
+        Add1_3_5_0(Changelog);
     }
 
     private (int, ChangeLogDisplayType) ConfigData()
@@ -57,6 +58,22 @@ public class GlamourerChangelog
             _config.Save();
         }
     }
+
+    private static void Add1_3_5_0(Changelog log)
+        => log.NextVersion("版本 1.3.5.0")
+            .RegisterHighlight("添加了使用 Penumbra 提供的新临时模组设置功能来应用模组关联的功能。此功能默认启用，但可在设置中改为永久更改。")
+            .RegisterEntry("设计现在具有一个设置，可在应用时始终重置 Glamourer 之前创建的所有临时设置。", 1)
+            .RegisterEntry("自动执行集也具有一个设置，可独立于其包含的设计来执行此操作。", 1)
+            .RegisterHighlight("现在应接受更多 NPC 自定义选项作为设计的有效选项，无论种族/性别如何。")
+            .RegisterHighlight("‘Apply’聊天命令新增了当前选定的设计和当前快速设计作为选项。")
+            .RegisterEntry("设计、NPC 或角色的应用按钮现在应始终固定在其面板顶部，即使在向下滚动时也是如此。")
+            .RegisterHighlight("随机选择的设计现在应在加载屏幕或重绘期间保持不变。（1.3.4.3）")
+            .RegisterEntry("在自动执行中，随机设计现在有一个选项可始终选择其他设计，包括在加载屏幕或重绘期间。", 1)
+            .RegisterEntry("修复了禁用自动执行时无法按预期工作的一个问题。")
+            .RegisterEntry("修复了 IPC 调用中的应用标志反转问题。")
+            .RegisterEntry("修复了高级染色弹出窗口在字体大小增加时的缩放问题。")
+            .RegisterEntry("修复了自动执行选项卡中编辑装备条件时的一个错误。")
+            .RegisterEntry("修复了一些 ImGui 问题。");
 
     private static void Add1_3_4_0(Changelog log)
         => log.NextVersion("版本 1.3.4.0")

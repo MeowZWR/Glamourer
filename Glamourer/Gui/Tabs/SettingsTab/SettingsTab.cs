@@ -3,6 +3,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using Dalamud.Plugin.Services;
+using Glamourer.Automation;
 using Glamourer.Designs;
 using Glamourer.Gui.Tabs.DesignTab;
 using Glamourer.Interop;
@@ -27,7 +28,8 @@ public class SettingsTab(
     PalettePlusChecker paletteChecker,
     CollectionOverrideDrawer overrides,
     CodeDrawer codeDrawer,
-    Glamourer glamourer)
+    Glamourer glamourer,
+    AutoDesignApplier autoDesignApplier)
     : ITab
 {
     private readonly VirtualKey[] _validKeys = keys.GetValidVirtualKeys().Prepend(VirtualKey.NO_KEY).ToArray();
@@ -42,8 +44,12 @@ public class SettingsTab(
             return;
 
         Checkbox("启用自动执行",
-            "启用关联角色的自动执行功能。",
-            config.EnableAutoDesigns, v => config.EnableAutoDesigns = v);
+            "启用在自动执行选项卡中为关联角色的自动应用设计的功能。",
+            config.EnableAutoDesigns, v =>
+            {
+                config.EnableAutoDesigns = v;
+                autoDesignApplier.OnEnableAutoDesignsChanged(v);
+            });
         ImGui.NewLine();
         ImGui.NewLine();
         ImGui.NewLine();
@@ -101,6 +107,9 @@ public class SettingsTab(
           + "Glamourer不会自动还原这些应用的设置。这可能会打乱你的合集和配置。\n\n"
           + "如果你启用此设置，你应意识到任何由此产生的配置错误都是你自己造成的。。",
             config.AlwaysApplyAssociatedMods, v => config.AlwaysApplyAssociatedMods = v);
+        Checkbox("Use Temporary Mod Settings",
+            "Apply all settings as temporary settings so they will be reset when Glamourer or the game shut down.", config.UseTemporarySettings,
+            v => config.UseTemporarySettings = v);
         ImGui.NewLine();
     }
 
@@ -115,6 +124,8 @@ public class SettingsTab(
             config.DefaultDesignSettings.ResetAdvancedDyes, v => config.DefaultDesignSettings.ResetAdvancedDyes = v);
         Checkbox("Always Force Redraw", "Newly created designs will be configured to force character redraws on application by default.",
             config.DefaultDesignSettings.AlwaysForceRedrawing, v => config.DefaultDesignSettings.AlwaysForceRedrawing = v);
+        Checkbox("Reset Temporary Settings", "Newly created designs will be configured to clear all advanced settings applied by Glamourer to the collection by default.",
+            config.DefaultDesignSettings.ResetTemporarySettings, v => config.DefaultDesignSettings.ResetTemporarySettings = v);
     }
 
     private void DrawInterfaceSettings()

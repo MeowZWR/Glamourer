@@ -88,16 +88,19 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
 
     private void DrawTable()
     {
-        using var table = ImRaii.Table("Mods", 5, ImGuiTableFlags.RowBg);
+        using var table = ImUtf8.Table("Mods"u8, config.UseTemporarySettings ? 7 : 6, ImGuiTableFlags.RowBg);
         if (!table)
             return;
 
-        ImGui.TableSetupColumn("##Buttons", ImGuiTableColumnFlags.WidthFixed,
+        ImUtf8.TableSetupColumn("##Buttons"u8, ImGuiTableColumnFlags.WidthFixed,
             ImGui.GetFrameHeight() * 3 + ImGui.GetStyle().ItemInnerSpacing.X * 2);
-        ImGui.TableSetupColumn("模组名称",  ImGuiTableColumnFlags.WidthStretch);
-        ImGui.TableSetupColumn("状态",      ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("State").X);
-        ImGui.TableSetupColumn("优先级",    ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Priority").X);
-        ImGui.TableSetupColumn("##Options", ImGuiTableColumnFlags.WidthFixed, ImGui.CalcTextSize("Applym").X);
+        ImUtf8.TableSetupColumn("模组名称"u8, ImGuiTableColumnFlags.WidthStretch);
+        if (config.UseTemporarySettings)
+            ImUtf8.TableSetupColumn("移除"u8, ImGuiTableColumnFlags.WidthFixed, ImUtf8.CalcTextSize("Remove"u8).X);
+        ImUtf8.TableSetupColumn("继承"u8, ImGuiTableColumnFlags.WidthFixed, ImUtf8.CalcTextSize("Inherit"u8).X);
+        ImUtf8.TableSetupColumn("状态"u8,     ImGuiTableColumnFlags.WidthFixed, ImUtf8.CalcTextSize("State"u8).X);
+        ImUtf8.TableSetupColumn("优先级"u8,  ImGuiTableColumnFlags.WidthFixed, ImUtf8.CalcTextSize("Priority"u8).X);
+        ImUtf8.TableSetupColumn("##Options"u8, ImGuiTableColumnFlags.WidthFixed, ImUtf8.CalcTextSize("Applym"u8).X);
         ImGui.TableHeadersRow();
 
         Mod?                             removedMod = null;
@@ -146,19 +149,22 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
         ImUtf8.IconButton(FontAwesomeIcon.RedoAlt, "更新此关联模组当前的设置。"u8);
         if (ImGui.IsItemHovered())
         {
-            var newSettings = penumbra.GetModSettings(mod);
+            var newSettings = penumbra.GetModSettings(mod, out var source);
             if (ImGui.IsItemClicked())
                 updatedMod = (mod, newSettings);
 
             using var style = ImRaii.PushStyle(ImGuiStyleVar.PopupBorderSize, 2 * ImGuiHelpers.GlobalScale);
             using var tt    = ImUtf8.Tooltip();
+            if (source.Length > 0)
+                ImUtf8.Text($"使用由 {source} 创建的临时设置。");
             ImGui.Separator();
             var namesDifferent = mod.Name != mod.DirectoryName;
             ImGui.Dummy(new Vector2(300 * ImGuiHelpers.GlobalScale, 0));
             using (ImRaii.Group())
             {
                 if (namesDifferent)
-                    ImUtf8.Text("Directory Name"u8);
+                    ImUtf8.Text("目录名称"u8);
+                ImUtf8.Text("强制继承"u8);
                 ImUtf8.Text("已启用"u8);
                 ImUtf8.Text("优先级"u8);
                 ModCombo.DrawSettingsLeft(newSettings);
@@ -170,6 +176,7 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
                 if (namesDifferent)
                     ImUtf8.Text(mod.DirectoryName);
 
+                ImUtf8.Text(newSettings.ForceInherit.ToString());
                 ImUtf8.Text(newSettings.Enabled.ToString());
                 ImUtf8.Text(newSettings.Priority.ToString());
                 ModCombo.DrawSettingsRight(newSettings);
@@ -181,7 +188,22 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
         if (ImUtf8.Selectable($"{mod.Name}##name"))
             penumbra.OpenModPage(mod);
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip($"模组目录： {mod.DirectoryName}\n\n点击打开 Penumbra 中的模组页面。");
+            ImGui.SetTooltip($"Mod Directory:    {mod.DirectoryName}\n\nClick to open mod page in Penumbra.");
+        if (config.UseTemporarySettings)
+        {
+            ImGui.TableNextColumn();
+            var remove = settings.Remove;
+            if (TwoStateCheckbox.Instance.Draw("##Remove"u8, ref remove))
+                updatedMod = (mod, settings with { Remove = remove });
+            ImUtf8.HoverTooltip(
+                "移除由 Glamourer 应用的任何临时设置，而不是应用已配置的设置。仅在使用临时设置时有效，否则会被忽略。"u8);
+        }
+
+        ImGui.TableNextColumn();
+        var inherit = settings.ForceInherit;
+        if (TwoStateCheckbox.Instance.Draw("##Enabled"u8, ref inherit))
+            updatedMod = (mod, settings with { ForceInherit = inherit });
+        ImUtf8.HoverTooltip("强制模组从继承的合集中继承其设置。"u8);
         ImGui.TableNextColumn();
         var enabled = settings.Enabled;
         if (TwoStateCheckbox.Instance.Draw("##Enabled"u8, ref enabled))
