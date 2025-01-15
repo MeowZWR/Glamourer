@@ -71,7 +71,7 @@ public class SettingsTab(
 
     private void DrawBehaviorSettings()
     {
-        if (!ImGui.CollapsingHeader("特性设置"))
+        if (!ImGui.CollapsingHeader("行为设置"))
             return;
 
         Checkbox("总是为主手应用整套武器",
@@ -107,24 +107,24 @@ public class SettingsTab(
           + "Glamourer不会自动还原这些应用的设置。这可能会打乱你的合集和配置。\n\n"
           + "如果你启用此设置，你应意识到任何由此产生的配置错误都是你自己造成的。。",
             config.AlwaysApplyAssociatedMods, v => config.AlwaysApplyAssociatedMods = v);
-        Checkbox("Use Temporary Mod Settings",
-            "Apply all settings as temporary settings so they will be reset when Glamourer or the game shut down.", config.UseTemporarySettings,
+        Checkbox("使用临时模组设置",
+            "将所有设置应用为临时设置，以便在 Glamourer 或游戏关闭时重置。", config.UseTemporarySettings,
             v => config.UseTemporarySettings = v);
         ImGui.NewLine();
     }
 
     private void DrawDesignDefaultSettings()
     {
-        if (!ImUtf8.CollapsingHeader("Design Defaults"))
+        if (!ImUtf8.CollapsingHeader("设计默认设置"))
             return;
 
-        Checkbox("Show in Quick Design Bar", "Newly created designs will be shown in the quick design bar by default.",
+        Checkbox("在快速设计栏中显示", "新创建的设计将默认显示在快速设计栏中。",
             config.DefaultDesignSettings.ShowQuickDesignBar, v => config.DefaultDesignSettings.ShowQuickDesignBar = v);
-        Checkbox("Reset Advanced Dyes", "Newly created designs will be configured to reset advanced dyes on application by default.",
+        Checkbox("重置高级染色", "新创建的设计将在应用时默认配置为重置高级染色。",
             config.DefaultDesignSettings.ResetAdvancedDyes, v => config.DefaultDesignSettings.ResetAdvancedDyes = v);
-        Checkbox("Always Force Redraw", "Newly created designs will be configured to force character redraws on application by default.",
+        Checkbox("始终强制重绘", "新创建的设计将在应用时默认配置为强制角色重绘。",
             config.DefaultDesignSettings.AlwaysForceRedrawing, v => config.DefaultDesignSettings.AlwaysForceRedrawing = v);
-        Checkbox("Reset Temporary Settings", "Newly created designs will be configured to clear all advanced settings applied by Glamourer to the collection by default.",
+        Checkbox("重置临时设置", "新创建的设计将在应用时默认配置为清除 Glamourer 应用到合集的所有高级设置。",
             config.DefaultDesignSettings.ResetTemporarySettings, v => config.DefaultDesignSettings.ResetTemporarySettings = v);
     }
 

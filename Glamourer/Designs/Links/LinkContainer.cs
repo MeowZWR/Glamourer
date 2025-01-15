@@ -87,27 +87,27 @@ public sealed class LinkContainer : List<DesignLink>
     {
         if (parent == child)
         {
-            error = $"Can not link {parent.Incognito} with itself.";
+            error = $"无法将 {parent.Incognito} 与其自身链接。";
             return false;
         }
 
         if (parent.Links.Contains(child))
         {
-            error = $"Design {parent.Incognito} already contains a direct link to {child.Incognito}.";
+            error = $"设计 {parent.Incognito} 已经包含对 {child.Incognito} 的直接链接。";
             return false;
         }
 
         if (GetAllLinks(parent).Any(l => l.Link.Link == child && l.Order != order))
         {
             error =
-                $"Adding {child.Incognito} to {parent.Incognito}s links would create a circle, the parent already links to the child in the opposite direction.";
+                $"将 {child.Incognito} 添加到 {parent.Incognito} 的链接中将创建一个循环，父项已经在相反方向上链接到子项。";
             return false;
         }
 
         if (GetAllLinks(child).Any(l => l.Link.Link == parent && l.Order == order))
         {
             error =
-                $"Adding {child.Incognito} to {parent.Incognito}s links would create a circle, the child already links to the parent in the opposite direction.";
+                $"将 {child.Incognito} 添加到 {parent.Incognito} 的链接中将创建一个循环，子项已经在相反方向上链接到父项。";
             return false;
         }
 

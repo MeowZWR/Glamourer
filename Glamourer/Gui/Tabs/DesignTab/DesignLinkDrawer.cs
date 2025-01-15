@@ -122,7 +122,7 @@ public class DesignLinkDrawer(DesignLinkManager _linkManager, DesignFileSystemSe
             id.Push(i);
 
             ImGui.TableNextColumn();
-            var delete = ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Trash.ToIconString(), buttonSize, "Delete this link.", false, true);
+            var delete = ImGuiUtil.DrawDisabledButton(FontAwesomeIcon.Trash.ToIconString(), buttonSize, "删除此链接。", false, true);
             var (design, flags) = list[i];
             ImGui.TableNextColumn();
 
