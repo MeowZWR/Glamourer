@@ -9,10 +9,12 @@ using Penumbra.GameData.Enums;
 using Penumbra.GameData.Structs;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using Glamourer.GameData;
 using Penumbra.GameData.DataContainers;
 using Glamourer.Designs;
 using Penumbra.GameData.Interop;
+using Glamourer.Api.Enums;
 using ObjectManager = Glamourer.Interop.ObjectManager;
 
 namespace Glamourer.State;
@@ -34,10 +36,12 @@ public class StateListener : IDisposable
     private readonly PenumbraService           _penumbra;
     private readonly EquipSlotUpdating         _equipSlotUpdating;
     private readonly BonusSlotUpdating         _bonusSlotUpdating;
+    private readonly GearsetDataLoaded         _gearsetDataLoaded;
     private readonly WeaponLoading             _weaponLoading;
     private readonly HeadGearVisibilityChanged _headGearVisibility;
     private readonly VisorStateChanged         _visorState;
     private readonly WeaponVisibilityChanged   _weaponVisibility;
+    private readonly StateFinalized              _stateFinalized;
     private readonly AutoDesignApplier         _autoDesignApplier;
     private readonly FunModule                 _funModule;
     private readonly HumanModelList            _humans;
@@ -50,15 +54,16 @@ public class StateListener : IDisposable
     private readonly Dictionary<Actor, CharacterWeapon> _fistOffhands = [];
 
     private ActorIdentifier _creatingIdentifier = ActorIdentifier.Invalid;
+    private bool            _isPlayerNpc;
     private ActorState?     _creatingState;
     private ActorState?     _customizeState;
 
     public StateListener(StateManager manager, ItemManager items, PenumbraService penumbra, ActorManager actors, Configuration config,
-        EquipSlotUpdating equipSlotUpdating, WeaponLoading weaponLoading, VisorStateChanged visorState,
+        EquipSlotUpdating equipSlotUpdating, GearsetDataLoaded gearsetDataLoaded, WeaponLoading weaponLoading, VisorStateChanged visorState,
         WeaponVisibilityChanged weaponVisibility, HeadGearVisibilityChanged headGearVisibility, AutoDesignApplier autoDesignApplier,
         FunModule funModule, HumanModelList humans, StateApplier applier, MovedEquipment movedEquipment, ObjectManager objects,
         GPoseService gPose, ChangeCustomizeService changeCustomizeService, CustomizeService customizations, ICondition condition,
-        CrestService crestService, BonusSlotUpdating bonusSlotUpdating)
+        CrestService crestService, BonusSlotUpdating bonusSlotUpdating, StateFinalized stateFinalized)
     {
         _manager                = manager;
         _items                  = items;
@@ -66,6 +71,7 @@ public class StateListener : IDisposable
         _actors                 = actors;
         _config                 = config;
         _equipSlotUpdating      = equipSlotUpdating;
+        _gearsetDataLoaded      = gearsetDataLoaded;
         _weaponLoading          = weaponLoading;
         _visorState             = visorState;
         _weaponVisibility       = weaponVisibility;
@@ -82,6 +88,7 @@ public class StateListener : IDisposable
         _condition              = condition;
         _crestService           = crestService;
         _bonusSlotUpdating      = bonusSlotUpdating;
+        _stateFinalized           = stateFinalized;
         Subscribe();
     }
 
@@ -117,11 +124,13 @@ public class StateListener : IDisposable
             return;
 
         _creatingIdentifier = actor.GetIdentifier(_actors);
-
         ref var modelId   = ref *(uint*)modelPtr;
         ref var customize = ref *(CustomizeArray*)customizePtr;
         if (_autoDesignApplier.Reduce(actor, _creatingIdentifier, out _creatingState))
         {
+            _isPlayerNpc = _creatingIdentifier.Type is IdentifierType.Player
+             && actor.IsCharacter
+             && actor.AsCharacter->GetObjectKind() is ObjectKind.EventNpc;
             switch (UpdateBaseData(actor, _creatingState, modelId, customizePtr, equipDataPtr))
             {
                 // TODO handle right
@@ -216,7 +225,7 @@ public class StateListener : IDisposable
         // then we do not want to use our restricted gear protection
         // since we assume the player has that gear modded to availability.
         var locked = false;
-        if (actor.Identifier(_actors, out var identifier)
+        if (actor.Identifier(_actors, out var identifier) 
          && _manager.TryGetValue(identifier, out var state))
         {
             HandleEquipSlot(actor, state, slot, ref armor);
@@ -259,6 +268,22 @@ public class StateListener : IDisposable
                 case UpdateState.Transformed: break;
             }
     }
+
+    private void OnGearsetDataLoaded(Model model)
+    {
+        var actor = _penumbra.GameObjectFromDrawObject(model);
+        if (_condition[ConditionFlag.CreatingCharacter] && actor.Index >= ObjectIndex.CutsceneStart)
+            return;
+
+        // ensure actor and state are valid.
+        if (!actor.Identifier(_actors, out var identifier))
+            return;
+
+        _objects.Update();
+        if (_objects.TryGetValue(identifier, out var actors) && actors.Valid)
+            _stateFinalized.Invoke(StateFinalizationType.Gearset, actors);
+    }
+
 
     private void OnMovedEquipment((EquipSlot, uint, StainIds)[] items)
     {
@@ -327,7 +352,7 @@ public class StateListener : IDisposable
          && weapon.Weapon.Id != 0
          && _fistOffhands.TryGetValue(actor, out var lastFistOffhand))
         {
-            Glamourer.Log.Information($"Applying stored fist weapon offhand {lastFistOffhand} for 0x{actor.Address:X}.");
+            Glamourer.Log.Verbose($"Applying stored fist weapon offhand {lastFistOffhand} for 0x{actor.Address:X}.");
             weapon = lastFistOffhand;
         }
 
@@ -420,15 +445,22 @@ public class StateListener : IDisposable
         }
 
         var baseData = state.BaseData.Armor(slot);
-        var change   = UpdateState.NoChange;
+
+        var change = UpdateState.NoChange;
         if (baseData.Stains != armor.Stains)
         {
+            if (_isPlayerNpc)
+                return UpdateState.Transformed;
+
             state.BaseData.SetStain(slot, armor.Stains);
             change = UpdateState.Change;
         }
 
         if (baseData.Set.Id != armor.Set.Id || baseData.Variant != armor.Variant && !fistWeapon)
         {
+            if (_isPlayerNpc)
+                return UpdateState.Transformed;
+
             var item = _items.Identify(slot, armor.Set, armor.Variant);
             state.BaseData.SetItem(slot, item);
             change = UpdateState.Change;
@@ -460,6 +492,9 @@ public class StateListener : IDisposable
         var change   = UpdateState.NoChange;
         if (baseData.Id != actorItem.Id || baseData.PrimaryId != item.Set || baseData.Variant != item.Variant)
         {
+            if (_isPlayerNpc)
+                return UpdateState.Transformed;
+
             var identified = _items.Identify(slot, item.Set, item.Variant);
             state.BaseData.SetBonusItem(slot, identified);
             change = UpdateState.Change;
@@ -576,6 +611,9 @@ public class StateListener : IDisposable
 
         if (baseData.Skeleton.Id != weapon.Skeleton.Id || baseData.Weapon.Id != weapon.Weapon.Id || baseData.Variant != weapon.Variant)
         {
+            if (_isPlayerNpc)
+                return UpdateState.Transformed;
+
             var item = _items.Identify(slot, weapon.Skeleton, weapon.Weapon, weapon.Variant,
                 slot is EquipSlot.OffHand ? state.BaseData.MainhandType : FullEquipType.Unknown);
             state.BaseData.SetItem(slot, item);
@@ -621,6 +659,10 @@ public class StateListener : IDisposable
     {
         // Customize array does not agree between game object and draw object => transformation.
         if (checkTransform && !actor.Customize->Equals(customize))
+            return UpdateState.Transformed;
+
+        // Check for player NPCs with a different game state.
+        if (_isPlayerNpc && !actor.Customize->Equals(state.BaseData.Customize))
             return UpdateState.Transformed;
 
         // Customize array did not change to stored state.
@@ -766,6 +808,7 @@ public class StateListener : IDisposable
         _penumbra.CreatedCharacterBase  += OnCreatedCharacterBase;
         _equipSlotUpdating.Subscribe(OnEquipSlotUpdating, EquipSlotUpdating.Priority.StateListener);
         _bonusSlotUpdating.Subscribe(OnBonusSlotUpdating, BonusSlotUpdating.Priority.StateListener);
+        _gearsetDataLoaded.Subscribe(OnGearsetDataLoaded, GearsetDataLoaded.Priority.StateListener);
         _movedEquipment.Subscribe(OnMovedEquipment, MovedEquipment.Priority.StateListener);
         _weaponLoading.Subscribe(OnWeaponLoading, WeaponLoading.Priority.StateListener);
         _visorState.Subscribe(OnVisorChange, VisorStateChanged.Priority.StateListener);
@@ -783,6 +826,7 @@ public class StateListener : IDisposable
         _penumbra.CreatedCharacterBase  -= OnCreatedCharacterBase;
         _equipSlotUpdating.Unsubscribe(OnEquipSlotUpdating);
         _bonusSlotUpdating.Unsubscribe(OnBonusSlotUpdating);
+        _gearsetDataLoaded.Unsubscribe(OnGearsetDataLoaded);
         _movedEquipment.Unsubscribe(OnMovedEquipment);
         _weaponLoading.Unsubscribe(OnWeaponLoading);
         _visorState.Unsubscribe(OnVisorChange);

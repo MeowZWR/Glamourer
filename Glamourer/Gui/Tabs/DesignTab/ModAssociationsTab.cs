@@ -201,7 +201,7 @@ public class ModAssociationsTab(PenumbraService penumbra, DesignFileSystemSelect
 
         ImGui.TableNextColumn();
         var inherit = settings.ForceInherit;
-        if (TwoStateCheckbox.Instance.Draw("##Enabled"u8, ref inherit))
+        if (TwoStateCheckbox.Instance.Draw("##ForceInherit"u8, ref inherit))
             updatedMod = (mod, settings with { ForceInherit = inherit });
         ImUtf8.HoverTooltip("强制模组从继承的合集中继承其设置。"u8);
         ImGui.TableNextColumn();

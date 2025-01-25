@@ -58,38 +58,53 @@ public class SetPanel(
 
         var spacing = ImGui.GetStyle().ItemInnerSpacing with { Y = ImGui.GetStyle().ItemSpacing.Y };
 
-        using (_ = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, spacing))
+        using (ImUtf8.Group())
         {
-            var enabled = Selection.Enabled;
-            if (ImGui.Checkbox("##Enabled", ref enabled))
-                _manager.SetState(_selector.SelectionIndex, enabled);
-            ImGuiUtil.LabeledHelpMarker("启用",
-                "是否应用该自动执行集中的设计。一个角色同时只能启用一个执行集。");
-        }
-
-        ImGui.SameLine();
-        using (_ = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, spacing))
-        {
-            var useGame = _selector.Selection!.BaseState is AutoDesignSet.Base.Game;
-            if (ImGui.Checkbox("##gameState", ref useGame))
-                _manager.ChangeBaseState(_selector.SelectionIndex, useGame ? AutoDesignSet.Base.Game : AutoDesignSet.Base.Current);
-            ImGuiUtil.LabeledHelpMarker("使用游戏状态作为基础。",
-                "启用此选项后，符合条件的角色设计将按顺序应用于游戏中角色的外观上。\n"
-              + "禁用此选项后，设计将应用于角色当前被Glamourer修改后的实际外观上。");
-        }
-
-        ImGui.SameLine();
-        using (_ = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, spacing))
-        {
-            var editing = _config.ShowAutomationSetEditing;
-            if (ImGui.Checkbox("##Show Editing", ref editing))
+            using (ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, spacing))
             {
-                _config.ShowAutomationSetEditing = editing;
-                _config.Save();
+                var enabled = Selection.Enabled;
+                if (ImGui.Checkbox("##Enabled", ref enabled))
+                    _manager.SetState(_selector.SelectionIndex, enabled);
+                ImGuiUtil.LabeledHelpMarker("启用",
+                    "是否应用该自动执行集中的设计。一个角色同时只能启用一个执行集。");
             }
 
-            ImGuiUtil.LabeledHelpMarker("显示可编辑内容",
-                "显示更改此执行集的名称、关联角色/NPC的选项。取消勾选以精简视图。");
+            using (ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, spacing))
+            {
+                var useGame = _selector.Selection!.BaseState is AutoDesignSet.Base.Game;
+                if (ImGui.Checkbox("##gameState", ref useGame))
+                    _manager.ChangeBaseState(_selector.SelectionIndex, useGame ? AutoDesignSet.Base.Game : AutoDesignSet.Base.Current);
+                ImGuiUtil.LabeledHelpMarker("使用游戏状态作为基础",
+                    "启用此选项后，符合条件的角色设计将按顺序应用于游戏中角色的外观上。\n"
+                  + "禁用此选项后，设计将应用于角色当前被 Glamourer 修改后的实际外观上。");
+            }
+        }
+
+        ImGui.SameLine();
+        using (ImUtf8.Group())
+        {
+            using (ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, spacing))
+            {
+                var editing = _config.ShowAutomationSetEditing;
+                if (ImGui.Checkbox("##Show Editing", ref editing))
+                {
+                    _config.ShowAutomationSetEditing = editing;
+                    _config.Save();
+                }
+
+                ImGuiUtil.LabeledHelpMarker("显示可编辑内容",
+                    "显示更改此执行集的名称、关联角色/NPC的选项。取消勾选以精简视图。");
+            }
+
+            using (ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, spacing))
+            {
+                var resetSettings = _selector.Selection!.ResetTemporarySettings;
+                if (ImGui.Checkbox("##resetSettings", ref resetSettings))
+                    _manager.ChangeResetSettings(_selector.SelectionIndex, resetSettings);
+
+                ImGuiUtil.LabeledHelpMarker("重置临时设置",
+                    "每次应用此自动执行集时，始终重置由 Glamourer 应用的所有临时设置，无论当前设计是否激活。");
+            }
         }
 
         if (_config.ShowAutomationSetEditing)

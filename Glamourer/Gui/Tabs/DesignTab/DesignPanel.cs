@@ -2,6 +2,7 @@
 using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.ImGuiNotification;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
+using Glamourer.Api.Enums;
 using Glamourer.Automation;
 using Glamourer.Designs;
 using Glamourer.Designs.History;
@@ -460,7 +461,7 @@ public class DesignPanel
         if (_state.GetOrCreate(id, data.Objects[0], out var state))
         {
             using var _ = _selector.Selected!.TemporarilyRestrictApplication(ApplicationCollection.FromKeys());
-            _state.ApplyDesign(state, _selector.Selected!, ApplySettings.ManualWithLinks);
+            _state.ApplyDesign(state, _selector.Selected!, ApplySettings.ManualWithLinks with { IsFinal = true });
         }
     }
 
@@ -478,7 +479,7 @@ public class DesignPanel
         if (_state.GetOrCreate(id, data.Objects[0], out var state))
         {
             using var _ = _selector.Selected!.TemporarilyRestrictApplication(ApplicationCollection.FromKeys());
-            _state.ApplyDesign(state, _selector.Selected!, ApplySettings.ManualWithLinks);
+            _state.ApplyDesign(state, _selector.Selected!, ApplySettings.ManualWithLinks with { IsFinal = true });
         }
     }
 
